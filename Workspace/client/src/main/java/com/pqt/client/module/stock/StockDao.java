@@ -3,7 +3,7 @@ package com.pqt.client.module.stock;
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.query.QueryFactory;
 import com.pqt.client.module.query.query_callback.IStockQueryCallback;
-import com.pqt.client.module.query.query_callback.IUpdateQueryCallback;
+import com.pqt.client.module.query.query_callback.IIdQueryCallback;
 import com.pqt.client.module.stock.Listeners.IStockFirerer;
 import com.pqt.client.module.stock.Listeners.IStockListener;
 import com.pqt.client.module.stock.Listeners.SimpleStockFirerer;
@@ -75,7 +75,7 @@ public class StockDao {
 	}
 
 	public long commitUpdate(List<ProductUpdate> updates){
-		return QueryExecutor.INSTANCE.execute(QueryFactory.newUpdateQuery(updates),new IUpdateQueryCallback(){
+		return QueryExecutor.INSTANCE.execute(QueryFactory.newUpdateQuery(updates),new IIdQueryCallback(){
 
 			@Override
 			public void ack(long id) {

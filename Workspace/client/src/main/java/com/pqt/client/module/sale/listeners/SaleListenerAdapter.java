@@ -2,33 +2,32 @@ package com.pqt.client.module.sale.listeners;
 
 import com.pqt.core.entities.sale.Sale;
 
-//TODO écrire contenu méthodes
 //TODO écrire javadoc
 public class SaleListenerAdapter implements ISaleListener {
 
 
 	/**
-	 * @see com.pqt.client.module.sale.listeners.ISaleListener#onSaleValidationSuccess(com.pqt.core.entities.sale.Sale)
+	 * @see com.pqt.client.module.sale.listeners.ISaleListener#onSaleValidationSuccess(long)
 	 * 
 	 *  
 	 */
-	public void onSaleValidationSuccess(Sale sale) {
+	public void onSaleValidationSuccess(long saleId) {
 
 	}
 
 
 	/**
-	 * @see com.pqt.client.module.sale.listeners.ISaleListener#onSaleValidationError(com.pqt.core.entities.sale.Sale, Throwable)
+	 * @see com.pqt.client.module.sale.listeners.ISaleListener#onSaleValidationError(long, Throwable)
 	 */
-	public void onSaleValidationError(Sale sale, Throwable cause) {
+	public void onSaleValidationError(long saleId, Throwable cause) {
 
 	}
 
 
 	/**
-	 * @see com.pqt.client.module.sale.listeners.ISaleListener#onSaleValidationRefused(com.pqt.core.entities.sale.Sale, Throwable)
+	 * @see com.pqt.client.module.sale.listeners.ISaleListener#onSaleValidationRefused(long, Throwable)
 	 */
-	public void onSaleValidationRefused(Sale sale, Throwable cause) {
+	public void onSaleValidationRefused(long saleId, Throwable cause) {
 
 	}
 

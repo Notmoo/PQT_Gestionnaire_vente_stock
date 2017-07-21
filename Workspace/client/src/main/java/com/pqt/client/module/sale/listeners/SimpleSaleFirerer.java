@@ -1,33 +1,44 @@
 package com.pqt.client.module.sale.listeners;
 
-import com.pqt.core.entities.sale.Sale;
+import javax.swing.event.EventListenerList;
 
-//TODO écrire contenu méthodes
 //TODO écrire javadoc
 public class SimpleSaleFirerer implements ISaleFirerer {
 
 
-	/**
-	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#fireSaleValidationSuccess(com.pqt.core.entities.sale.Sale)
-	 */
-	public void fireSaleValidationSuccess(Sale sale) {
+	private EventListenerList listeners;
 
+	public SimpleSaleFirerer() {
+		listeners = new EventListenerList();
+	}
+
+	/**
+	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#fireSaleValidationSuccess(long)
+	 */
+	public void fireSaleValidationSuccess(long saleId) {
+        for(ISaleListener l : listeners.getListeners(ISaleListener.class)){
+            l.onSaleValidationSuccess(saleId);
+        }
 	}
 
 
 	/**
-	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#fireSaleValidationError(com.pqt.core.entities.sale.Sale, Throwable)
+	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#fireSaleValidationError(long, Throwable)
 	 */
-	public void fireSaleValidationError(Sale sale, Throwable cause) {
-
+	public void fireSaleValidationError(long saleId, Throwable cause) {
+        for(ISaleListener l : listeners.getListeners(ISaleListener.class)){
+            l.onSaleValidationError(saleId, cause);
+        }
 	}
 
 
 	/**
-	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#fireSaleValidationRefused(com.pqt.core.entities.sale.Sale, Throwable)
+	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#fireSaleValidationRefused(long, Throwable)
 	 */
-	public void fireSaleValidationRefused(Sale sale, Throwable cause) {
-
+	public void fireSaleValidationRefused(long saleId, Throwable cause) {
+        for(ISaleListener l : listeners.getListeners(ISaleListener.class)){
+            l.onSaleValidationRefused(saleId, cause);
+        }
 	}
 
 
@@ -35,7 +46,7 @@ public class SimpleSaleFirerer implements ISaleFirerer {
 	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#addListener(com.pqt.client.module.sale.listeners.ISaleListener)
 	 */
 	public void addListener(ISaleListener listener) {
-
+        listeners.add(ISaleListener.class, listener);
 	}
 
 
@@ -43,7 +54,7 @@ public class SimpleSaleFirerer implements ISaleFirerer {
 	 * @see com.pqt.client.module.sale.listeners.ISaleFirerer#removeListener(com.pqt.client.module.sale.listeners.ISaleListener)
 	 */
 	public void removeListener(ISaleListener listener) {
-
+        listeners.remove(ISaleListener.class, listener);
 	}
 
 }

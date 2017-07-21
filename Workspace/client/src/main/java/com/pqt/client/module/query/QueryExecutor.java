@@ -1,6 +1,6 @@
 package com.pqt.client.module.query;
 
-import com.pqt.client.module.query.query_callback.IUpdateQueryCallback;
+import com.pqt.client.module.query.query_callback.IIdQueryCallback;
 import com.pqt.core.entities.query.IQuery;
 import com.pqt.client.module.query.query_callback.ISimpleQueryCallback;
 import com.pqt.client.module.query.query_callback.IStatQueryCallback;
@@ -28,7 +28,7 @@ public class QueryExecutor {
         return 0;
 	}
 
-    public long execute(IQuery query, IUpdateQueryCallback callback) {
+    public long execute(IQuery query, IIdQueryCallback callback) {
         return 0;
     }
 

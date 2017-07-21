@@ -1,10 +1,5 @@
 package com.pqt.client.module.stock;
 
-import com.pqt.client.module.query.QueryExecutor;
-import com.pqt.client.module.query.QueryFactory;
-import com.pqt.client.module.query.query_callback.IUpdateQueryCallback;
-import com.pqt.client.module.stock.Listeners.IStockFirerer;
-import com.pqt.client.module.stock.Listeners.SimpleStockFirerer;
 import com.pqt.core.entities.product.Product;
 import com.pqt.client.module.stock.Listeners.IStockListener;
 

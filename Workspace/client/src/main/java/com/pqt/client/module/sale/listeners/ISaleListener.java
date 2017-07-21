@@ -6,10 +6,10 @@ import java.util.EventListener;
 
 public interface ISaleListener extends EventListener {
 
-	public abstract void onSaleValidationSuccess(Sale sale);
+	public abstract void onSaleValidationSuccess(long saleId);
 
-	public abstract void onSaleValidationError(Sale sale, Throwable cause);
+	public abstract void onSaleValidationError(long saleId, Throwable cause);
 
-	public abstract void onSaleValidationRefused(Sale sale, Throwable cause);
+	public abstract void onSaleValidationRefused(long saleId, Throwable cause);
 
 }
