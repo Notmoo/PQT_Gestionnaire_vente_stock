@@ -1,5 +1,6 @@
 package com.pqt.core.communication;
 
+import com.google.gson.reflect.TypeToken;
 import com.pqt.core.entities.members.PqtMember;
 import com.pqt.core.entities.members.PqtMemberType;
 import com.pqt.core.entities.messages.Message;
@@ -8,39 +9,17 @@ import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.Sale;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IMessageToolFactory {
 
-	IObjectFormatter<Message> getMessageFormatter();
+	<T> IObjectFormatter<T> getObjectFormatter(Class<T> clazz);
 
-	IObjectParser<Message> getMessageParser();
+	<T> IObjectParser<T> getObjectParser(Class<T> clazz);
 
-	IObjectFormatter<Product> getProductFormatter();
+	<T> IObjectFormatter<List<T>> getListFormatter(Class<T> clazz);
 
-	IObjectParser<Product> getProductParser();
-
-    IObjectFormatter<List<Product>> getProductListFormatter();
-
-    IObjectParser<List<Product>> getProductListParser();
-
-	IObjectFormatter<Sale> getSaleFormatter();
-
-	IObjectParser<Sale> getSaleParser();
-
-	IObjectFormatter<PqtMember> getPqtMemberFormatter();
-
-	IObjectParser<PqtMember> getPqtMemberParser();
-
-	IObjectFormatter<ProductUpdate> getProductUpdateFormatter();
-
-	IObjectParser<ProductUpdate> getProductUpdateParser();
-
-	IObjectFormatter<MessageType> getMessageTypeFormatter();
-
-	IObjectParser<MessageType> getMessageTypeParser();
-
-	IObjectFormatter<PqtMemberType> getPqtMemberTypeFormatter();
-
-	IObjectParser<PqtMemberType> getPqtMemberTypeParser();
+	<T> IObjectParser<List<T>> getListParser(Class<T> clazz);
 }
