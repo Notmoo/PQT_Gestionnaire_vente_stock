@@ -1,6 +1,6 @@
 package com.pqt.client.module.sale;
 
-import com.pqt.core.entities.client.Client;
+import com.pqt.core.entities.members.Client;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.sale.SaleStatus;

@@ -1,7 +1,7 @@
 package com.pqt.core.entities.sale;
 
 import com.pqt.core.entities.log.ILoggable;
-import com.pqt.core.entities.client.Client;
+import com.pqt.core.entities.members.Client;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.user_account.Account;
 
