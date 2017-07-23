@@ -1,0 +1,3 @@
+#Ignoring Intellij workspace specific folders and files
+**/workspace.xml
+**/*.iml
