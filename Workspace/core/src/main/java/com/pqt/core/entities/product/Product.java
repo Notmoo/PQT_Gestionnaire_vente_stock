@@ -10,12 +10,12 @@ import java.util.List;
  * Created by Notmoo on 18/07/2017.
  */
 public class Product implements ILoggable, Serializable{
-    private int id;
+    private long id;
     private String name;
     private int amountRemaining;
     private int amountSold;
     private boolean sellable;
-    private boolean price;
+    private double price;
     private List<Product> components;
     private Category category;
 
@@ -23,22 +23,25 @@ public class Product implements ILoggable, Serializable{
         components = new ArrayList<>();
     }
 
-    public Product(int id, String name, int amountRemaining, int amountSold, boolean sellable, boolean price, List<Product> components, Category category) {
+    public Product(long id, String name, int amountRemaining, int amountSold, boolean sellable, double price, List<Product> components, Category category) {
         this.id = id;
         this.name = name;
         this.amountRemaining = amountRemaining;
         this.amountSold = amountSold;
         this.sellable = sellable;
         this.price = price;
-        this.components = components;
         this.category = category;
+        this.components = new ArrayList<>();
+        if(components!=null){
+            this.components.addAll(components);
+        }
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -74,11 +77,11 @@ public class Product implements ILoggable, Serializable{
         this.sellable = sellable;
     }
 
-    public boolean isPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(boolean price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
