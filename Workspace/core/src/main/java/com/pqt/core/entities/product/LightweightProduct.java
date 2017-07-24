@@ -1,39 +1,33 @@
 package com.pqt.core.entities.product;
 
-import com.pqt.core.entities.log.ILoggable;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Notmoo on 18/07/2017.
- */
-public class Product implements ILoggable, Serializable{
+public class LightweightProduct {
     private long id;
     private String name;
     private int amountRemaining;
     private int amountSold;
     private boolean sellable;
     private double price;
-    private List<Product> components;
+    private List<Long> componentIds;
     private Category category;
 
-    public Product() {
-        components = new ArrayList<>();
+    public LightweightProduct() {
+        componentIds = new ArrayList<>();
     }
 
-    public Product(long id, String name, int amountRemaining, int amountSold, boolean sellable, double price, List<Product> components, Category category) {
-        this.id = id;
-        this.name = name;
-        this.amountRemaining = amountRemaining;
-        this.amountSold = amountSold;
-        this.sellable = sellable;
-        this.price = price;
-        this.category = category;
-        this.components = new ArrayList<>();
-        if(components!=null){
-            this.components.addAll(components);
+    public LightweightProduct(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.amountRemaining = product.getAmountRemaining();
+        this.amountSold = product.getAmountSold();
+        this.sellable = product.isSellable();
+        this.price = product.getPrice();
+        this.category = product.getCategory();
+        this.componentIds = new ArrayList<>();
+        if(componentIds!=null){
+            product.getComponents().stream().forEach((component -> componentIds.add(component.getId())));
         }
     }
 
@@ -85,12 +79,12 @@ public class Product implements ILoggable, Serializable{
         this.price = price;
     }
 
-    public List<Product> getComponents() {
-        return components;
+    public List<Long> getComponentIds() {
+        return componentIds;
     }
 
-    public void setComponents(List<Product> components) {
-        this.components = components;
+    public void setComponentIds(List<Long> componentIds) {
+        this.componentIds = componentIds;
     }
 
     public Category getCategory() {
