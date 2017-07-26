@@ -1,6 +1,8 @@
 package com.pqt.server.module.stock;
 
 import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.product.ProductUpdate;
+import com.pqt.server.exception.ServerQueryException;
 
 import java.util.List;
 
@@ -22,15 +24,29 @@ public class StockService {
 		return dao.getProduct(id);
 	}
 
-	public void addProduct(Product product) {
+	public void applyUpdateList(List<ProductUpdate> updates) throws ServerQueryException{
+    	for(ProductUpdate upd : updates){
+    		if(upd.getOldVersion()==null){
+    			addProduct(upd.getNewVersion());
+			}else if(upd.getNewVersion()==null){
+    			removeProduct(upd.getOldVersion().getId());
+			}else if(upd.getOldVersion()!=null && upd.getNewVersion()!=null){
+				modifyProduct(upd.getOldVersion().getId(), upd.getNewVersion());
+			}else{
+			    //TODO écrit le throw d'une ServerQueryException
+            }
+		}
+	}
+
+	private void addProduct(Product product) {
         dao.addProduct(product);
 	}
 
-	public void removeProduct(long id) {
+	private void removeProduct(long id) {
         dao.removeProduct(id);
 	}
 
-	public void modifyProduct(long id, Product product) {
+	private void modifyProduct(long id, Product product) {
         dao.modifyProduct(id, product);
 	}
 }

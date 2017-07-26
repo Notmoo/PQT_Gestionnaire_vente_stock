@@ -2,11 +2,14 @@ package com.pqt.server.controller;
 
 import com.pqt.core.communication.GSonMessageToolFactory;
 import com.pqt.core.communication.IMessageToolFactory;
+import com.pqt.core.entities.members.Client;
 import com.pqt.core.entities.messages.Message;
 import com.pqt.core.entities.messages.MessageType;
 import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.Sale;
+import com.pqt.core.entities.user_account.Account;
 import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.module.account.AccountService;
 import com.pqt.server.module.client.ClientService;
@@ -16,8 +19,10 @@ import com.pqt.server.module.statistics.StatisticsService;
 import com.pqt.server.module.stock.StockService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+//TODO ajouter des messages d'erreur spécifiques pour les NullPointerException si le param du message vaut null
 public class SimpleMessageHandler implements IMessageHandler {
 
     private final String header_ref_query = "Detail_refus";
@@ -55,7 +60,7 @@ public class SimpleMessageHandler implements IMessageHandler {
                 long saleId = saleService.submitSale(messageToolFactory.getObjectParser(Sale.class).parse(message.getField("sale")));
                 fields.put("saleId", Long.toString(saleId));
                 return new Message(MessageType.ACK_SALE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
-            }catch(ServerQueryException e){
+            }catch(ServerQueryException | NullPointerException e){
                 fields.put(header_ref_query, e.toString());
                 return new Message(MessageType.REFUSED_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
             }
@@ -64,7 +69,7 @@ public class SimpleMessageHandler implements IMessageHandler {
             try{
                 saleService.submitSaleRevert(messageToolFactory.getObjectParser(Long.class).parse(message.getField("saleId")));
                 return new Message(MessageType.ACK_REVERT_SALE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
-            }catch(ServerQueryException e){
+            }catch(ServerQueryException | NullPointerException e){
                 Map<String, String> fields = new HashMap<>();
                 fields.put(header_err_query, e.toString());
                 return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
@@ -84,16 +89,15 @@ public class SimpleMessageHandler implements IMessageHandler {
             return new Message(MessageType.MSG_STAT, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
         });
         queryHandlers.put(MessageType.QUERY_UPDATE, (message)->{
-            //TODO Supporter les query update
-            return null;
-        });
-        queryHandlers.put(MessageType.QUERY_CONNECT, (message)->{
-            //TODO Supporter les query client
-            return null;
-        });
-        queryHandlers.put(MessageType.QUERY_LOGIN, (message)->{
-            //TODO Supporter les query account
-            return null;
+            try{
+                List<ProductUpdate> updates = messageToolFactory.getListParser(ProductUpdate.class).parse(message.getField("updates"));
+                stockService.applyUpdateList(updates);
+                return new Message(MessageType.ACK_UPDATE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
+            }catch (ServerQueryException | NullPointerException e){
+                Map<String, String> fields = new HashMap<>();
+                fields.put(header_err_query, e.toString());
+                return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
+            }
         });
     }
 
@@ -102,10 +106,6 @@ public class SimpleMessageHandler implements IMessageHandler {
 
         Map<String, String> fields = new HashMap<>();
 
-        if(!checkClient(message)){
-            fields.put(header_ref_query, "client non enregistré sur le serveur");
-            return new Message(MessageType.REFUSED_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
-        }
         if(!isAccountRegistered(message)){
             fields.put(header_ref_query, "Compte utilisateur inconnu");
             return new Message(MessageType.REFUSED_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
@@ -125,11 +125,6 @@ public class SimpleMessageHandler implements IMessageHandler {
     //TODO ajouter Javadoc
     private interface IMessageProcess{
         Message execute(Message request);
-    }
-
-    private boolean checkClient(Message message){
-        //TODO faire ça
-        return false;
     }
 
     private boolean isAccountRegistered(Message message){

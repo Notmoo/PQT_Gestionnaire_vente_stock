@@ -10,4 +10,5 @@ public interface IAccountDao {
 
 	boolean setAccountConnected(Account acc, boolean connected);
 
+	boolean isAccountRegistered(Account acc);
 }

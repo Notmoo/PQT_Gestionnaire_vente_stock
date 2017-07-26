@@ -20,4 +20,7 @@ public class AccountService {
 		return dao.setAccountConnected(acc, connected);
 	}
 
+	public boolean isAccountRegistered(Account acc){
+		return dao.isAccountRegistered(acc);
+	}
 }
