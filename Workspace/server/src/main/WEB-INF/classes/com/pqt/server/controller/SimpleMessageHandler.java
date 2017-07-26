@@ -2,14 +2,12 @@ package com.pqt.server.controller;
 
 import com.pqt.core.communication.GSonMessageToolFactory;
 import com.pqt.core.communication.IMessageToolFactory;
-import com.pqt.core.entities.members.Client;
 import com.pqt.core.entities.messages.Message;
 import com.pqt.core.entities.messages.MessageType;
 import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.Sale;
-import com.pqt.core.entities.user_account.Account;
 import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.module.account.AccountService;
 import com.pqt.server.module.client.ClientService;
