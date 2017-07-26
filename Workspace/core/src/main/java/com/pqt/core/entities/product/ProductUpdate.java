@@ -5,6 +5,7 @@ import sun.misc.Version;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 public class ProductUpdate implements ILoggable, Serializable {
 
@@ -49,5 +50,23 @@ public class ProductUpdate implements ILoggable, Serializable {
 
     public void setNewVersion(Product newVersion) {
         this.newVersion = newVersion;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(oldVersion, newVersion);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+
+        if(!this.getClass().isInstance(obj))
+            return false;
+
+        ProductUpdate other = ProductUpdate.class.cast(obj);
+        return Objects.equals(this.oldVersion, other.oldVersion)
+                && Objects.equals(this.newVersion, other.newVersion);
     }
 }

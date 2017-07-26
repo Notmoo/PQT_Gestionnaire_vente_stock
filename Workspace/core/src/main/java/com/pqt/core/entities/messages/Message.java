@@ -2,10 +2,7 @@ package com.pqt.core.entities.messages;
 
 import com.pqt.core.entities.members.PqtMember;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Message {
 
@@ -50,5 +47,25 @@ public class Message {
 
     public MessageType getType() {
         return type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fields, emitter, receiver, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+
+        if(!this.getClass().isInstance(obj))
+            return false;
+
+        Message other = Message.class.cast(obj);
+        return Objects.equals(this.fields, other.fields)
+                && Objects.equals(this.emitter, other.emitter)
+                && Objects.equals(this.receiver, other.receiver)
+                && Objects.equals(this.type, other.type);
     }
 }

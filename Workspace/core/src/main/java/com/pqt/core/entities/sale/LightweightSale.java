@@ -1,12 +1,14 @@
 package com.pqt.core.entities.sale;
 
 import com.pqt.core.entities.members.Client;
+import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.user_account.Account;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LightweightSale {
 
@@ -98,5 +100,27 @@ public class LightweightSale {
 
     public void setStatus(SaleStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, products, orderedBy, orderedFor, orderedWith, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+
+        if(!this.getClass().isInstance(obj))
+            return false;
+
+        LightweightSale other = LightweightSale.class.cast(obj);
+        return this.id == other.id
+                && Objects.equals(this.products, other.products)
+                && Objects.equals(this.orderedBy, other.orderedBy)
+                && Objects.equals(this.orderedFor, other.orderedFor)
+                && Objects.equals(this.orderedWith, other.orderedWith)
+                && Objects.equals(this.type, other.type);
     }
 }

@@ -5,6 +5,7 @@ import com.pqt.core.entities.log.ILoggable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Notmoo on 18/07/2017.
@@ -99,5 +100,25 @@ public class Product implements ILoggable, Serializable{
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, components, category);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+
+        if(!this.getClass().isInstance(obj))
+            return false;
+
+        Product other = Product.class.cast(obj);
+        return this.id == other.id
+                && Objects.equals(this.name, other.name)
+                && Objects.equals(this.components, other.components)
+                && Objects.equals(this.category, other.category);
     }
 }

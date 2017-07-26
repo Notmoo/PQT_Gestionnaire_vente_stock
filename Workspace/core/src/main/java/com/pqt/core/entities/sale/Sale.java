@@ -8,6 +8,7 @@ import com.pqt.core.entities.user_account.Account;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Notmoo on 18/07/2017.
@@ -99,5 +100,27 @@ public class Sale implements ILoggable, Serializable{
 
     public void setStatus(SaleStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, products, orderedBy, orderedFor, orderedWith, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+
+        if(!this.getClass().isInstance(obj))
+            return false;
+
+        Sale other = Sale.class.cast(obj);
+        return this.id == other.id
+                && Objects.equals(this.products, other.products)
+                && Objects.equals(this.orderedBy, other.orderedBy)
+                && Objects.equals(this.orderedFor, other.orderedFor)
+                && Objects.equals(this.orderedWith, other.orderedWith)
+                && Objects.equals(this.type, other.type);
     }
 }

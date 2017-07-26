@@ -2,6 +2,7 @@ package com.pqt.core.entities.product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class LightweightProduct {
     private long id;
@@ -93,5 +94,25 @@ public class LightweightProduct {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, componentIds, category);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+
+        if(!this.getClass().isInstance(obj))
+            return false;
+
+        LightweightProduct other = LightweightProduct.class.cast(obj);
+        return this.id == other.id
+                && Objects.equals(this.name, other.name)
+                && Objects.equals(this.componentIds, other.componentIds)
+                && Objects.equals(this.category, other.category);
     }
 }
