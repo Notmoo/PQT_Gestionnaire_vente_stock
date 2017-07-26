@@ -10,7 +10,7 @@
     <modules>
         <module>core</module>
         <module>client</module>
-        <module>server</module>
+        <module>com.pqt.server</module>
     </modules>
     <packaging>pom</packaging>
 

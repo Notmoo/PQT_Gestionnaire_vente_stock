@@ -16,7 +16,7 @@ public class ServerStateService {
 	    this.serverState = new ServerState();
 
 	    //TODO config adresse IP
-        //this.server.setAddress(...);
+        //this.com.pqt.server.setAddress(...);
 
         this.server.setLastUpdate(new Date());
 	}
