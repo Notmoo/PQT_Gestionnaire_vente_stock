@@ -6,6 +6,12 @@
         <element id="directory" name="classes">
           <element id="module-output" name="server" />
         </element>
+        <element id="directory" name="lib">
+          <element id="archive" name="core-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="core" />
+          </element>
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.1" />
+        </element>
       </element>
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/server/target/server-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
