@@ -33,6 +33,14 @@ public class ServerStateService {
         serverState.setPort(port);
 	}
 
+	public DataServer getServer() {
+		return server;
+	}
+
+	public void setServer(DataServer server) {
+		this.server = server;
+	}
+
 	public ServerState getServerStateCopy() {
 		return serverState.copy();
 	}
