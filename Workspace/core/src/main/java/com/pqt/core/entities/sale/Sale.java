@@ -102,10 +102,16 @@ public class Sale implements ILoggable, Serializable{
     }
 
     public double getTotalPrice() {
-        double totalPrice = 0;
+        if(type.getPriceMultiplier()==0)
+            return 0;
+        return getTotalWorth()*type.getPriceMultiplier();
+    }
+
+    public double getTotalWorth(){
+        double totalWorth = 0;
         for(Product product : this.products.keySet()){
-            totalPrice+=product.getPrice()*(double)this.products.get(product);
+            totalWorth+=product.getPrice()*(double)this.products.get(product);
         }
-        return totalPrice;
+        return totalWorth;
     }
 }
