@@ -13,7 +13,7 @@ public class StockService {
     private IStockDao dao;
 
     public StockService() {
-        dao = new HibernateStockDao();
+        dao = new FileStockDao();
     }
 
     public List<Product> getProductList() {
