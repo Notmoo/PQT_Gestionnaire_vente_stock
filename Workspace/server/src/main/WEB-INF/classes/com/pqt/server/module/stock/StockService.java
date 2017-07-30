@@ -5,6 +5,7 @@ import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.server.exception.ServerQueryException;
 
 import java.util.List;
+import java.util.Map;
 
 //TODO écrire Javadoc
 //TODO ajouter logs
@@ -22,6 +23,10 @@ public class StockService {
 
 	public Product getProduct(long id) {
 		return dao.getProduct(id);
+	}
+
+	public void applySale(Map<Product, Integer> productAmounts) {
+		dao.applySale(productAmounts);
 	}
 
 	public void applyUpdateList(List<ProductUpdate> updates) throws ServerQueryException{

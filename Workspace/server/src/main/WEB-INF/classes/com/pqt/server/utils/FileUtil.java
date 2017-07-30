@@ -16,11 +16,15 @@ public class FileUtil {
      * @throws IOException if any IOException happend during this method's execution.
      */
     public static boolean createFileIfNotExist(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        if(!Files.exists(path)){
+        if(FileUtil.exist(filePath)){
+            Path path = Paths.get(filePath);
             Files.createFile(path);
             return true;
         }
         return false;
+    }
+
+    public static boolean exist(String filePath) {
+        return Files.exists(Paths.get(filePath));
     }
 }

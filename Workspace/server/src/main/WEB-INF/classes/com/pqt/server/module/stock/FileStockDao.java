@@ -81,6 +81,11 @@ public class FileStockDao implements IStockDao {
         }
 	}
 
+    @Override
+    public void applySale(Map<Product, Integer> productAmounts) {
+        //TODO faire ça
+    }
+
     private Map<Long, Product> load(){
         Map<Long, Product> loadedData = new HashMap<>();
         try{
