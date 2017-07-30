@@ -1,7 +1,8 @@
 package com.pqt.server.module.stock;
 
 import com.pqt.core.entities.product.Product;
-import com.pqt.server.utils.FileUtil;
+import com.pqt.server.tools.FileUtil;
+import com.pqt.server.tools.entities.SaleContent;
 
 import java.io.*;
 import java.util.*;
@@ -17,8 +18,7 @@ public class FileStockDao implements IStockDao {
 
     public FileStockDao() {
         random = new Random();
-        products = new HashMap<>();
-        load();
+        loadFromFile();
         generateNextProductId();
     }
 
@@ -82,8 +82,30 @@ public class FileStockDao implements IStockDao {
 	}
 
     @Override
-    public void applySale(Map<Product, Integer> productAmounts) {
-        //TODO faire ça
+    public void applySale(SaleContent saleContent) throws IllegalArgumentException {
+	    try {
+            saleContent.getProductList().forEach(product -> applyRecursiveStockRemoval(product, saleContent.getProductAmount(product)));
+        }catch (IllegalStateException e){
+	        loadFromFile();
+	        throw new IllegalArgumentException(e);
+        }
+    }
+
+    private void applyRecursiveStockRemoval(Product product, int amount)throws IllegalStateException{
+        Product correspondingProduct = getProduct(product.getId());
+        if(correspondingProduct!=null) {
+            correspondingProduct.setAmountSold(correspondingProduct.getAmountSold() + amount);
+            correspondingProduct.setAmountRemaining(correspondingProduct.getAmountRemaining() - amount);
+            correspondingProduct.getComponents().forEach(component -> applyRecursiveStockRemoval(component, amount));
+        }else{
+            StringBuffer sb = new StringBuffer("StockService>StockDao : Un produit vendu ne correspond pas à un produit connu : ");
+            sb.append(product.getId()).append(" - ").append(product.getName()).append("(").append(product.getCategory()).append(")");
+            throw new IllegalStateException(sb.toString());
+        }
+    }
+
+    private void loadFromFile() {
+        products = new HashMap<>(load());
     }
 
     private Map<Long, Product> load(){

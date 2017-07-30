@@ -3,6 +3,7 @@ package com.pqt.server.module.stock;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.server.exception.ServerQueryException;
+import com.pqt.server.tools.entities.SaleContent;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class StockService {
 		return dao.getProduct(id);
 	}
 
-	public void applySale(Map<Product, Integer> productAmounts) {
+	public void applySale(SaleContent productAmounts) {
 		dao.applySale(productAmounts);
 	}
 

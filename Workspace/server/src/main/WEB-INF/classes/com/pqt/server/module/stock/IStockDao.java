@@ -1,6 +1,7 @@
 package com.pqt.server.module.stock;
 
 import com.pqt.core.entities.product.Product;
+import com.pqt.server.tools.entities.SaleContent;
 
 import java.util.List;
 import java.util.Map;
@@ -18,5 +19,5 @@ public interface IStockDao {
 
 	public void modifyProduct(long id, Product product);
 
-	void applySale(Map<Product, Integer> productAmounts);
+	void applySale(SaleContent productAmounts) throws IllegalArgumentException;
 }

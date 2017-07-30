@@ -3,7 +3,8 @@ package com.pqt.server.module.sale;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.server.module.stock.StockService;
-import com.pqt.server.utils.FileUtil;
+import com.pqt.server.tools.FileUtil;
+import com.pqt.server.tools.entities.SaleContent;
 import org.apache.commons.io.input.ReversedLinesFileReader;
 
 import java.io.*;
@@ -41,7 +42,7 @@ public class NoRevertFileSaleDao implements ISaleDao {
             return -1;
 
         long saleId = nextSaleId;
-        stockService.applySale(sale.getProducts());
+        stockService.applySale(new SaleContent(sale));
         logSale(sale, saleId);
         generateNextSaleId();
         return saleId;
