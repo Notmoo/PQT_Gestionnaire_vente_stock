@@ -57,7 +57,7 @@ public class FileStockDao implements IStockDao {
 	    product.setId(nextProductId);
         this.products.put(nextProductId, product);
         generateNextProductId();
-        save(this.products);
+        saveToFile();
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class FileStockDao implements IStockDao {
         Product product = getProduct(id);
 	    if(product!=null){
 	        this.products.remove(product);
-            save(this.products);
+	        saveToFile();
         }
 	}
 
@@ -78,23 +78,38 @@ public class FileStockDao implements IStockDao {
         if(this.products.containsKey(id)){
             product.setId(id);
             this.products.put(id, product);
+            saveToFile();
         }
 	}
 
     @Override
     public void applySale(SaleContent saleContent) throws IllegalArgumentException {
 	    try {
-            saleContent.getProductList().forEach(product -> applyRecursiveStockRemoval(product, saleContent.getProductAmount(product)));
+            saleContent.getProductList().forEach(product -> {
+                applyRecursiveStockRemoval(product, saleContent.getProductAmount(product));
+                applySoldCounterIncrease(product, saleContent.getProductAmount(product));
+            });
+            saveToFile();
         }catch (IllegalStateException e){
 	        loadFromFile();
 	        throw new IllegalArgumentException(e);
         }
     }
 
+    private void applySoldCounterIncrease(Product product, Integer amount) {
+	    Product correspondingProduct = getProduct(product.getId());
+	    if(correspondingProduct!=null){
+	        correspondingProduct.setAmountSold(correspondingProduct.getAmountSold() + amount);
+        }else{
+            StringBuffer sb = new StringBuffer("StockService>StockDao : Un produit vendu ne correspond pas à un produit connu : ");
+            sb.append(product.getId()).append(" - ").append(product.getName()).append("(").append(product.getCategory()).append(")");
+            throw new IllegalStateException(sb.toString());
+        }
+    }
+
     private void applyRecursiveStockRemoval(Product product, int amount)throws IllegalStateException{
         Product correspondingProduct = getProduct(product.getId());
         if(correspondingProduct!=null) {
-            correspondingProduct.setAmountSold(correspondingProduct.getAmountSold() + amount);
             correspondingProduct.setAmountRemaining(correspondingProduct.getAmountRemaining() - amount);
             correspondingProduct.getComponents().forEach(component -> applyRecursiveStockRemoval(component, amount));
         }else{
@@ -140,6 +155,10 @@ public class FileStockDao implements IStockDao {
                 e.printStackTrace();
         }
 	    return loadedData;
+    }
+
+    private void saveToFile() {
+        save(this.products);
     }
 
     private void save(Map<Long, Product> products){
