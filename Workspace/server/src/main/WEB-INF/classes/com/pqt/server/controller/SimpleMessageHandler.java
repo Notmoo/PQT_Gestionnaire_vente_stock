@@ -40,8 +40,8 @@ public class SimpleMessageHandler implements IMessageHandler {
         serverStateService = new ServerStateService();
         accountService = new AccountService();
         clientService = new ClientService();
-        saleService = new SaleService();
         stockService = new StockService();
+        saleService = new SaleService(stockService);
         statisticsService = new StatisticsService(stockService, saleService);
         messageToolFactory = new GSonMessageToolFactory();
 
@@ -81,8 +81,8 @@ public class SimpleMessageHandler implements IMessageHandler {
             fields.put("top_popular_products", messageToolFactory.getListFormatter(LightweightProduct.class).format(statisticsService.getTopPopularProducts(5)));
             fields.put("staff_sale_worth",Double.toString(statisticsService.getStaffSaleWorth()));
             fields.put("staff_sale_amount",Integer.toString(statisticsService.getStaffSaleAmount()));
-            fields.put("guest_sale_worth",Double.toString(statisticsService.getGuestSaleAmount()));
-            fields.put("guest_sale_amount",Integer.toString(statisticsService.getStaffSaleAmount()));
+            fields.put("guest_sale_worth",Double.toString(statisticsService.getGuestSaleWorth()));
+            fields.put("guest_sale_amount",Integer.toString(statisticsService.getGuestSaleAmount()));
 
             return new Message(MessageType.MSG_STAT, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
         });
