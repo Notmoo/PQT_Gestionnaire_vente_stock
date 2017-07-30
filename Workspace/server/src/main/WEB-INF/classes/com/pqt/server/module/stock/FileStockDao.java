@@ -1,6 +1,7 @@
 package com.pqt.server.module.stock;
 
 import com.pqt.core.entities.product.Product;
+import com.pqt.server.utils.FileUtil;
 
 import java.io.*;
 import java.util.*;
@@ -82,6 +83,15 @@ public class FileStockDao implements IStockDao {
 
     private Map<Long, Product> load(){
         Map<Long, Product> loadedData = new HashMap<>();
+        try{
+            if(FileUtil.createFileIfNotExist(STOCK_FILE_NAME)){
+                return loadedData;
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+            return loadedData;
+        }
+
         try(FileInputStream fis = new FileInputStream(STOCK_FILE_NAME);
             ObjectInputStream ois = new ObjectInputStream(fis)){
 
@@ -106,6 +116,12 @@ public class FileStockDao implements IStockDao {
     }
 
     private void save(Map<Long, Product> products){
+        try{
+            FileUtil.createFileIfNotExist(STOCK_FILE_NAME);
+        }catch (IOException e){
+            e.printStackTrace();
+            return;
+        }
         try(FileOutputStream fos = new FileOutputStream(STOCK_FILE_NAME);
                 ObjectOutputStream oos = new ObjectOutputStream(fos)){
 
