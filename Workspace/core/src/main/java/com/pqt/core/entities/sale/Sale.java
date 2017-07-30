@@ -100,4 +100,12 @@ public class Sale implements ILoggable, Serializable{
     public void setStatus(SaleStatus status) {
         this.status = status;
     }
+
+    public double getTotalPrice() {
+        double totalPrice = 0;
+        for(Product product : this.products.keySet()){
+            totalPrice+=product.getPrice()*(double)this.products.get(product);
+        }
+        return totalPrice;
+    }
 }
