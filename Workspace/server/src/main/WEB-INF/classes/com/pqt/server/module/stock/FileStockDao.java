@@ -1,16 +1,17 @@
 package com.pqt.server.module.stock;
 
 import com.pqt.core.entities.product.Product;
-import com.pqt.server.tools.FileUtil;
 import com.pqt.server.tools.entities.SaleContent;
+import com.pqt.server.tools.io.ISerialFileManager;
+import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
 
-import java.io.*;
 import java.util.*;
 
 //TODO écrire Javadoc
 public class FileStockDao implements IStockDao {
 
     private static final String STOCK_FILE_NAME = "stock.pqt";
+    private ISerialFileManager<Product> fileManager;
     private long nextProductId;
     private Random random;
 
@@ -18,6 +19,7 @@ public class FileStockDao implements IStockDao {
 
     public FileStockDao() {
         random = new Random();
+        fileManager = SimpleSerialFileManagerFactory.getFileManager(Product.class, STOCK_FILE_NAME);
         loadFromFile();
         generateNextProductId();
     }
@@ -120,66 +122,12 @@ public class FileStockDao implements IStockDao {
     }
 
     private void loadFromFile() {
-        products = new HashMap<>(load());
-    }
-
-    private Map<Long, Product> load(){
         Map<Long, Product> loadedData = new HashMap<>();
-        try{
-            if(FileUtil.createFileIfNotExist(STOCK_FILE_NAME)){
-                return loadedData;
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-            return loadedData;
-        }
-
-        try(FileInputStream fis = new FileInputStream(STOCK_FILE_NAME);
-            ObjectInputStream ois = new ObjectInputStream(fis)){
-
-            boolean end = false;
-            do{
-                try{
-                    Object obj = ois.readObject();
-                    if(Product.class.isInstance(obj)){
-                        Product p = Product.class.cast(obj);
-                        loadedData.put(p.getId(), p);
-                    }
-                }catch (EOFException e){
-                    end = true;
-                }catch(ClassNotFoundException | InvalidClassException e){
-                    e.printStackTrace();
-                }
-            }while(!end);
-        }catch( IOException e){
-                e.printStackTrace();
-        }
-	    return loadedData;
+        fileManager.loadListFromFile().forEach(product -> loadedData.put(product.getId(), product));
+        products = new HashMap<>(loadedData);
     }
 
     private void saveToFile() {
-        save(this.products);
-    }
-
-    private void save(Map<Long, Product> products){
-        try{
-            FileUtil.createFileIfNotExist(STOCK_FILE_NAME);
-        }catch (IOException e){
-            e.printStackTrace();
-            return;
-        }
-        try(FileOutputStream fos = new FileOutputStream(STOCK_FILE_NAME);
-                ObjectOutputStream oos = new ObjectOutputStream(fos)){
-
-            products.values().stream().forEach(p -> {
-                try {
-                    oos.writeObject(p);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+	    fileManager.saveListToFile(new ArrayList<>(products.values()));
     }
 }
