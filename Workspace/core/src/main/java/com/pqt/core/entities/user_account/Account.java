@@ -9,29 +9,17 @@ import java.util.Date;
  * Created by Notmoo on 18/07/2017.
  */
 public class Account implements ILoggable, Serializable {
-    private int id;
     private String username;
-    private String passwordHash;
-    private Date creationDate;
+    private String password;
     private AccountLevel permissionLevel;
 
     public Account() {
     }
 
-    public Account(int id, String username, String passwordHash, Date creationDate, AccountLevel permissionLevel) {
-        this.id = id;
+    public Account(String username, String password, AccountLevel permissionLevel) {
         this.username = username;
-        this.passwordHash = passwordHash;
-        this.creationDate = creationDate;
+        this.password = password;
         this.permissionLevel = permissionLevel;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -42,20 +30,12 @@ public class Account implements ILoggable, Serializable {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public AccountLevel getPermissionLevel() {
