@@ -3,12 +3,11 @@ package com.pqt.server.module.account;
 import com.pqt.core.entities.user_account.Account;
 
 //TODO écrire Javadoc
-//TODO créer implémentaiton
 public interface IAccountDao {
 
-	boolean isAccountConnected(Account acc);
+	boolean isAccountConnected(Account account);
 
-	boolean setAccountConnected(Account acc, boolean connected);
+	boolean submitAccountCredentials(Account acc, boolean desiredState);
 
-	boolean isAccountRegistered(Account acc);
+	boolean isAccountRegistered(Account account);
 }

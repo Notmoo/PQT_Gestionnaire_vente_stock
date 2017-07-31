@@ -9,18 +9,18 @@ public class AccountService {
 	private IAccountDao dao;
 
     public AccountService() {
-        //TODO add dao instanciation
+		dao = new FileAccountDao();
     }
 
-    public boolean isAccountConnected(Account acc) {
-		return dao.isAccountConnected(acc);
+    public boolean isAccountConnected(Account account) {
+		return dao.isAccountConnected(account);
 	}
 
-	public boolean setAccountConnected(Account acc, boolean connected) {
-		return dao.setAccountConnected(acc, connected);
+	public boolean submitAccountCredentials(Account acc, boolean desiredState) {
+		return dao.submitAccountCredentials(acc, desiredState);
 	}
 
-	public boolean isAccountRegistered(Account acc){
-		return dao.isAccountRegistered(acc);
+	public boolean isAccountRegistered(Account account){
+		return dao.isAccountRegistered(account);
 	}
 }
