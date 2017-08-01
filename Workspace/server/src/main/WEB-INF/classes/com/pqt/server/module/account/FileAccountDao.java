@@ -8,6 +8,7 @@ import com.pqt.server.tools.security.IHashTool;
 import com.pqt.server.tools.security.MD5HashTool;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //TODO écrire Javadoc
 //TODO ajouter logs
@@ -20,7 +21,7 @@ public class FileAccountDao implements IAccountDao {
     private IHashTool hashTool;
     private ISerialFileManager<AccountEntry> fileManager;
 
-    public FileAccountDao() {
+    FileAccountDao() {
         accountEntries = new HashSet<>();
         connectedAccount = new HashSet<>();
         hashTool = new MD5HashTool();
@@ -87,6 +88,11 @@ public class FileAccountDao implements IAccountDao {
         if(isAccountRegistered(account))
             return lookupMatchingEntry(account, accountEntries).getLevel();
         return null;
+    }
+
+    @Override
+    public List<Account> getAccountList() {
+        return accountEntries.stream().map(accountEntry -> new Account(accountEntry.getUsername(), null, accountEntry.getLevel())).collect(Collectors.toList());
     }
 
     private void saveToFile(){

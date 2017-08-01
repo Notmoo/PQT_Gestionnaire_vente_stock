@@ -3,6 +3,8 @@ package com.pqt.server.module.account;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
 
+import java.util.List;
+
 //TODO écrire Javadoc
 public interface IAccountDao {
 
@@ -13,4 +15,6 @@ public interface IAccountDao {
 	boolean isAccountRegistered(Account account);
 
     AccountLevel getAccountPermissionLevel(Account account);
+
+	List<Account> getAccountList();
 }
