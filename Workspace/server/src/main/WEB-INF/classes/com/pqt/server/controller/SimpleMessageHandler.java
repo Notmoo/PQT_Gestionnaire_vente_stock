@@ -139,8 +139,8 @@ public class SimpleMessageHandler implements IMessageHandler {
             fields.put(header_ref_query, "Compte utilisateur avec permission trop faible");
             return new Message(MessageType.REFUSED_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
         }
-        if(queryHandlers.containsKey(message.getType())){
-            return queryHandlers.get(message.getType()).execute(message);
+        if(manager.contains(message.getType())){
+            return manager.getProcess(message.getType()).execute(message);
         }
 
         fields.put(header_err_query, "Type requête non pris en charge par ce serveur");
@@ -174,6 +174,10 @@ public class SimpleMessageHandler implements IMessageHandler {
 
         AccountLevel getLevel(MessageType messageType){
             return levels.get(messageType);
+        }
+
+        public boolean contains(MessageType type) {
+            return processes.containsKey(type);
         }
     }
 
