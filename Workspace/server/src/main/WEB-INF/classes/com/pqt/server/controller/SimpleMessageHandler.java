@@ -54,7 +54,8 @@ public class SimpleMessageHandler implements IMessageHandler {
     private SaleService saleService;
     private StatisticsService statisticsService;
     private StockService stockService;
-    private ClientService clientService;
+    //TODO faire qqch de clientService
+    //private ClientService clientService;
     private ServerStateService serverStateService;
     private IMessageToolFactory messageToolFactory;
 
@@ -63,7 +64,7 @@ public class SimpleMessageHandler implements IMessageHandler {
     public SimpleMessageHandler() {
         serverStateService = new ServerStateService();
         accountService = new AccountService();
-        clientService = new ClientService();
+        //clientService = new ClientService();
         stockService = new StockService();
         saleService = new SaleService(stockService);
         statisticsService = new StatisticsService(stockService, saleService);
@@ -71,6 +72,7 @@ public class SimpleMessageHandler implements IMessageHandler {
 
         manager = new MessageManager();
 
+        //TODO ajouter support des query de connexion de compte utilisateur
         manager.support(MessageType.QUERY_STOCK, (message)->{
             Map<String, String> fields = new HashMap<>();
             fields.put("stock", messageToolFactory.getListFormatter(Product.class).format(stockService.getProductList()));
@@ -176,7 +178,7 @@ public class SimpleMessageHandler implements IMessageHandler {
             return levels.get(messageType);
         }
 
-        public boolean contains(MessageType type) {
+        boolean contains(MessageType type) {
             return processes.containsKey(type);
         }
     }
@@ -193,11 +195,10 @@ public class SimpleMessageHandler implements IMessageHandler {
     /**
      * Vérifie si le compte émetteur de la query a les autorisations suffisantes pour effectuer la query.
      * <p/>
-     * <b>Attention : tenter cette vérification sur un compte inexistant lèvera une {@link NullPointerException}</b>.
      * @param message message dont le niveau de permission de l'expéditeur doit être vérifié
-     * @return true si l'expéditeur a les autorisations suffisantes, false sinon.
+     * @return true si l'expéditeur correspond à un compte et qu'il a les autorisations suffisantes, false sinon.
      */
     private boolean checkAccountPermission(Message message){
-        return accountService.getAccountPermissionLevel(message.getUser()).compareTo(manager.getLevel(message.getType()))>=0;
+        return accountService.isAccountRegistered(message.getUser()) && accountService.getAccountPermissionLevel(message.getUser()).compareTo(manager.getLevel(message.getType()))>=0;
     }
 }
