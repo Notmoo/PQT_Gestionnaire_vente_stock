@@ -8,6 +8,7 @@ import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.Sale;
+import com.pqt.core.entities.user_account.AccountLevel;
 import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.module.account.AccountService;
 import com.pqt.server.module.client.ClientService;
@@ -21,11 +22,34 @@ import java.util.List;
 import java.util.Map;
 
 //TODO ajouter des messages d'erreur spécifiques pour les NullPointerException si le param du message vaut null
+//TODO mettre à jour la liste des query supportées lorsque la version du serveur sera proche de la release
+//TODO ne pas oublier de préciser le niveau de permission requis pour chaque requête
+//TODO Paramétrer les supports de query et leurs permissions via un meilleur système (config file, etc ...)
+/**
+ * Implémentation de l'interface {@link IMessageHandler}. Cette classe définit le gestionnaire de message par défaut du
+ * serveur de données du projet PQT.
+ * <p/>
+ * Liste des requêtes supportées :<br/>
+ *  <ul>
+ *
+ *  </ul>
+ * <p/>
+ * Liste des requêtes non-supportées :<br/>
+ *  <ul>
+ *
+ *  </ul>
+ * @see IMessageHandler
+ * @version 1.0
+ * @author Guillaume "Cess" Prost
+ */
 public class SimpleMessageHandler implements IMessageHandler {
 
     private final String header_ref_query = "Detail_refus";
     private final String header_err_query = "Detail_erreur";
 
+    /*
+     * Liste des services du serveur
+     */
     private AccountService accountService;
     private SaleService saleService;
     private StatisticsService statisticsService;
@@ -34,7 +58,7 @@ public class SimpleMessageHandler implements IMessageHandler {
     private ServerStateService serverStateService;
     private IMessageToolFactory messageToolFactory;
 
-    private Map<MessageType, IMessageProcess> queryHandlers;
+    private MessageManager manager;
 
     public SimpleMessageHandler() {
         serverStateService = new ServerStateService();
@@ -45,14 +69,14 @@ public class SimpleMessageHandler implements IMessageHandler {
         statisticsService = new StatisticsService(stockService, saleService);
         messageToolFactory = new GSonMessageToolFactory();
 
-        queryHandlers = new HashMap<>();
+        manager = new MessageManager();
 
-        queryHandlers.put(MessageType.QUERY_STOCK, (message)->{
+        manager.support(MessageType.QUERY_STOCK, (message)->{
             Map<String, String> fields = new HashMap<>();
             fields.put("stock", messageToolFactory.getListFormatter(Product.class).format(stockService.getProductList()));
             return new Message(MessageType.MSG_STOCK, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
-        });
-        queryHandlers.put(MessageType.QUERY_SALE, (message)->{
+        }, AccountLevel.WAITER);
+        manager.support(MessageType.QUERY_SALE, (message)->{
             Map<String, String> fields = new HashMap<>();
             try {
                 long saleId = saleService.submitSale(messageToolFactory.getObjectParser(Sale.class).parse(message.getField("sale")));
@@ -62,18 +86,8 @@ public class SimpleMessageHandler implements IMessageHandler {
                 fields.put(header_ref_query, e.toString());
                 return new Message(MessageType.REFUSED_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
             }
-        });
-        queryHandlers.put(MessageType.QUERY_REVERT_SALE, (message)->{
-            try{
-                saleService.submitSaleRevert(messageToolFactory.getObjectParser(Long.class).parse(message.getField("saleId")));
-                return new Message(MessageType.ACK_REVERT_SALE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
-            }catch(ServerQueryException | NullPointerException e){
-                Map<String, String> fields = new HashMap<>();
-                fields.put(header_err_query, e.toString());
-                return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
-            }
-         });
-        queryHandlers.put(MessageType.QUERY_STAT, (message)->{
+        }, AccountLevel.WAITER);
+        manager.support(MessageType.QUERY_STAT, (message)->{
             Map<String, String> fields = new HashMap<>();
             fields.put("total_sale_worth", Double.toString(statisticsService.getTotalSaleWorth()));
             fields.put("total_sale_amount", Integer.toString(statisticsService.getTotalAmountSale()));
@@ -85,8 +99,8 @@ public class SimpleMessageHandler implements IMessageHandler {
             fields.put("guest_sale_amount",Integer.toString(statisticsService.getGuestSaleAmount()));
 
             return new Message(MessageType.MSG_STAT, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
-        });
-        queryHandlers.put(MessageType.QUERY_UPDATE, (message)->{
+        }, AccountLevel.WAITER);
+        manager.support(MessageType.QUERY_UPDATE, (message)->{
             try{
                 List<ProductUpdate> updates = messageToolFactory.getListParser(ProductUpdate.class).parse(message.getField("updates"));
                 stockService.applyUpdateList(updates);
@@ -96,7 +110,20 @@ public class SimpleMessageHandler implements IMessageHandler {
                 fields.put(header_err_query, e.toString());
                 return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
             }
-        });
+        }, AccountLevel.MASTER);
+        /*
+        manager.support(MessageType.QUERY_REVERT_SALE, (message)->{
+
+            try{
+                saleService.submitSaleRevert(messageToolFactory.getObjectParser(Long.class).parse(message.getField("saleId")));
+                return new Message(MessageType.ACK_REVERT_SALE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
+            }catch(ServerQueryException | NullPointerException e){
+                Map<String, String> fields = new HashMap<>();
+                fields.put(header_err_query, e.toString());
+                return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
+            }
+         }, AccountLevel.MASTER);
+         */
     }
 
     @Override
@@ -104,7 +131,7 @@ public class SimpleMessageHandler implements IMessageHandler {
 
         Map<String, String> fields = new HashMap<>();
 
-        if(!isAccountRegistered(message)){
+        if(!isAccountRegisteredAndConnected(message)){
             fields.put(header_ref_query, "Compte utilisateur inconnu");
             return new Message(MessageType.REFUSED_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
         }
@@ -120,18 +147,53 @@ public class SimpleMessageHandler implements IMessageHandler {
         return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
     }
 
-    //TODO ajouter Javadoc
+    /**
+     * Interface interne utilisé pour encapsuler le traitement des messages dans un objet
+     */
     private interface IMessageProcess{
         Message execute(Message request);
     }
 
-    private boolean isAccountRegistered(Message message){
-        //TODO faire ça
-        return false;
+    private class MessageManager{
+        private Map<MessageType, IMessageProcess> processes;
+        private Map<MessageType, AccountLevel> levels;
+
+        MessageManager(){
+            processes = new HashMap<>();
+            levels = new HashMap<>();
+        }
+
+        void support(MessageType type, IMessageProcess process, AccountLevel permissionLevel){
+            processes.put(type, process);
+            levels.put(type, permissionLevel);
+        }
+
+        IMessageProcess getProcess(MessageType messageType){
+            return processes.get(messageType);
+        }
+
+        AccountLevel getLevel(MessageType messageType){
+            return levels.get(messageType);
+        }
     }
 
+    /**
+     * Vérifie si le compte utilisé pour émettre la query contenu dans le message est enregistré et connecté.
+     * @param message message dont l'expéditeur doit être vérifié
+     * @return true si le compte est existant et connecté, false si au moins une des conditions est fausse.
+     */
+    private boolean isAccountRegisteredAndConnected(Message message){
+        return accountService.isAccountRegistered(message.getUser()) && accountService.isAccountConnected(message.getUser());
+    }
+
+    /**
+     * Vérifie si le compte émetteur de la query a les autorisations suffisantes pour effectuer la query.
+     * <p/>
+     * <b>Attention : tenter cette vérification sur un compte inexistant lèvera une {@link NullPointerException}</b>.
+     * @param message message dont le niveau de permission de l'expéditeur doit être vérifié
+     * @return true si l'expéditeur a les autorisations suffisantes, false sinon.
+     */
     private boolean checkAccountPermission(Message message){
-        //TODO faire ça
-        return false;
+        return accountService.getAccountPermissionLevel(message.getUser()).compareTo(manager.getLevel(message.getType()))>=0;
     }
 }

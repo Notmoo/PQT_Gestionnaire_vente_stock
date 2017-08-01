@@ -1,6 +1,7 @@
 package com.pqt.server.module.account;
 
 import com.pqt.core.entities.user_account.Account;
+import com.pqt.core.entities.user_account.AccountLevel;
 import com.pqt.server.tools.io.ISerialFileManager;
 import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
 import com.pqt.server.tools.security.IHashTool;
@@ -79,6 +80,13 @@ public class FileAccountDao implements IAccountDao {
     @Override
     public boolean isAccountRegistered(Account account) {
         return lookupMatchingEntry(account, accountEntries)!=null;
+    }
+
+    @Override
+    public AccountLevel getAccountPermissionLevel(Account account) {
+        if(isAccountRegistered(account))
+            return lookupMatchingEntry(account, accountEntries).getLevel();
+        return null;
     }
 
     private void saveToFile(){
