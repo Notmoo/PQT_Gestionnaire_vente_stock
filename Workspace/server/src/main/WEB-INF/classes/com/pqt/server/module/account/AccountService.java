@@ -111,7 +111,7 @@ public class AccountService {
      * Renvoie la liste des comptes utilisateurs contenus dans la base de données sous forme d'une liste d'objets
      * {@link Account}. <b>Seuls les noms d'utilisateurs ainsi que les niveaux de permissions sont récupérés, les
      * autres champs étant volontairement initialisés avec une valeur {@code null}.</b>
-     * @return Une liste d'objet {@link Account} représsentant les différents comptes utilisateurs existant dans la base
+     * @return Une liste d'objet {@link Account} représentant les différents comptes utilisateurs existant dans la base
      * de données.
      */
     public List<Account> getAccountList(){

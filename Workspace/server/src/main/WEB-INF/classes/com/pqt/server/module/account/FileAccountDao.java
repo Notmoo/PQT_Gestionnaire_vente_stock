@@ -10,9 +10,19 @@ import com.pqt.server.tools.security.MD5HashTool;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO écrire Javadoc
 //TODO ajouter logs
-public class FileAccountDao implements IAccountDao {
+
+/**
+ * Implémentation de l'interface {@link IAccountDao} utilisant un fichier contenant des objets sérialisés comme
+ * source de persistance de données.
+ * <p/>
+ * Cette classe n'est pas faite pour gérer les accès concurentiels au fichier assurant la persistance, et n'est donc pas
+ * thread-safe. Elle est conçue pour que tous les accès soient effectués depuis un même thread et depuis un unique objet.
+ * <p/>
+ * Cette classe manipule les mot de passe sous forme chiffrée via un système de hash (md5) + salt, et ne fait pas
+ * persister les mots de passes non-chiffrées. Les noms d'utilisateurs sont stockés sans chiffrage.
+ */
+class FileAccountDao implements IAccountDao {
 
     private static final String ACCOUNT_FILE_NAME = "acc.pqt";
 
@@ -29,76 +39,107 @@ public class FileAccountDao implements IAccountDao {
         loadFromFile();
     }
 
+    /**
+     * Recherche une correspondance entre un objet {@link Account} et les objets {@link AccountEntry} contenu dans
+     * la collection {@code entries}. La correspondance se base sur la valeur renvoyée par {@link Account#getUsername()}
+     * et sur {@link AccountEntry#getUsername()}.
+     * @param account données à utiliser pour rechercher la correspondance.
+     * @param entries collection de données à utiliser pour rechercher la correspondance
+     * @return La première correspondance trouvée, ou {@code null} si aucune correspondance n'a pu être faite.
+     */
     private AccountEntry lookupMatchingEntry(Account account, Collection<AccountEntry> entries){
         return entries.stream().filter(accountEntry -> accountEntry.getUsername().equals(account.getUsername())).findFirst().orElse(null);
     }
 
     @Override
-    public boolean isAccountConnected(Account account) {
+    public synchronized boolean isAccountConnected(Account account) {
         return lookupMatchingEntry(account, connectedAccount)!=null;
     }
 
     @Override
-    public boolean submitAccountCredentials(Account acc, boolean desiredState) {
-        if(isAccountRegistered(acc)){
-            if(desiredState!=isAccountConnected(acc)){
+    public synchronized boolean submitAccountCredentials(Account account, boolean desiredState) {
+        if(isAccountRegistered(account)){
+            if(desiredState!=isAccountConnected(account)){
                 if(desiredState)
-                    return connect(acc);
+                    return connect(account);
                 else
-                    return disconnect(acc);
+                    return disconnect(account);
             }
         }
 
         return false;
     }
 
+    /**
+     * Passe un compte déconnecté dans l'état connecté. N'effecctue le changement que si un compte déconnecté correspond
+     * aux données fournies et que le mot de passe fournit par {@code account.getPassword()} corresspond à celui du
+     * compte correspondant.
+     *
+     * @param account données à utiliser pour effectuer la correspondance et l'identification
+     * @return {@code true} si le changement d'état a eu lieu, {@code false sinon}
+     */
     private boolean connect(Account account){
-        Optional<AccountEntry> entry = accountEntries.stream().filter(accountEntry -> accountEntry.getUsername().equals(account.getUsername())).findFirst();
-        if(!entry.isPresent())
+        AccountEntry entry = lookupMatchingEntry(account, accountEntries);
+        if(entry==null)
             return false;
         else{
-            String expectedUsername = entry.get().getUsername();
-            String expectedPasswordHash = entry.get().getPasswordHash();
-            String salt = entry.get().getSalt();
+            String expectedUsername = entry.getUsername();
+            String expectedPasswordHash = entry.getPasswordHash();
+            String salt = entry.getSalt();
 
             if(expectedUsername.equals(account.getUsername()) && hashTool.hashAndSalt(account.getPassword(), salt).equals(expectedPasswordHash)){
-                connectedAccount.add(entry.get());
+                connectedAccount.add(entry);
                 return true;
             }else
                 return false;
         }
     }
 
+    /**
+     * Passe un comtpe connecté dans l'état déconnecté. N'effectue le changement que si un compte connecté correspond
+     * aux données fournies.
+     * @param account données à utiliser pour efffectuer la correspondance avec un compte
+     * @return {@code true} si le changement d'état a eu lieu, {@code false sinon}
+     */
     private boolean disconnect(Account account){
-        Optional<AccountEntry> entry = accountEntries.stream().filter(accountEntry -> accountEntry.getUsername().equals(account.getUsername())).findFirst();
-        if(entry.isPresent() && connectedAccount.contains(entry.get())){
-            connectedAccount.remove(entry.get());
+       AccountEntry entry = lookupMatchingEntry(account, accountEntries);
+        if(entry!=null && connectedAccount.contains(entry)){
+            connectedAccount.remove(entry);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean isAccountRegistered(Account account) {
+    public synchronized boolean isAccountRegistered(Account account) {
         return lookupMatchingEntry(account, accountEntries)!=null;
     }
 
     @Override
-    public AccountLevel getAccountPermissionLevel(Account account) {
+    public synchronized AccountLevel getAccountPermissionLevel(Account account) {
         if(isAccountRegistered(account))
             return lookupMatchingEntry(account, accountEntries).getLevel();
         return null;
     }
 
     @Override
-    public List<Account> getAccountList() {
+    public synchronized List<Account> getAccountList() {
         return accountEntries.stream().map(accountEntry -> new Account(accountEntry.getUsername(), null, accountEntry.getLevel())).collect(Collectors.toList());
     }
 
+    /**
+     * Sauvegarde les données des comptes dans le fichier de sauvegarde.
+     */
     private void saveToFile(){
         fileManager.saveSetToFile(accountEntries);
     }
 
+    /**
+     * Charge les données des comptes depuis le fichier de sauvegarde.
+     * <p/>
+     * <b>Attention : pour des raisons de cohérence des données, tous les comptes connectés sont repassés dans l'état
+     * déconnectés une fois le chargement fait.</b>
+     */
     private void loadFromFile(){
         this.accountEntries = new HashSet<>(fileManager.loadSetFromFile());
         //TODO faire check des comptes au lieu de tout déconnecter?
