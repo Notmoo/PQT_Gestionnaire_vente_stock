@@ -33,4 +33,8 @@ public class FileUtil {
     public static boolean exist(Path path) {
         return Files.exists(path);
     }
+
+    public static boolean exist(String path) {
+        return Files.exists(Paths.get(path));
+    }
 }

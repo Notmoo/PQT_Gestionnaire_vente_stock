@@ -12,9 +12,21 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
+/**
+ * Implémentation de l'interface {@link ISaleDao} utilisant un fichier comme moyen pour assurer la persistance des
+ * données relatives aux commandes validées. <b>Cette implémentation ne supporte pas le rollback de commandes</b>.
+ * <p/>.
+ * La persistance des données est faite de sorte que ces données soient lisibles par un humain lorsque le fichier est
+ * ouvert avecc un éditeur de texte quelconque.
+ * <p/>
+ * Les identifiants attribués aux commandes validées sont incrémentés à chaque fois, en se basant soit sur la dernière
+ * valeur attribuée (lue depuis le fichier de sauvegarde lors de l'instantiation), soit sur une valeur par défaut. Ils
+ * sont tous <b>positifs et non-nuls</b>.
+ */
 public class NoRevertFileSaleDao implements ISaleDao {
 
     private static final String SALE_LOG_FILE_NAME = "sale_log.txt";
+    private static final long DEFAULT_SALE_ID = 0; //équivaut à la valeur du premier id - 1
     private StockService stockService;
     private long nextSaleId;
     private ISaleRenderer renderer;
@@ -64,7 +76,7 @@ public class NoRevertFileSaleDao implements ISaleDao {
      * @return last sale id used in the log file, or -1 if none was found.
      */
     private long readLastSaleIdFromFile(){
-        long id  = -1;
+        long id  = DEFAULT_SALE_ID;
         if(FileUtil.exist(SALE_LOG_FILE_NAME)){
             try(ReversedLinesFileReader rlfr = new ReversedLinesFileReader(new File("SALE_LOG_FILE_NAME"))){
                 boolean stop = false;
@@ -89,7 +101,12 @@ public class NoRevertFileSaleDao implements ISaleDao {
     }
 
     @Override
-    public void submitSaleRevert(long id) {
+    public boolean isSaleRevertSupported() {
+        return false;
+    }
+
+    @Override
+    public boolean submitSaleRevert(long id) {
         //TODO Créer un nouveau dao qui supporte le revert
         throw new UnsupportedOperationException("Le revert de commandes n'est pas supporté");
     }
