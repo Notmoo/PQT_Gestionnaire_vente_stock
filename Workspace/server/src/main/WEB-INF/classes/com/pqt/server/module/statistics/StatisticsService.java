@@ -13,8 +13,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO écrire Javadoc
 //TODO Ajouter logs
+
+/**
+ * Cette classe correspond au sservices de statistiques du serveur, chargé de calculer et de mettre à disposition
+ * diverses données concernant les ventes effectuées et les produits vendus.
+ */
 public class StatisticsService {
 
     private StockService stockService;

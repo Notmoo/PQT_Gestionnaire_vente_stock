@@ -4,8 +4,14 @@ import com.pqt.core.entities.members.DataServer;
 
 import java.util.Date;
 
-//TODO écrire Javadoc
-//TODO Ajouter logs
+/**
+ * Cette classe correspond au service interne du serveur, chargé de conserver les données propres au serveur, comme
+ * son adresse IP ou encore les différents aspects de la configuration actuelle. Il permet également de récupérer un
+ * objet {@link DataServer}, implémentation de {@link com.pqt.core.entities.members.PqtMember}, qui sert à représenter
+ * ce serveur dans les messages, soit comme émetteur, soit comme destinataire.
+ *
+ * @see com.pqt.core.entities.messages.Message
+ */
 public class ServerStateService {
 
 	private ServerState serverState;
@@ -17,8 +23,6 @@ public class ServerStateService {
 
 	    //TODO config adresse IP
         //this.com.pqt.server.setAddress(...);
-
-        this.server.setLastUpdate(new Date());
 	}
 
 	public void startServer() {
