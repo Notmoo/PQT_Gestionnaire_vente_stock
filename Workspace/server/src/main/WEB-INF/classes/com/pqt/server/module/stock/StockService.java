@@ -8,8 +8,22 @@ import com.pqt.server.tools.entities.SaleContent;
 import java.util.List;
 import java.util.Map;
 
-//TODO écrire Javadoc
 //TODO ajouter logs
+
+/**
+ *  Cette classe correspond au service de gestion du stock de produits. Il est en charge de la persistance des
+ *  données liées aux produits, de founir un accès centralisé à ces données et se charge également d'appliquer les
+ *  mises à jour de stock (ajout, modif ou suppr de produits) et les ventes de produits issues des commandes
+ *  (modification des quantités).
+ *  <p/>
+ *  <b>Attention : ce service ne se charge pas de valider les commandes, il ne fait que modifier les quantités comme si
+ *  la commande avait été validé</b>
+ *
+ * @see Product
+ * @see ProductUpdate
+ * @see SaleContent
+ * @author Guillaume "Cess" Prost
+ */
 public class StockService {
 
     private IStockDao dao;
@@ -26,8 +40,8 @@ public class StockService {
 		return dao.getProduct(id);
 	}
 
-	public void applySale(SaleContent productAmounts) {
-		dao.applySale(productAmounts);
+	public void applySale(SaleContent saleContent) {
+		dao.applySale(saleContent);
 	}
 
 	public void applyUpdateList(List<ProductUpdate> updates) throws ServerQueryException{
@@ -39,7 +53,7 @@ public class StockService {
 			}else if(upd.getOldVersion()!=null && upd.getNewVersion()!=null){
 				modifyProduct(upd.getOldVersion().getId(), upd.getNewVersion());
 			}else{
-			    //TODO écrit le throw d'une ServerQueryException
+				throw new ServerQueryException("Object ProductUpdate invalide : old et new vallent tous les deux null");
             }
 		}
 	}

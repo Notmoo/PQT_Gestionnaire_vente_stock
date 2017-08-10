@@ -13,6 +13,8 @@ import java.util.Date;
  * ce serveur dans les messages, soit comme émetteur, soit comme destinataire.
  *
  * @see com.pqt.core.entities.messages.Message
+ *
+ * @author Guillaume "Cess" Prost
  */
 public class ServerStateService {
 

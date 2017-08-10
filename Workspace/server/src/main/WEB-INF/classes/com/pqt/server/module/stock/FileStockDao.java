@@ -5,9 +5,18 @@ import com.pqt.server.tools.entities.SaleContent;
 import com.pqt.server.tools.io.ISerialFileManager;
 import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
 
+import java.lang.IllegalStateException;
 import java.util.*;
 
-//TODO écrire Javadoc
+/**
+ * Implémentation de l'interface {@link IStockDao} utilisant un fichier de sauvegarde pour assurer la persistance des
+ * données liées aux produits vendus.
+ * <p/>
+ * Les données sont écrites et lues dans le fichier grâce au méchanisme de sérialisation/désérialisation. Elles ne sont
+ * pas faites pour être lisibles directement par un humain.
+ *
+ * @author Guillaume "Cess" Prost
+ */
 public class FileStockDao implements IStockDao {
 
     private static final String STOCK_FILE_NAME = "stock.pqt";
@@ -17,7 +26,7 @@ public class FileStockDao implements IStockDao {
 
 	private Map<Long, Product> products;
 
-    public FileStockDao() {
+    FileStockDao() {
         random = new Random();
         fileManager = SimpleSerialFileManagerFactory.getFileManager(Product.class, STOCK_FILE_NAME);
         loadFromFile();
@@ -41,7 +50,7 @@ public class FileStockDao implements IStockDao {
 
     private List<Product> copyOfProductList() {
 	    List<Product> copy = new ArrayList<>();
-	    products.values().stream().forEach(p->copy.add(new Product(p)));
+	    products.values().forEach(p->copy.add(new Product(p)));
         return copy;
     }
 
@@ -55,11 +64,13 @@ public class FileStockDao implements IStockDao {
 	/**
 	 * @see com.pqt.server.module.stock.IStockDao#addProduct(com.pqt.core.entities.product.Product)
 	 */
-	public void addProduct(Product product) {
+	public long addProduct(Product product) {
 	    product.setId(nextProductId);
         this.products.put(nextProductId, product);
+        long reply = nextProductId;
         generateNextProductId();
         saveToFile();
+        return reply;
 	}
 
 	/**
@@ -68,7 +79,7 @@ public class FileStockDao implements IStockDao {
 	public void removeProduct(long id) {
         Product product = getProduct(id);
 	    if(product!=null){
-	        this.products.remove(product);
+	        this.products.remove(product.getId());
 	        saveToFile();
         }
 	}
@@ -86,11 +97,14 @@ public class FileStockDao implements IStockDao {
 
     @Override
     public void applySale(SaleContent saleContent) throws IllegalArgumentException {
+	    if(saleContent==null)
+	        return;
+
 	    try {
-            saleContent.getProductList().forEach(product -> {
+	        for(Product product : saleContent.getProductList()){
                 applyRecursiveStockRemoval(product, saleContent.getProductAmount(product));
                 applySoldCounterIncrease(product, saleContent.getProductAmount(product));
-            });
+            }
             saveToFile();
         }catch (IllegalStateException e){
 	        loadFromFile();
@@ -98,35 +112,61 @@ public class FileStockDao implements IStockDao {
         }
     }
 
-    private void applySoldCounterIncrease(Product product, Integer amount) {
+    /**
+     * Cette méthode augmente le compteur de vente pour un produit donné dans la BDD.
+     *
+     * @param product données à utiliser pour déterminer le produit correspondant dans la BDD dont les données doivent
+     *                être manipulées.
+     * @param amount montant à ajouter
+     * @throws IllegalStateException exception levée si le produit donné ne peut pas être trouvé dans la base de donnée.
+     */
+    private void applySoldCounterIncrease(Product product, Integer amount) throws IllegalStateException{
 	    Product correspondingProduct = getProduct(product.getId());
 	    if(correspondingProduct!=null){
 	        correspondingProduct.setAmountSold(correspondingProduct.getAmountSold() + amount);
         }else{
-            StringBuffer sb = new StringBuffer("StockService>StockDao : Un produit vendu ne correspond pas à un produit connu : ");
+            StringBuilder sb = new StringBuilder("StockService>StockDao : Un produit vendu ne correspond pas à un produit connu : ");
             sb.append(product.getId()).append(" - ").append(product.getName()).append("(").append(product.getCategory()).append(")");
             throw new IllegalStateException(sb.toString());
         }
     }
 
-    private void applyRecursiveStockRemoval(Product product, int amount)throws IllegalStateException{
+    /**
+     * Cette méthode retire à un produit donné de la BDD le montant spécifié (diminue la valeur de
+     * {@link Product#amountRemaining}), puis effectue récursivement la même opération pour tous les composants de ce
+     * produit.
+     *
+     * @param product données à utiliser pour déterminer le produit correspondant dans la BDD dont les données doivent
+     *                être manipulées.
+     * @param amount montant à déduire
+     * @throws IllegalStateException exception levée si le produit donné ne peut pas être trouvé dans la base de donnée.
+     */
+    private void applyRecursiveStockRemoval(Product product, int amount) throws IllegalStateException {
         Product correspondingProduct = getProduct(product.getId());
         if(correspondingProduct!=null) {
             correspondingProduct.setAmountRemaining(correspondingProduct.getAmountRemaining() - amount);
             correspondingProduct.getComponents().forEach(component -> applyRecursiveStockRemoval(component, amount));
         }else{
-            StringBuffer sb = new StringBuffer("StockService>StockDao : Un produit vendu ne correspond pas à un produit connu : ");
+            StringBuilder sb = new StringBuilder("StockService>StockDao : Un produit vendu ne correspond pas à un produit connu : ");
             sb.append(product.getId()).append(" - ").append(product.getName()).append("(").append(product.getCategory()).append(")");
             throw new IllegalStateException(sb.toString());
         }
     }
 
+    /**
+     * Cette méthode charge les données relatives aux produits depuis le fichier de sauvegarde. Si ce fichier n'existe
+     * pas, il est créé et la liste des produits est vidée.
+     */
     private void loadFromFile() {
         Map<Long, Product> loadedData = new HashMap<>();
         fileManager.loadListFromFile().forEach(product -> loadedData.put(product.getId(), product));
         products = new HashMap<>(loadedData);
     }
 
+    /**
+     * Cette méthode écrit les données relatives aux produits dans le fichier de sauvegarde, écrasant le contenu
+     * précédent.
+     */
     private void saveToFile() {
 	    fileManager.saveListToFile(new ArrayList<>(products.values()));
     }
