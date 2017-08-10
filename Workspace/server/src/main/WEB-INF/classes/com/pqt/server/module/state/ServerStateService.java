@@ -1,6 +1,8 @@
 package com.pqt.server.module.state;
 
 import com.pqt.core.entities.members.DataServer;
+import com.pqt.core.entities.server_config.ConfigFields;
+import com.pqt.core.entities.server_config.ServerConfig;
 
 import java.util.Date;
 
@@ -16,10 +18,16 @@ public class ServerStateService {
 
 	private ServerState serverState;
 	private DataServer server;
+	private ServerConfig config;
 
 	public ServerStateService() {
 	    this.server = new DataServer();
 	    this.serverState = new ServerState();
+	    this.config = new ServerConfig(
+	    		ConfigFields.ALLOW_ACCOUNT_CONNECT,
+				ConfigFields.ALLOW_SALE_COMMIT,
+				ConfigFields.ALLOW_STOCK_UPDATE,
+				ConfigFields.ALLOW_STOCK_VIEW);
 
 	    //TODO config adresse IP
         //this.com.pqt.server.setAddress(...);
@@ -49,4 +57,7 @@ public class ServerStateService {
 		return serverState.copy();
 	}
 
+	public ServerConfig getConfig() {
+		return config;
+	}
 }
