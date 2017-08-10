@@ -1,4 +1,4 @@
-package com.pqt.client.module.gui.ressources.components.validation.listeners;
+package com.pqt.client.module.gui.ressources.generics.validators.listeners;
 
 import java.util.EventListener;
 
