@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class PqtMember implements ILoggable, Serializable {
 
-	private long id;
-	private PqtMemberType type;
+	protected long id;
+	protected PqtMemberType type;
 
 	public PqtMember() {
 	}

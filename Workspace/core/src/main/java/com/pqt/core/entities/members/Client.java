@@ -1,6 +1,5 @@
 package com.pqt.core.entities.members;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -10,22 +9,14 @@ import java.util.Objects;
 public class Client extends PqtMember{
 
     private String address;
-    private Date lastUpdate;
 
     public Client() {
         super(-1, PqtMemberType.CLIENT);
     }
 
-    public Client(int id, String address) {
+    public Client(long id, String address) {
         super(id, PqtMemberType.CLIENT);
         this.address = address;
-        this.lastUpdate = new Date();
-    }
-
-    public Client(int id, String address, Date lastUpdate) {
-        super(id, PqtMemberType.CLIENT);
-        this.address = address;
-        this.lastUpdate = lastUpdate;
     }
 
     public String getAddress() {
@@ -36,12 +27,19 @@ public class Client extends PqtMember{
         this.address = address;
     }
 
-    public Date getLastUpdate() {
-        return lastUpdate;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        return address.equals(client.address) && id==client.id && type.equals(client.type);
     }
 
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
+    @Override
+    public int hashCode() {
+        return address.hashCode() + type.hashCode() + Integer.class.cast(id);
     }
 
     @Override

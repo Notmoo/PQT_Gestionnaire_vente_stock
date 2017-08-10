@@ -34,8 +34,12 @@ public class Product implements ILoggable, Serializable{
         this.category = category;
         this.components = new ArrayList<>();
         if(components!=null){
-            this.components.addAll(components);
+            components.stream().forEach(p->this.components.add(new Product(p)));
         }
+    }
+
+    public Product(Product p) {
+        this(p.id, p.name, p.amountRemaining, p.amountSold, p.sellable, p.price, p.components, p.category);
     }
 
     public long getId() {

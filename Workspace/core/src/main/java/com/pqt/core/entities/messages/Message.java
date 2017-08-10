@@ -1,6 +1,7 @@
 package com.pqt.core.entities.messages;
 
 import com.pqt.core.entities.members.PqtMember;
+import com.pqt.core.entities.user_account.Account;
 
 import java.util.*;
 
@@ -9,15 +10,19 @@ public class Message {
     private Map<String, String> fields;
     private MessageType type;
     private PqtMember emitter, receiver;
+    private Account user;
+    private Message replyTo;
 
-    public Message(MessageType type, PqtMember emitter, PqtMember receiver) {
-        this(type, emitter, receiver, null);
+    public Message(MessageType type, PqtMember emitter, PqtMember receiver, Account user, Message replyTo) {
+        this(type, emitter, receiver, user, replyTo, null);
     }
 
-    public Message(MessageType type, PqtMember emitter, PqtMember receiver, Map<String, String> fields) {
+    public Message(MessageType type, PqtMember emitter, PqtMember receiver, Account user, Message replyTo, Map<String, String> fields) {
         this.emitter = emitter;
         this.receiver = receiver;
         this.type = type;
+        this.user = user;
+        this.replyTo = replyTo;
         this.fields = new HashMap<>();
         if(fields!=null)
             for(String key : fields.keySet()){
@@ -56,10 +61,10 @@ public class Message {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj)
+        if (this == obj)
             return true;
 
-        if(!this.getClass().isInstance(obj))
+        if (!this.getClass().isInstance(obj))
             return false;
 
         Message other = Message.class.cast(obj);
@@ -67,5 +72,13 @@ public class Message {
                 && Objects.equals(this.emitter, other.emitter)
                 && Objects.equals(this.receiver, other.receiver)
                 && Objects.equals(this.type, other.type);
+    }
+
+    public Account getUser() {
+        return user;
+    }
+
+    public Message getReplyTo() {
+        return replyTo;
     }
 }

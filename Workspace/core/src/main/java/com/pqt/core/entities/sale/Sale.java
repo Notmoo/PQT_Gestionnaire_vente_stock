@@ -109,10 +109,10 @@ public class Sale implements ILoggable, Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj)
+        if (this == obj)
             return true;
 
-        if(!this.getClass().isInstance(obj))
+        if (!this.getClass().isInstance(obj))
             return false;
 
         Sale other = Sale.class.cast(obj);
@@ -122,5 +122,19 @@ public class Sale implements ILoggable, Serializable{
                 && Objects.equals(this.orderedFor, other.orderedFor)
                 && Objects.equals(this.orderedWith, other.orderedWith)
                 && Objects.equals(this.type, other.type);
+    }
+
+    public double getTotalPrice() {
+        if(type.getPriceMultiplier()==0)
+            return 0;
+        return getTotalWorth()*type.getPriceMultiplier();
+    }
+
+    public double getTotalWorth(){
+        double totalWorth = 0;
+        for(Product product : this.products.keySet()){
+            totalWorth+=product.getPrice()*(double)this.products.get(product);
+        }
+        return totalWorth;
     }
 }
