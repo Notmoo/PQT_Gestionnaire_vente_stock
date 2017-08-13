@@ -6,9 +6,9 @@ public class AccountListenerAdapter implements IAccountListener {
 
 
 	/**
-	 * @see com.pqt.client.module.account.listeners.IAccountListener#onAccountStatusChanged(boolean)
+	 * @see com.pqt.client.module.account.listeners.IAccountListener#onAccountStatusChangedEvent(boolean)
 	 */
-	public void onAccountStatusChanged(boolean status) {
+	public void onAccountStatusChangedEvent(boolean status) {
 
 	}
 
