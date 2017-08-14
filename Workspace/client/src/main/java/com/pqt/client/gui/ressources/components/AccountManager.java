@@ -9,6 +9,7 @@ import com.pqt.client.gui.ressources.components.specifics.account.IFXAccountsDis
 import com.pqt.client.gui.ressources.components.specifics.account.listeners.SimpleAccountComponentFirerer;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.user_account.Account;
+import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
@@ -26,7 +27,7 @@ public class AccountManager implements IFXAccountsDisplayerComponent, IFXValidat
 
     private Pane mainPane;
 
-    private HBox mainDisconnectedPane, mainConnectedPane;
+    private VBox mainDisconnectedPane, mainConnectedPane;
     private TextField connectedUsernameField;
     private ChoiceBox<Account> disconnectedUsernameField;
     private PasswordField passwordField;
@@ -48,8 +49,8 @@ public class AccountManager implements IFXAccountsDisplayerComponent, IFXValidat
     private void init() {
         mainPane = new Pane();
 
-        mainConnectedPane = new HBox();
-        mainDisconnectedPane = new HBox();
+        mainConnectedPane = new VBox();
+        mainDisconnectedPane = new VBox();
 
         connectedUsernameField = new TextField();
         connectedUsernameField.setEditable(false);
@@ -67,21 +68,26 @@ public class AccountManager implements IFXAccountsDisplayerComponent, IFXValidat
         passwordField = new PasswordField();
         passwordField.setPromptText(GUIStringTool.getPasswordFieldPromptText());
 
-        VBox leftDisconnectedPaneContent = new VBox();
-        leftDisconnectedPaneContent.getChildren().addAll(disconnectedUsernameField, passwordField);
-
         Button validationButton = new Button(GUIStringTool.getLoginButtonLabel());
         validationButton.setOnMouseClicked(event-> validatorEventFirerer.fireValidationEvent());
         validationButton.setOnKeyTyped(event->{if(event.getCode().equals(KeyCode.ENTER)) validatorEventFirerer.fireValidationEvent();});
 
-        mainDisconnectedPane.getChildren().addAll(leftDisconnectedPaneContent, validationButton);
+        mainDisconnectedPane.getChildren().addAll(disconnectedUsernameField, passwordField, validationButton);
 
         refreshMainPane();
+        display(null);
     }
 
     @Override
     public void display(Collection<Account> content) {
-        Platform.runLater(()->disconnectedUsernameField.setItems(FXCollections.observableArrayList(content)));
+        Platform.runLater(()->{
+            if(content!=null && content.size()>0)
+                disconnectedUsernameField.setItems(FXCollections.observableArrayList(content));
+            else{
+                disconnectedUsernameField.getItems().clear();
+                disconnectedUsernameField.getItems().add(new Account("null", "", AccountLevel.getLowest()));
+            }
+        });
     }
 
     public void setCurrentAccount(Account account){
@@ -147,7 +153,10 @@ public class AccountManager implements IFXAccountsDisplayerComponent, IFXValidat
     @Override
     public boolean isCreationPossible() {
         return currentAccount==null
+                && disconnectedUsernameField.getAccessibleText()!=null
                 && !disconnectedUsernameField.getAccessibleText().isEmpty()
+                && passwordField.getText()!=null
                 && !passwordField.getText().isEmpty();
+
     }
 }
