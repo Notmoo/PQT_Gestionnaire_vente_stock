@@ -1,12 +1,13 @@
 package com.pqt.client.gui.ressources.components;
 
-import com.pqt.client.gui.ressources.generics.validators.IFXValidatorComponent;
-import com.pqt.client.gui.ressources.generics.validators.listeners.IValidatorComponentFirerer;
-import com.pqt.client.gui.ressources.generics.validators.listeners.IValidatorComponentListener;
+import com.pqt.client.gui.ressources.components.generics.validators.IFXValidatorComponent;
+import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentFirerer;
+import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentListener;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
-import com.pqt.client.gui.ressources.generics.validators.listeners.SimpleValidatorComponentFirerer;
+import com.pqt.client.gui.ressources.components.generics.validators.listeners.SimpleValidatorComponentFirerer;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
@@ -24,7 +25,6 @@ public class SimpleValidator implements IFXValidatorComponent {
     public SimpleValidator(boolean askConfirmation) {
         firerer = new SimpleValidatorComponentFirerer();
         this.askConfirmation = askConfirmation;
-
     }
 
     @Override
@@ -45,21 +45,22 @@ public class SimpleValidator implements IFXValidatorComponent {
     }
 
     private Pane createPane(){
-        HBox hbox = new HBox();
+        GridPane grid = new GridPane();
+        grid.getStyleClass().add("validator");
 
         validationButton = new Button(GUIStringTool.getValidationButtonLabel());
         validationButton.setOnMouseClicked(event->{
             getValidationButtonProcess().process();
         });
-        hbox.getChildren().add(validationButton);
+        grid.add(validationButton, 0,0);
 
         cancelButton = new Button(GUIStringTool.getCancelButtonLabel());
         cancelButton.setOnMouseClicked(event->{
             getCancelButtonProcess().process();
         });
-        hbox.getChildren().add(cancelButton);
+        grid.add(cancelButton, 1, 0);
 
-        return hbox;
+        return grid;
     }
 
     private IButtonProcess getValidationButtonProcess(){
@@ -95,5 +96,13 @@ public class SimpleValidator implements IFXValidatorComponent {
 
     private interface IButtonProcess{
         void process();
+    }
+
+    public void setValidationButtonEnable(boolean enable){
+        this.validationButton.setDisable(!enable);
+    }
+
+    public void setCancelationButtonEnable(boolean enable){
+        this.cancelButton.setDisable(!enable);
     }
 }

@@ -1,11 +1,10 @@
 package com.pqt.client.gui.modules.sale_screen;
 
 import com.pqt.client.gui.modules.sale_screen.listeners.ISaleScreenModelListener;
-import com.pqt.client.gui.ressources.components.sale_validation_screen.listeners.ISaleValidationScreenListener;
-import com.pqt.client.gui.ressources.specifics.products.listeners.IStockComponentListener;
-import com.pqt.client.gui.ressources.generics.validators.listeners.IValidatorComponentListener;
-import com.pqt.client.gui.ressources.specifics.sale.listeners.ISaleComponentListener;
-import com.pqt.client.gui.ressources.strings.GUIStringTool;
+import com.pqt.client.gui.modules.sale_screen.sale_validation_screen.listeners.ISaleValidationScreenListener;
+import com.pqt.client.gui.ressources.components.specifics.products.listeners.IStockComponentListener;
+import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentListener;
+import com.pqt.client.gui.ressources.components.specifics.sale.listeners.ISaleComponentListener;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.sale.SaleStatus;
@@ -13,7 +12,6 @@ import com.pqt.core.entities.sale.SaleType;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.event.Event;
-import javafx.scene.control.Alert;
 
 import java.util.List;
 
@@ -73,6 +71,8 @@ class SaleScreenController {
         view.setAccounts(fetchAccountList());
 
         view.setSale(getCurrentSale());
+
+        view.setValidationButtonEnabled(model.checkValidity(getCurrentSale()));
     }
 
     private List<Product> fetchProductList(){
@@ -140,8 +140,8 @@ class SaleScreenController {
         return new IValidatorComponentListener() {
             @Override
             public void onValidationEvent() {
-                model.commitSale();
-                view.switchToSaleValidationWaitingMode(model.getTempSaleId(), model.getCurrentSale());
+                if(model.commitSale())
+                    view.switchToSaleValidationWaitingMode(model.getTempSaleId(), model.getCurrentSale());
             }
 
             @Override

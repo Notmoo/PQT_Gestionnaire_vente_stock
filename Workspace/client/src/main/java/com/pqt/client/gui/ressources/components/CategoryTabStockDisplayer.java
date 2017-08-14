@@ -1,17 +1,19 @@
 package com.pqt.client.gui.ressources.components;
 
-import com.pqt.client.gui.ressources.generics.displayers.IFXDisplayerComponent;
-import com.pqt.client.gui.ressources.specifics.products.listeners.IStockComponentListener;
-import com.pqt.client.gui.ressources.specifics.products.listeners.SimpleStockComponentFirerer;
+import com.pqt.client.gui.ressources.components.generics.displayers.IFXDisplayerComponent;
+import com.pqt.client.gui.ressources.components.specifics.products.listeners.IStockComponentListener;
+import com.pqt.client.gui.ressources.components.specifics.products.listeners.SimpleStockComponentFirerer;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.gui.ressources.strings.IObjectStringRenderer;
 import com.pqt.core.entities.product.Product;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 import java.util.Collection;
@@ -64,8 +66,17 @@ public class CategoryTabStockDisplayer implements IFXDisplayerComponent<Collecti
 
     private void init(){
         mainPane = new BorderPane();
+        mainPane.getStyleClass().add("stock-displayer");
+
         Label title = new Label(GUIStringTool.getCategorytabStockDisplayerTitle());
-        mainPane.setTop(title);
+        title.setAlignment(Pos.CENTER);
+
+        HBox topPane = new HBox();
+        topPane.setFillHeight(true);
+        topPane.setAlignment(Pos.CENTER);
+        topPane.getChildren().add(title);
+
+        mainPane.setTop(topPane);
 
         tabPane = new TabPane();
         mainPane.setCenter(tabPane);

@@ -55,7 +55,10 @@ public class GUIStringTool {
         return new StringConverter<Account>() {
             @Override
             public String toString(Account object) {
-                return String.format("%s - %s)", object.getUsername(), object.getPermissionLevel().name());
+                if(object!=null)
+                    return String.format("%s - %s)", object.getUsername(), object.getPermissionLevel());
+
+                return "null";
             }
 
             @Override

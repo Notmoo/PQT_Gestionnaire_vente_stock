@@ -1,12 +1,12 @@
 package com.pqt.client.gui.ressources.components;
 
-import com.pqt.client.gui.ressources.generics.creators.IFXCreatorComponent;
-import com.pqt.client.gui.ressources.generics.validators.IFXValidatorComponent;
-import com.pqt.client.gui.ressources.specifics.account.listeners.IAccountComponentListener;
-import com.pqt.client.gui.ressources.generics.validators.listeners.IValidatorComponentListener;
-import com.pqt.client.gui.ressources.generics.validators.listeners.SimpleValidatorComponentFirerer;
-import com.pqt.client.gui.ressources.specifics.account.IFXAccountsDisplayerComponent;
-import com.pqt.client.gui.ressources.specifics.account.listeners.SimpleAccountComponentFirerer;
+import com.pqt.client.gui.ressources.components.generics.creators.IFXCreatorComponent;
+import com.pqt.client.gui.ressources.components.generics.validators.IFXValidatorComponent;
+import com.pqt.client.gui.ressources.components.specifics.account.listeners.IAccountComponentListener;
+import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentListener;
+import com.pqt.client.gui.ressources.components.generics.validators.listeners.SimpleValidatorComponentFirerer;
+import com.pqt.client.gui.ressources.components.specifics.account.IFXAccountsDisplayerComponent;
+import com.pqt.client.gui.ressources.components.specifics.account.listeners.SimpleAccountComponentFirerer;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.user_account.Account;
 import javafx.application.Platform;

@@ -31,6 +31,10 @@ class SaleScreenModel {
     private long tempSaleId;
 
     SaleScreenModel(AccountService accountService, StockService stockService, SaleService saleService) {
+        if(accountService==null || stockService==null || saleService==null)
+            throw new NullPointerException("At least one of the following services is null : account, stock, sale");
+
+        listeners = new EventListenerList();
         this.accountService = accountService;
         this.stockService = stockService;
         this.saleService = saleService;
@@ -104,6 +108,8 @@ class SaleScreenModel {
                 fireAccountListUpdatedEvent();
             }
         });
+
+        clearSale();
     }
 
     private void fireSaleValidatedEvent() {
@@ -135,7 +141,7 @@ class SaleScreenModel {
     }
 
     Sale getCurrentSale() {
-        return currentSaleBuilder.build();
+        return currentSaleBuilder!=null?currentSaleBuilder.build():null;
     }
 
     List<Product> getProductList() {
@@ -143,15 +149,29 @@ class SaleScreenModel {
     }
 
     void clearSale() {
-        currentSaleBuilder = saleService.getNewSaleBuilder();
-        currentSaleBuilder.orderedBy(accountService.getCurrentAccount());
-        currentSaleBuilder.saleType(SaleType.CASH);
-
+        currentSaleBuilder = getNewSaleBuilder();
         tempSaleId = -1;
     }
 
-    void commitSale() {
+    private SaleBuilder getNewSaleBuilder(){
+        SaleBuilder saleBuilder = saleService.getNewSaleBuilder();
+        saleBuilder.orderedBy(accountService.getCurrentAccount());
+        saleBuilder.saleType(SaleType.CASH);
+        return saleBuilder;
+    }
+
+    boolean commitSale() {
+        if(!checkValidity(currentSaleBuilder.build()))
+            return false;
+
         tempSaleId = saleService.commitSale(currentSaleBuilder);
+        return tempSaleId!=-1;
+    }
+
+    boolean checkValidity(Sale sale) {
+        return sale.getProducts().size()>0
+                && sale.getOrderedBy()!=null
+                && sale.getType()!=null;
     }
 
     long getTempSaleId(){
@@ -159,19 +179,23 @@ class SaleScreenModel {
     }
 
     void addProductToSale(Product product) {
-        currentSaleBuilder.addProduct(product);
+        if(currentSaleBuilder!=null)
+            currentSaleBuilder.addProduct(product);
     }
 
     void removeProductFromSale(Product product) {
-        currentSaleBuilder.removeProduct(product);
+        if(currentSaleBuilder!=null)
+            currentSaleBuilder.removeProduct(product);
     }
 
     void setSaleType(SaleType saleType) {
-        currentSaleBuilder.saleType(saleType);
+        if(currentSaleBuilder!=null)
+            currentSaleBuilder.saleType(saleType);
     }
 
     void setSaleBeneficiary(Account saleBeneficiary) {
-        currentSaleBuilder.orderedFor(saleBeneficiary);
+        if(currentSaleBuilder!=null)
+            currentSaleBuilder.orderedFor(saleBeneficiary);
     }
 
     void addListener(ISaleScreenModelListener listener){

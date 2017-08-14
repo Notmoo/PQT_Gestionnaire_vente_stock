@@ -12,4 +12,11 @@ public class AccountListenerAdapter implements IAccountListener {
 
 	}
 
+	/**
+	 * @see com.pqt.client.module.account.listeners.IAccountListener#onAccountListChangedEvent()
+	 */
+	public void onAccountListChangedEvent() {
+
+	}
+
 }

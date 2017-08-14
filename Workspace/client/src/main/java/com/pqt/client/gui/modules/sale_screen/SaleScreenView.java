@@ -1,10 +1,11 @@
 package com.pqt.client.gui.modules.sale_screen;
 
-import com.pqt.client.gui.ressources.components.sale_validation_screen.SaleValidationScreen;
+import com.pqt.client.gui.modules.sale_screen.sale_validation_screen.SaleValidationScreen;
 import com.pqt.client.gui.ressources.components.CommandComposerSaleDisplayer;
 import com.pqt.client.gui.ressources.components.SimpleValidator;
+import com.pqt.client.gui.ressources.components.generics.javafx_override.CssEnabledGridPane;
 import com.pqt.client.gui.ressources.css.GUICssTool;
-import com.pqt.client.gui.ressources.generics.IFXComponent;
+import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.gui.ressources.components.CategoryTabStockDisplayer;
 import com.pqt.core.entities.product.Product;
@@ -14,6 +15,7 @@ import com.pqt.core.entities.sale.SaleType;
 import com.pqt.core.entities.user_account.Account;
 import javafx.application.Platform;
 
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -35,6 +37,7 @@ class SaleScreenView implements IFXComponent {
     private ChoiceBox<Account> saleBeneficiaryAccountDisplayer;
     private ChoiceBox<SaleType> saleTypeDisplayer;
     private TextField salePriceDisplayer;
+    private SimpleValidator validator;
 
     SaleScreenView(SaleScreenController ctrl) {
         this.ctrl = ctrl;
@@ -43,6 +46,7 @@ class SaleScreenView implements IFXComponent {
 
     private void initGui() {
         mainPane = new StackPane();
+        mainPane.getStyleClass().add("main-module-pane");
 
         mainPaneContent = new BorderPane();
 
@@ -50,7 +54,6 @@ class SaleScreenView implements IFXComponent {
         -----------------------CENTER PANE-----------------------
          */
         {
-            mainPane.getChildren().add(mainPaneContent);
             mainPaneContent.prefWidthProperty().bind(mainPane.widthProperty());
             mainPaneContent.prefHeightProperty().bind(mainPane.heightProperty());
 
@@ -72,7 +75,9 @@ class SaleScreenView implements IFXComponent {
         -----------------------BOTTOM PANE-----------------------
          */
         {
-            AnchorPane mainContentBottomPane = new AnchorPane();
+            HBox mainContentBottomPane = new HBox();
+            mainContentBottomPane.setFillHeight(true);
+            mainContentBottomPane.setAlignment(Pos.CENTER);
             // Sale secondary data configuration (author, beneficiary, payment type, etc...
             {
                 saleMakerAccountDisplayer = new TextField();
@@ -96,30 +101,29 @@ class SaleScreenView implements IFXComponent {
                 salePriceDisplayer.setPromptText(GUIStringTool.getSalePriceTextFieldPromptText());
 
 
-                GridPane mainContentBottomLeftPane = new GridPane();
-                mainContentBottomLeftPane.add(new Label(GUIStringTool.getSaleMakerTextFieldLabel()), 0, 0);
-                mainContentBottomLeftPane.add(saleMakerAccountDisplayer, 1, 0);
-                mainContentBottomLeftPane.add(new Label(GUIStringTool.getSaleBeneficiaryTextFieldLabel()), 0, 1);
-                mainContentBottomLeftPane.add(saleBeneficiaryAccountDisplayer, 1, 1);
-                mainContentBottomLeftPane.add(new Label(GUIStringTool.getSaleTypeTextFieldLabel()), 0, 2);
-                mainContentBottomLeftPane.add(saleTypeDisplayer, 1, 2);
-                mainContentBottomLeftPane.add(new Label(GUIStringTool.getSalePriceTextFieldLabel()), 0, 3);
-                mainContentBottomLeftPane.add(salePriceDisplayer, 1, 3);
+                GridPane mainContentBottomCenterPane = new CssEnabledGridPane();
+                mainContentBottomCenterPane.add(new Label(GUIStringTool.getSaleMakerTextFieldLabel()), 0, 0);
+                mainContentBottomCenterPane.add(saleMakerAccountDisplayer, 1, 0);
+                mainContentBottomCenterPane.add(new Label(GUIStringTool.getSaleBeneficiaryTextFieldLabel()), 0, 1);
+                mainContentBottomCenterPane.add(saleBeneficiaryAccountDisplayer, 1, 1);
+                mainContentBottomCenterPane.add(new Label(GUIStringTool.getSaleTypeTextFieldLabel()), 0, 2);
+                mainContentBottomCenterPane.add(saleTypeDisplayer, 1, 2);
+                mainContentBottomCenterPane.add(new Label(GUIStringTool.getSalePriceTextFieldLabel()), 0, 3);
+                mainContentBottomCenterPane.add(salePriceDisplayer, 1, 3);
 
-                mainContentBottomPane.getChildren().add(mainContentBottomLeftPane);
-                AnchorPane.setBottomAnchor(mainContentBottomLeftPane, 0d);
-                AnchorPane.setTopAnchor(mainContentBottomLeftPane, 0d);
-                AnchorPane.setLeftAnchor(mainContentBottomLeftPane, 0d);
+                mainContentBottomPane.getChildren().add(mainContentBottomCenterPane);
             }
             //Sale Validator
             {
-                SimpleValidator validator = new SimpleValidator(true);
+                AnchorPane anchorPane = new AnchorPane();
+                validator = new SimpleValidator(true);
                 validator.addListener(ctrl.getValidatorListener());
-
-                mainContentBottomPane.getChildren().add(validator.getPane());
-                AnchorPane.setBottomAnchor(validator.getPane(), 0d);
-                AnchorPane.setTopAnchor(validator.getPane(), 0d);
+                anchorPane.getChildren().add(validator.getPane());
                 AnchorPane.setRightAnchor(validator.getPane(), 0d);
+                AnchorPane.setBottomAnchor(validator.getPane(), 0d);
+
+                mainContentBottomPane.getChildren().add(anchorPane);
+                HBox.setHgrow(anchorPane, Priority.ALWAYS);
             }
             mainPaneContent.setBottom(mainContentBottomPane);
         }
@@ -127,11 +131,6 @@ class SaleScreenView implements IFXComponent {
         ------------------------MAIN PANE------------------------
          */
         mainPane.getChildren().add(mainPaneContent);
-
-        /*
-        -------------------------UPDATE--------------------------
-         */
-        ctrl.updateView();
     }
 
     @Override
@@ -143,7 +142,8 @@ class SaleScreenView implements IFXComponent {
         boolean clearChildren = mainPane.getChildren().size()>1;
 
         Pane greyIntermediaryPane = new Pane();
-        greyIntermediaryPane.setId(GUICssTool.getGreyIntermediaryPaneCssId());
+        greyIntermediaryPane.getStyleClass().clear();
+        greyIntermediaryPane.getStyleClass().add("grey-intermediary-pane");
 
         saleValidationScreen = new SaleValidationScreen(saleId, sale);
         saleValidationScreen.addListener(ctrl.getSaleValidationScreenListener());
@@ -153,6 +153,7 @@ class SaleScreenView implements IFXComponent {
                 mainPane.getChildren().add(mainPaneContent);
             }
 
+            StackPane.setAlignment(saleValidationScreen.getPane(), Pos.CENTER);
             mainPane.getChildren().addAll(greyIntermediaryPane, saleValidationScreen.getPane());
         });
     }
@@ -173,7 +174,8 @@ class SaleScreenView implements IFXComponent {
     void setSaleTypes(List<SaleType> saleTypes) {
         Platform.runLater(()->{
             saleTypeDisplayer.getItems().clear();
-            saleTypeDisplayer.getItems().addAll(saleTypes);
+            if(saleTypes!=null)
+                saleTypeDisplayer.getItems().addAll(saleTypes);
         });
     }
 
@@ -181,23 +183,26 @@ class SaleScreenView implements IFXComponent {
         Platform.runLater(()->{
             saleBeneficiaryAccountDisplayer.getItems().clear();
             saleBeneficiaryAccountDisplayer.getItems().add(ctrl.getDefaultAccount());
-            saleBeneficiaryAccountDisplayer.getItems().addAll(accounts);
+            if(accounts!=null)
+                saleBeneficiaryAccountDisplayer.getItems().addAll(accounts);
         });
     }
 
     void setSale(Sale sale) {
-        saleDisplayer.display(sale);
+        if(sale!=null) {
+            saleDisplayer.display(sale);
 
-        String price = GUIStringTool.getPriceRenderer().render(sale.getTotalPrice());
-        String currentAccount = GUIStringTool.getAccountStringConverter().toString(sale.getOrderedBy());
+            String price = GUIStringTool.getPriceRenderer().render(sale.getTotalPrice());
+            String currentAccount = GUIStringTool.getAccountStringConverter().toString(sale.getOrderedBy());
 
-        Platform.runLater(()->{
-            salePriceDisplayer.setText(price);
-            saleMakerAccountDisplayer.setText(currentAccount);
+            Platform.runLater(() -> {
+                salePriceDisplayer.setText(price);
+                saleMakerAccountDisplayer.setText(currentAccount);
 
-            selectElement(saleTypeDisplayer, sale.getType());
-            selectElement(saleBeneficiaryAccountDisplayer, sale.getOrderedFor());
-        });
+                selectElement(saleTypeDisplayer, sale.getType());
+                selectElement(saleBeneficiaryAccountDisplayer, sale.getOrderedFor());
+            });
+        }
     }
 
     private <T> void selectElement(ChoiceBox<T> choiceBox, T element){
@@ -211,5 +216,9 @@ class SaleScreenView implements IFXComponent {
 
     void setSaleStatus(SaleStatus status){
         this.saleValidationScreen.setSaleStatus(status);
+    }
+
+    void setValidationButtonEnabled(boolean validationButtonEnabled) {
+        validator.setValidationButtonEnable(validationButtonEnabled);
     }
 }

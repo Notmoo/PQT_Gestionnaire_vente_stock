@@ -13,7 +13,7 @@ public class StockService {
 
 	private StockDao dao;
 
-	private StockService() {
+	public StockService() {
 		dao = new StockDao();
 	}
 
