@@ -133,7 +133,7 @@ class SaleScreenController {
     }
 
     Account getDefaultAccount() {
-        return new Account(" - ", null, AccountLevel.getLowest());
+        return new Account(null, null, AccountLevel.getLowest());
     }
 
     IValidatorComponentListener getValidatorListener() {

@@ -4,7 +4,6 @@ import com.pqt.client.gui.modules.sale_screen.sale_validation_screen.SaleValidat
 import com.pqt.client.gui.ressources.components.CommandComposerSaleDisplayer;
 import com.pqt.client.gui.ressources.components.SimpleValidator;
 import com.pqt.client.gui.ressources.components.generics.javafx_override.CssEnabledGridPane;
-import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.gui.ressources.components.CategoryTabStockDisplayer;
