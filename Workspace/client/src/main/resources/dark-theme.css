@@ -114,7 +114,7 @@
     -fx-background-color: black;
 }
 
-.text-field {
+.text-field, .password-field, .choice-box {
     -fx-font-size: 12pt;
     -fx-font-family: "Segoe UI Semibold";
     -fx-pref-width: 125;
@@ -173,17 +173,6 @@
     -fx-background-color: derive(-fx-focus-color,30%);
 }
 
-.choice-box {
-    -fx-pref-width: 150;
-    -fx-pref-height: 30;
-    -fx-background-radius: 0;
-    -fx-background-color: #1d1d1d;
-    -fx-background-insets: 0 0 0 0, 0, 1, 2;
-    -fx-border-color: #e2e2e2;
-    -fx-border-width: 2;
-    -fx-text-fill: #d8d8d8;
-}
-
 .progress-indicator {
     -fx-pref-width: 50;
     -fx-pref-height: 50;
@@ -207,3 +196,20 @@
     -fx-pref-width: 150;
     -fx-pref-height: 50;
  }
+
+.sidebar {
+    -fx-background-color: #2e2e2e;
+    -fx-padding: 5 22 5 22;
+    -fx-border-color: #e2e2e2;
+    -fx-border-width: 2;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+    -pqt-expanded-width : 200px;
+}
+
+.tool-bar {
+    -fx-background-color: #2e2e2e;
+    -fx-padding: 5 5 5 5;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}

@@ -56,7 +56,7 @@ public class GUIStringTool {
             @Override
             public String toString(Account object) {
                 if(object!=null)
-                    return String.format("%s - %s)", object.getUsername(), object.getPermissionLevel());
+                    return String.format("%s - (%s)", object.getUsername(), object.getPermissionLevel());
 
                 return "null";
             }
@@ -150,6 +150,22 @@ public class GUIStringTool {
 
     public static String getOkButtonLabel() {
         return "OK";
+    }
+
+    public static String getAppTitle() {
+        return "Client PQT - Gargotte";
+    }
+
+    public static String getSideBarCollapseButtonLabel() {
+        return "Hide";
+    }
+
+    public static String getSideBarExpandButtonLabel() {
+        return "Show";
+    }
+
+    public static String getSaleGuiModuleName() {
+        return "Vente";
     }
 }
 
