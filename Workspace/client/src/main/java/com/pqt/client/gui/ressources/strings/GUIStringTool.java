@@ -214,6 +214,10 @@ public class GUIStringTool {
     public static IObjectStringRenderer<Boolean> getBooleanRenderer() {
         return bool->bool?"Oui":"Non";
     }
+
+    public static String getStatGuiModuleName() {
+        return "Statistiques";
+    }
 }
 
 
