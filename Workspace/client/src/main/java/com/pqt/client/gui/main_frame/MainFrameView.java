@@ -6,7 +6,9 @@ import com.pqt.client.gui.ressources.components.generics.others.SideBar;
 import com.pqt.client.gui.ressources.components.generics.others.listeners.ISideBarListener;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.user_account.Account;
+import javafx.application.Platform;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
@@ -80,7 +82,19 @@ class MainFrameView implements IFXComponent{
 
     void addGuiModule(String moduleName, Pane moduleContent){
         Button button = new Button(moduleName);
-        button.setOnMouseClicked(event->mainPane.setCenter(moduleContent));
+        button.getStyleClass().add("menu-button");
+        button.setOnMouseClicked(event->{
+            moduleListToolbar.getItems()
+                    .stream()
+                    .filter(Button.class::isInstance)
+                    .map(Button.class::cast)
+                    .forEach(b-> b.getStyleClass().remove("menu-button-selected"));
+            button.getStyleClass().add("menu-button-selected");
+            Platform.runLater(()->{
+                moduleListToolbar.getItems().forEach(Node::applyCss);
+                mainPane.setCenter(moduleContent);
+            });
+        });
         moduleListToolbar.getItems().add(button);
     }
 

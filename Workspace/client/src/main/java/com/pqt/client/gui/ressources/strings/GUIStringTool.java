@@ -13,8 +13,6 @@ import java.util.EnumSet;
 //TODO faire ça un peu mieux
 public class GUIStringTool {
 
-    private static String saleIdLabel;
-
     public static String getValidationButtonLabel() {
         return "Valider";
     }
@@ -157,11 +155,11 @@ public class GUIStringTool {
     }
 
     public static String getSideBarCollapseButtonLabel() {
-        return "Hide";
+        return "Réduire";
     }
 
     public static String getSideBarExpandButtonLabel() {
-        return "Show";
+        return "Menu";
     }
 
     public static String getSaleGuiModuleName() {
