@@ -34,7 +34,12 @@ public class GUIStringTool {
     }
 
     public static IObjectStringRenderer<Product> getProductStringRenderer(){
-        return product->String.format("%s - %.2f€ (%s)", product.getName(), product.getPrice(), (product.getAmountRemaining()>=30?"30+": Integer.toString(product.getAmountRemaining())));
+        return product->{
+            if(product!=null)
+                return String.format("%s - %.2f€ (%s)", product.getName(), product.getPrice(), (product.getAmountRemaining()>=30?"30+": Integer.toString(product.getAmountRemaining())));
+            else
+                return "null";
+        };
     }
 
     public static String getCommandComposerTitleTitle() {
@@ -164,6 +169,50 @@ public class GUIStringTool {
 
     public static String getSaleGuiModuleName() {
         return "Vente";
+    }
+
+    public static String getAddButtonLabel() {
+        return "Ajouter";
+    }
+
+    public static String getDetailButtonLabel() {
+        return "Détail";
+    }
+
+    public static String getRemoveButtonLabel() {
+        return "Supprimer";
+    }
+
+    public static String getRefreshButtonLabel() {
+        return "Rafraichir";
+    }
+
+    public static String getProductNameColumnHeader() {
+        return "Nom";
+    }
+
+    public static String getProductCategoryColumnHeader() {
+        return "Catégorie";
+    }
+
+    public static String getProductAmountRemainingColumnHeader() {
+        return "Stock";
+    }
+
+    public static String getProductAmountSoldColumnHeader() {
+        return "Vendu";
+    }
+
+    public static String getProductPriceColumnHeader() {
+        return "Prix";
+    }
+
+    public static String getProductIsSellableColumnHeader() {
+        return "Vendable";
+    }
+
+    public static IObjectStringRenderer<Boolean> getBooleanRenderer() {
+        return bool->bool?"Oui":"Non";
     }
 }
 
