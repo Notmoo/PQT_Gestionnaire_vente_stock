@@ -3,6 +3,7 @@ package com.pqt.client.gui.ressources.components;
 import com.pqt.client.gui.ressources.components.generics.displayers.IFXDisplayerComponent;
 import com.pqt.client.gui.ressources.components.specifics.products.listeners.IStockComponentListener;
 import com.pqt.client.gui.ressources.components.specifics.products.listeners.SimpleStockComponentFirerer;
+import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.gui.ressources.strings.IObjectStringRenderer;
 import com.pqt.core.entities.product.Product;
@@ -33,7 +34,7 @@ public class CategoryTabStockDisplayer implements IFXDisplayerComponent<Collecti
 
     @Override
     public void display(Collection<Product> content) {
-        final ObservableList<Tab> tabs = FXCollections.emptyObservableList();
+        final ObservableList<Tab> tabs = FXCollections.observableArrayList();
         if(content!=null){
             List<String> categories = content.stream().map(product->product.getCategory().getName()).distinct().collect(Collectors.toList());
 
@@ -70,6 +71,7 @@ public class CategoryTabStockDisplayer implements IFXDisplayerComponent<Collecti
 
         Label title = new Label(GUIStringTool.getCategorytabStockDisplayerTitle());
         title.setAlignment(Pos.CENTER);
+        title.getStyleClass().add(GUICssTool.getTitleTextStyleClass());
 
         HBox topPane = new HBox();
         topPane.setFillHeight(true);
@@ -104,10 +106,14 @@ public class CategoryTabStockDisplayer implements IFXDisplayerComponent<Collecti
 
         listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         listView.setEditable(false);
-        listView.setOnMouseClicked(event->firerer.fireContentClickEvent(event, listView.getSelectionModel().getSelectedItem()));
+        listView.setOnMouseClicked(event->{
+            firerer.fireContentClickEvent(event, listView.getSelectionModel().getSelectedItem());
+            Platform.runLater(()->listView.getSelectionModel().clearSelection(listView.getSelectionModel().getSelectedIndex()));
+        });
         listView.setOnKeyTyped(event -> {
             if(event.getCode().equals(KeyCode.ENTER)){
                 firerer.fireContentClickEvent(event, listView.getSelectionModel().getSelectedItem());
+                Platform.runLater(()->listView.getSelectionModel().clearSelection(listView.getSelectionModel().getSelectedIndex()));
                 event.consume();
             }
         });
@@ -119,6 +125,6 @@ public class CategoryTabStockDisplayer implements IFXDisplayerComponent<Collecti
     }
 
     private static IObjectStringRenderer<Product> getProductRenderer(){
-        return GUIStringTool.getProductStringRenderer();
+        return GUIStringTool.getDetailledProductStringRenderer();
     }
 }

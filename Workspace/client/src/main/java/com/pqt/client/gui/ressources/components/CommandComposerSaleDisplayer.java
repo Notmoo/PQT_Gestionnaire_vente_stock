@@ -3,6 +3,7 @@ package com.pqt.client.gui.ressources.components;
 import com.pqt.client.gui.ressources.components.specifics.sale.IFXSaleDisplayerComponent;
 import com.pqt.client.gui.ressources.components.specifics.sale.listeners.ISaleComponentListener;
 import com.pqt.client.gui.ressources.components.specifics.sale.listeners.SimpleSaleComponentFirerer;
+import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.Sale;
@@ -35,6 +36,8 @@ public class CommandComposerSaleDisplayer implements IFXSaleDisplayerComponent {
         mainPane.getStyleClass().add("sale-displayer");
 
         Label title = new Label(GUIStringTool.getCommandComposerTitleTitle());
+        title.setAlignment(Pos.CENTER);
+        title.getStyleClass().add(GUICssTool.getTitleTextStyleClass());
 
         HBox topPane = new HBox();
         topPane.setFillHeight(true);
@@ -74,7 +77,10 @@ public class CommandComposerSaleDisplayer implements IFXSaleDisplayerComponent {
             return;
 
         this.sale = content;
-        Platform.runLater(()->this.listView.setItems(FXCollections.observableList(new ArrayList<>(this.sale.getProducts().keySet()))));
+        Platform.runLater(()->{
+            this.listView.getItems().clear();
+            this.listView.getItems().addAll(this.sale.getProducts().keySet());
+        });
     }
 
     @Override

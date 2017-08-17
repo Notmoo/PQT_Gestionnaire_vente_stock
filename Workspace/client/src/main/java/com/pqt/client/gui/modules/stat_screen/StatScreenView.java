@@ -1,6 +1,7 @@
 package com.pqt.client.gui.modules.stat_screen;
 
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
+import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.sun.deploy.util.StringUtils;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
@@ -22,7 +23,7 @@ class StatScreenView implements IFXComponent {
 
     private void initGui() {
         mainPane = new Pane();
-        mainPane.getStyleClass().add("main-module-pane");
+        mainPane.getStyleClass().add(GUICssTool.getMainModulePaneCssClass());
 
         statTextArea = new TextArea();
         mainPane.getChildren().add(statTextArea);

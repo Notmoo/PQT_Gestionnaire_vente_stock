@@ -2,6 +2,7 @@ package com.pqt.client.gui.modules.sale_screen.sale_validation_screen;
 
 import com.pqt.client.gui.modules.sale_screen.sale_validation_screen.listeners.ISaleValidationScreenListener;
 import com.pqt.client.gui.ressources.components.generics.javafx_override.CssEnabledGridPane;
+import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.sale.SaleStatus;
@@ -32,6 +33,7 @@ public class SaleValidationScreen {
     public SaleValidationScreen(long saleId, Sale sale) {
         listeners = new EventListenerList();
         mainPane = new Pane();
+        mainPane.getStyleClass().add(GUICssTool.getMainModulePaneCssClass());
 
         saleStatus = sale.getStatus();
 

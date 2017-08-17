@@ -6,7 +6,7 @@
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
     -fx-text-fill: white;
-    -fx-opacity: 0.6;
+    -fx-opacity: 0.8;
 }
 
 .label-bright {
@@ -17,10 +17,35 @@
 }
 
 .label-header {
-    -fx-font-size: 32pt;
-    -fx-font-family: "Segoe UI Light";
+    -fx-font-size: 25pt;
+    -fx-font-family: "Segoe UI";
     -fx-text-fill: white;
     -fx-opacity: 1;
+}
+
+.tab {
+    -fx-background-color: #3a3a3a;
+}
+
+.tab-label {
+    -fx-text-fill: white;
+}
+
+.tab:selected {
+    -fx-background-color: #4d4d4d;
+}
+
+.tab-pane *.tab-header-background {
+    -fx-background-color: #1d1d1d;
+    -fx-border-width: 1px;
+    -fx-border-radius: 1px;
+    -fx-border-color: gray;
+}
+
+.tab-pane {
+    -fx-border-width: 2px;
+    -fx-border-radius: 1px;
+    -fx-border-color: gray;
 }
 
 .list-view {
@@ -30,6 +55,9 @@
     -fx-table-cell-border-color: transparent;
     -fx-table-header-border-color: transparent;
     -fx-padding: 5;
+    -fx-border-width: 2px;
+    -fx-border-radius: 1px;
+    -fx-border-color: gray;
 }
 
 .list-view .list-cell .label{
@@ -165,7 +193,7 @@
 .button:focused {
     -fx-border-color: white, white;
     -fx-border-width: 1, 1;
-    -fx-border-style: solid, segments(1, 1);
+    -fx-border-style: solid;
     -fx-border-radius: 0, 0;
     -fx-border-insets: 1 1 1 1, 0;
 }
@@ -202,11 +230,13 @@
 
 .grey-intermediary-pane {
     -fx-background-color: #1d1d1d;
-    -fx-opacity: 60%;
+    -fx-opacity: 85%;
 }
 
 .main-module-pane {
     -fx-padding: 10 10 10 10;
+    -fx-border-width: 2px;
+    -fx-border-color: whitesmoke;
 }
 
 .validator {
@@ -222,11 +252,11 @@
 .sidebar {
     -fx-background-color: #2e2e2e;
     -fx-padding: 5 22 5 22;
-    -fx-border-color: #e2e2e2;
+    -fx-border-color: whitesmoke;
     -fx-border-width: 2;
     -fx-background-radius: 0;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
-    -pqt-expanded-width : 200px;
+    -pqt-expanded-width : 175px;
 }
 
 .tool-bar {

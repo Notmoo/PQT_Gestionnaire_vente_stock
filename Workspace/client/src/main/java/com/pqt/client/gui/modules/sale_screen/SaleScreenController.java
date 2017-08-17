@@ -65,14 +65,20 @@ class SaleScreenController {
         return model.getCurrentSale();
     }
 
-    void updateView(){
+    private void updateSale(){
+        view.setSale(getCurrentSale());
+        view.setValidationButtonEnabled(model.checkValidity(getCurrentSale()));
+    }
+
+    private void updateData(){
         view.setProducts(fetchProductList());
         view.setSaleTypes(fetchSaleTypeList());
         view.setAccounts(fetchAccountList());
+    }
 
-        view.setSale(getCurrentSale());
-
-        view.setValidationButtonEnabled(model.checkValidity(getCurrentSale()));
+    void updateView(){
+        updateData();
+        updateSale();
     }
 
     private List<Product> fetchProductList(){
@@ -90,7 +96,7 @@ class SaleScreenController {
             @Override
             public void onComponentClickEvent(Event event, Product product) {
                 model.removeProductFromSale(product);
-                SaleScreenController.this.updateView();
+                SaleScreenController.this.updateSale();
             }
 
             @Override
@@ -117,8 +123,10 @@ class SaleScreenController {
 
             @Override
             public void onContentClickEvent(Event event, Product eventTarget) {
-                model.addProductToSale(eventTarget);
-                SaleScreenController.this.updateView();
+                if(eventTarget!=null) {
+                    model.addProductToSale(eventTarget);
+                    SaleScreenController.this.updateSale();
+                }
             }
 
             @Override

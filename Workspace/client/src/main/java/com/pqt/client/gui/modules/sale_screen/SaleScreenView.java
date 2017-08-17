@@ -5,6 +5,7 @@ import com.pqt.client.gui.ressources.components.CommandComposerSaleDisplayer;
 import com.pqt.client.gui.ressources.components.SimpleValidator;
 import com.pqt.client.gui.ressources.components.generics.javafx_override.CssEnabledGridPane;
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
+import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.gui.ressources.components.CategoryTabStockDisplayer;
 import com.pqt.core.entities.product.Product;
@@ -45,7 +46,7 @@ class SaleScreenView implements IFXComponent {
 
     private void initGui() {
         mainPane = new StackPane();
-        mainPane.getStyleClass().add("main-module-pane");
+        mainPane.getStyleClass().add(GUICssTool.getMainModulePaneCssClass());
 
         mainPaneContent = new BorderPane();
 
@@ -142,7 +143,7 @@ class SaleScreenView implements IFXComponent {
 
         Pane greyIntermediaryPane = new Pane();
         greyIntermediaryPane.getStyleClass().clear();
-        greyIntermediaryPane.getStyleClass().add("grey-intermediary-pane");
+        greyIntermediaryPane.getStyleClass().add(GUICssTool.getIntermediaryPaneStyleClass());
 
         saleValidationScreen = new SaleValidationScreen(saleId, sale);
         saleValidationScreen.addListener(ctrl.getSaleValidationScreenListener());
