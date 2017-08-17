@@ -21,8 +21,8 @@ class MainFrameController implements IMainFrameModelListener {
         this.view = view;
     }
 
-    void addModule(IGuiModule module) {
-        this.view.addGuiModule(module.getModuleName(),module.getPane());
+    void addModule(IGuiModule module, boolean setActive) {
+        this.view.addGuiModule(module.getModuleName(),module.getPane(), setActive);
     }
 
     IValidatorComponentListener getAccountManagerValidatorListener() {

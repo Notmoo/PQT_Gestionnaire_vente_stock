@@ -14,6 +14,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 import java.util.Collection;
 
@@ -22,8 +23,8 @@ class MainFrameView implements IFXComponent{
     private final MainFrameController ctrl;
 
     private BorderPane mainPane;
-    private ToolBar moduleListToolbar;
     private AccountManager accountManager;
+    private VBox buttonHolder;
 
     MainFrameView(MainFrameController ctrl) {
 
@@ -35,17 +36,18 @@ class MainFrameView implements IFXComponent{
         mainPane = new BorderPane();
         mainPane.getStyleClass().addAll("main-module-pane", "main-frame");
 
-        moduleListToolbar = new ToolBar();
-        moduleListToolbar.setOrientation(Orientation.VERTICAL);
+        buttonHolder = new VBox();
 
         SideBar sidebar = new SideBar();
         sidebar.setFillWidth(true);
-        SideBar.setVgrow(moduleListToolbar, Priority.ALWAYS);
-        sidebar.getChildren().add(moduleListToolbar);
+        SideBar.setVgrow(buttonHolder, Priority.ALWAYS);
+        buttonHolder.prefWidthProperty().bind(sidebar.widthProperty());
+        sidebar.getChildren().add(buttonHolder);
 
         accountManager = new AccountManager();
         accountManager.addListener(ctrl.getAccountManagerValidatorListener());
         accountManager.addListener(ctrl.getAccountManagerAccountListener());
+        accountManager.getPane().prefWidthProperty().bind(sidebar.widthProperty());
         sidebar.getChildren().add(accountManager.getPane());
 
         mainPane.setLeft(sidebar);
@@ -80,22 +82,24 @@ class MainFrameView implements IFXComponent{
         return mainPane;
     }
 
-    void addGuiModule(String moduleName, Pane moduleContent){
+    void addGuiModule(String moduleName, Pane moduleContent, boolean setActive){
         Button button = new Button(moduleName);
         button.getStyleClass().add("menu-button");
         button.setOnMouseClicked(event->{
-            moduleListToolbar.getItems()
+            buttonHolder.getChildren()
                     .stream()
                     .filter(Button.class::isInstance)
                     .map(Button.class::cast)
                     .forEach(b-> b.getStyleClass().remove("menu-button-selected"));
             button.getStyleClass().add("menu-button-selected");
             Platform.runLater(()->{
-                moduleListToolbar.getItems().forEach(Node::applyCss);
+                buttonHolder.getChildren().forEach(Node::applyCss);
                 mainPane.setCenter(moduleContent);
             });
         });
-        moduleListToolbar.getItems().add(button);
+        if(setActive)
+            button.getOnMouseClicked().handle(null);
+        buttonHolder.getChildren().add(button);
     }
 
     boolean isAccountCreationPossible(){
