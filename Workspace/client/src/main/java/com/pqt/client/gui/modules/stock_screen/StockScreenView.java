@@ -1,6 +1,9 @@
 package com.pqt.client.gui.modules.stock_screen;
 
+import com.pqt.client.gui.modules.stock_screen.product_manager_screen.ProductManagerScreen;
+import com.pqt.client.gui.modules.stock_screen.product_manager_screen.ProductManagerScreenFactory;
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
+import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.gui.ressources.strings.IObjectStringRenderer;
 import com.pqt.core.entities.product.Product;
@@ -10,34 +13,37 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class StockScreenView implements IFXComponent {
 
     private StockScreenController ctrl;
-    private Pane mainPane;
+    private StackPane mainPane;
+    private BorderPane mainPaneContent;
     private TableView<Product> stockTableView;
+    private ProductManagerScreenFactory productManagerScreenFactory;
+    private ProductManagerScreen currentDetailScreen;
 
-    StockScreenView(StockScreenController ctrl) {
+    StockScreenView(StockScreenController ctrl, ProductManagerScreenFactory productManagerScreenFactory) {
         this.ctrl = ctrl;
+        this.productManagerScreenFactory = productManagerScreenFactory;
         initGui();
     }
 
     private void initGui() {
-        mainPane = new Pane();
-        mainPane.getStyleClass().add("main-module-pane");
-        BorderPane mainPaneContent = new BorderPane();
+        mainPane = new StackPane();
+        mainPane.getStyleClass().add(GUICssTool.getMainModulePaneCssClass());
+        mainPaneContent = new BorderPane();
         mainPane.getChildren().add(mainPaneContent);
         mainPaneContent.prefWidthProperty().bind(mainPane.widthProperty());
         mainPaneContent.prefHeightProperty().bind(mainPane.heightProperty());
@@ -46,7 +52,9 @@ class StockScreenView implements IFXComponent {
         addProductButton.setOnMouseClicked(event -> ctrl.onAddProductRequest());
         Button detailProductButton = new Button(GUIStringTool.getDetailButtonLabel());
         detailProductButton.setOnMouseClicked(event -> ctrl.onDetailProductRequest());
+        detailProductButton.setDisable(true);
         Button removeProductButton = new Button(GUIStringTool.getRemoveButtonLabel());
+        removeProductButton.setDisable(true);
         removeProductButton.setOnMouseClicked(event -> ctrl.onDeleteProductRequest());
         Button refreshProductButton = new Button(GUIStringTool.getRefreshButtonLabel());
         refreshProductButton.setOnMouseClicked(event -> ctrl.onRefreshProductsRequest());
@@ -75,6 +83,10 @@ class StockScreenView implements IFXComponent {
             return row;
         });
         stockTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        stockTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal)->{
+            detailProductButton.setDisable(newVal==null);
+            removeProductButton.setDisable(newVal==null);
+        });
         List<TableColumn<Product, ?>> columns = new ArrayList<>();
 
         columns.add(createNewTableColumn(String.class,
@@ -99,7 +111,7 @@ class StockScreenView implements IFXComponent {
         ));
         columns.add(createNewTableColumn(Double.class,
                 GUIStringTool.getProductPriceColumnHeader(),
-                param -> new SimpleDoubleProperty(param.getValue().getAmountSold()).asObject(),
+                param -> new SimpleDoubleProperty(param.getValue().getPrice()).asObject(),
                 GUIStringTool.getPriceRenderer()
         ));
         columns.add(createNewTableColumn(Boolean.class,
@@ -153,5 +165,51 @@ class StockScreenView implements IFXComponent {
 
     Product getSelectedProduct() {
         return stockTableView.getSelectionModel().getSelectedItem();
+    }
+
+    void switchToDetailMode(Product product) {
+        if(currentDetailScreen==null){
+            currentDetailScreen = productManagerScreenFactory.create(product);
+            currentDetailScreen.addListener(ctrl.getDetailScreenValidationListener());
+            Pane separator = new Pane();
+            separator.getStyleClass().add(GUICssTool.getIntermediaryPaneStyleClass());
+            Platform.runLater(()->mainPane.getChildren().addAll(separator, currentDetailScreen.getPane()));
+        }
+    }
+
+    void switchToGeneralMode() {
+        if(currentDetailScreen!=null){
+            List<Node> toRemove = mainPane.getChildren()
+                                                .stream()
+                                                .filter(node->!node.equals(mainPaneContent))
+                                                .collect(Collectors.toList());
+            Platform.runLater(()->{
+                mainPane.getChildren().removeAll(toRemove);
+                currentDetailScreen = null;
+            });
+        }
+    }
+
+    boolean isDetailScreenCreationPossible() {
+        System.out.println("test creation possible : ");
+        return currentDetailScreen!=null && currentDetailScreen.isCreationPossible();
+    }
+
+    boolean hasDetailScreenInitialValue() {
+        return currentDetailScreen!=null && currentDetailScreen.hasInitialValue();
+    }
+
+    Product getDetailScreenInitialValue() {
+        if(currentDetailScreen!=null)
+            return currentDetailScreen.getInitialValueSnapshot();
+        else
+            return null;
+    }
+
+    Product getDetailScreenCreation() {
+        if(currentDetailScreen!=null)
+            return currentDetailScreen.create();
+        else
+            return null;
     }
 }

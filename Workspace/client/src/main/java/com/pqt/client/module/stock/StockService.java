@@ -39,13 +39,43 @@ public class StockService {
     /**
      * Accesseur de la liste des produits actuellement en vente.
      *  <p/>
-     * La liste peut être obsolète, voir {@link #getLastRefreshTimestamp()} pour la date du dernier refresh et {@link #refreshProductList()} pour la mettre à jour.
+     * La liste peut être obsolète, voir {@link #getLastRefreshTimestamp()} pour la date du dernier refresh et
+	 * {@link #refreshProductList()} pour la mettre à jour.
      *
      * @return Liste des produits en vente.
      */
 	public List<Product> getProducts() {
 		return dao.getProducts();
 	}
+
+	/**
+	 *	Récupère la liste des produits n'étant pas {@code product} et n'étant pas composé de {@code product}.
+	 *  Les composants sont récursivements vérifiés pour que ces derniers valident aussi ces deux conditions.
+	 *  <p/>
+	 * La liste peut être obsolète, voir {@link #getLastRefreshTimestamp()} pour la date du dernier refresh et
+	 * {@link #refreshProductList()} pour la mettre à jour.
+	 *
+	 * @param product produit à exclure des résultats.
+	 * @return Liste de produit n'étant pas et ne contenant pas {@code product}.
+	 */
+	public List<Product> getProductsExcluding(Product product) {
+		return dao.getProducts();
+	}
+
+	private boolean contains(Product container, Product contained){
+	    if(container==null || contained==null)
+	        return false;
+	    if(container.equals(contained))
+	        return true;
+
+	    if(container.getComponents()!=null)
+	        return container.getComponents()
+                    .stream()
+                    .filter(component->contains(component, contained))
+                    .count()>0;
+
+	    return false;
+    }
 
     /**
      * Accesseur récupérant un unique produit présent dans les stocks en se basant sur son id.
@@ -100,5 +130,4 @@ public class StockService {
 	public void removeListener(IStockListener listener) {
 		dao.removeListener(listener);
 	}
-
 }

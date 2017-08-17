@@ -3,6 +3,8 @@ package com.pqt.client.gui.modules.stock_screen;
 
 import com.pqt.client.gui.modules.stock_screen.listeners.IStockItemEventListener;
 import com.pqt.client.gui.modules.stock_screen.listeners.IStockScreenModelListener;
+import com.pqt.client.gui.modules.stock_screen.product_manager_screen.ProductManagerScreen;
+import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentListener;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.product.Product;
 
@@ -24,11 +26,33 @@ class StockScreenController implements IStockScreenModelListener{
     }
 
     void onDetailProductRequest() {
-        detailProduct(view.getSelectedProduct());
+        if(view.getSelectedProduct()!=null)
+            detailProduct(view.getSelectedProduct());
     }
 
     private void detailProduct(Product product){
-        //TODO à faire
+        view.switchToDetailMode(product);
+    }
+
+    IValidatorComponentListener getDetailScreenValidationListener(){
+        return new IValidatorComponentListener() {
+            @Override
+            public void onValidationEvent() {
+                if(view.isDetailScreenCreationPossible()) {
+                    if (view.hasDetailScreenInitialValue()){
+                        modifyProduct(view.getDetailScreenInitialValue(), view.getDetailScreenCreation());
+                    }else{
+                        addProduct(view.getDetailScreenCreation());
+                    }
+                    view.switchToGeneralMode();
+                }
+            }
+
+            @Override
+            public void onCancelEvent() {
+                view.switchToGeneralMode();
+            }
+        };
     }
 
     void onDeleteProductRequest() {
@@ -55,7 +79,7 @@ class StockScreenController implements IStockScreenModelListener{
         return this::detailProduct;
     }
 
-    private void refreshView(){
+    void refreshView(){
         view.display(model.getProductCollection());
     }
 

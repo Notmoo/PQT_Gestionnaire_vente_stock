@@ -43,6 +43,9 @@
 .list-view:focused .list-cell:filled:focused:selected {
     -fx-background-color: -fx-focus-color;
 }
+.list-cell-highlighted{
+    -fx-background-color: #4d4d4d;
+}
 
 .table-view {
     -fx-base: #1d1d1d;
@@ -231,6 +234,7 @@
     -fx-padding: 5 5 5 5;
     -fx-background-radius: 0;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}
 
 .toast-text{
     -fx-font: 50px "Impact";
@@ -245,4 +249,9 @@
     -fx-border-radius: 6px;
     -fx-padding: 25px;
 }
+
+.pqt-container {
+    -fx-border-width: 2px;
+    -fx-border-color: whitesmoke;
+    -fx-padding: 5 5 5 5;
 }
