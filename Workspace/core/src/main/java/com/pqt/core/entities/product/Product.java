@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+//TODO faire en sorte que les composés reprennent les qté dispo des composants
 /**
  * Created by Notmoo on 18/07/2017.
  */
@@ -123,6 +123,7 @@ public class Product implements ILoggable, Serializable{
         return this.id == other.id
                 && Objects.equals(this.name, other.name)
                 && Objects.equals(this.components, other.components)
-                && Objects.equals(this.category, other.category);
+                && Objects.equals(this.category, other.category)
+                && Objects.equals(this.price, other.price);
     }
 }
