@@ -231,4 +231,18 @@
     -fx-padding: 5 5 5 5;
     -fx-background-radius: 0;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
+
+.toast-text{
+    -fx-font: 50px "Impact";
+    -fx-fill: whitesmoke;
+}
+
+.toast-pane {
+    -fx-background-radius: 10px;
+    -fx-background-color: rgba(0, 0, 0, 0.4);
+    -fx-border-width: 2px;
+    -fx-border-color: whitesmoke;
+    -fx-border-radius: 6px;
+    -fx-padding: 25px;
+}
 }

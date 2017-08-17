@@ -6,6 +6,7 @@ import com.pqt.client.gui.modules.stat_screen.StatScreen;
 import com.pqt.client.gui.modules.stock_screen.StockScreen;
 import com.pqt.client.gui.ressources.components.generics.others.SideBar;
 import com.pqt.client.gui.ressources.components.generics.others.listeners.ISideBarListener;
+import com.pqt.client.gui.ressources.components.generics.toast.ToastFactory;
 import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.module.account.AccountService;
@@ -38,6 +39,7 @@ public class Main extends Application{
         scene.getStylesheets().clear();
         scene.getStylesheets().addAll(getClass().getResource(GUICssTool.getCssFilePath()).toExternalForm());
 
+        ToastFactory.init(primaryStage);
         primaryStage.setTitle(GUIStringTool.getAppTitle());
         primaryStage.setScene(scene);
         primaryStage.show();
