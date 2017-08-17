@@ -1,5 +1,6 @@
 package com.pqt.client.gui.ressources.strings;
 
+import com.pqt.core.entities.product.Category;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.SaleStatus;
 import com.pqt.core.entities.sale.SaleType;
@@ -33,10 +34,19 @@ public class GUIStringTool {
         return "Produits";
     }
 
-    public static IObjectStringRenderer<Product> getProductStringRenderer(){
+    public static IObjectStringRenderer<Product> getDetailledProductStringRenderer(){
         return product->{
             if(product!=null)
                 return String.format("%s - %.2f€ (%s)", product.getName(), product.getPrice(), (product.getAmountRemaining()>=30?"30+": Integer.toString(product.getAmountRemaining())));
+            else
+                return "null";
+        };
+    }
+
+    public static IObjectStringRenderer<Product> getSimpleProductStringRenderer(){
+        return product->{
+            if(product!=null)
+                return String.format("%s - %.2f€", product.getName(), product.getPrice());
             else
                 return "null";
         };
@@ -217,6 +227,54 @@ public class GUIStringTool {
 
     public static String getStatGuiModuleName() {
         return "Statistiques";
+    }
+
+    public static String getProductNameLabel() {
+        return "Nom : ";
+    }
+
+    public static String getProductCategoryLabel() {
+        return "Catégorie : ";
+    }
+
+    public static String getProductAmountRemainingLabel() {
+        return "En stock : ";
+    }
+
+    public static String getProductAmountSoldLabel() {
+        return "Vendu : ";
+    }
+
+    public static String getProductSellableLabel() {
+        return "Vendable : ";
+    }
+
+    public static String getProductPriceLabel() {
+        return "Prix : ";
+    }
+
+    public static StringConverter<Category> getCategoryStringConverter() {
+        return new StringConverter<Category>() {
+            @Override
+            public String toString(Category object) {
+                if(object!=null)
+                   return object.getName();
+                else
+                    return "";
+            }
+
+            @Override
+            public Category fromString(String string) {
+                if(string!=null)
+                    return new Category(-1, string);
+                else
+                    return null;
+            }
+        };
+    }
+
+    public static String getComponentListTitleLabel() {
+        return "Composants";
     }
 }
 
