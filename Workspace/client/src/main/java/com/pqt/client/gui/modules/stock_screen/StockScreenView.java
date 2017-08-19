@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.css.PseudoClass;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -68,10 +69,24 @@ class StockScreenView implements IFXComponent {
         HBox.setHgrow(separator, Priority.ALWAYS);
         mainPaneContent.setTop(mainPaneTopContent);
 
+        PseudoClass outOfStockPseudoClass = PseudoClass.getPseudoClass("stock-out");
+        PseudoClass lowStockPseudoClass = PseudoClass.getPseudoClass("stock-low");
+        PseudoClass highStockPseudoClass = PseudoClass.getPseudoClass("stock-high");
         stockTableView = new TableView<>();
         stockTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         stockTableView.setRowFactory(tableView->{
             TableRow<Product> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldVal, newVal)->{
+                if(newVal!=null){
+                    row.pseudoClassStateChanged(outOfStockPseudoClass, newVal.getAmountRemaining()<=0);
+                    row.pseudoClassStateChanged(lowStockPseudoClass, newVal.getAmountRemaining()>0 && newVal.getAmountRemaining()<30);
+                    row.pseudoClassStateChanged(highStockPseudoClass, newVal.getAmountRemaining()>=30);
+                }else{
+                    row.pseudoClassStateChanged(outOfStockPseudoClass, false);
+                    row.pseudoClassStateChanged(lowStockPseudoClass, false);
+                    row.pseudoClassStateChanged(highStockPseudoClass, false);
+                }
+            });
             row.setOnMouseClicked(event -> {
                 if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2)
                     ctrl.getProductActivationListener().onProductActivated(row.getItem());

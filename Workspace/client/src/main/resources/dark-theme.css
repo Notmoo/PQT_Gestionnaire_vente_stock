@@ -51,6 +51,7 @@
 .list-view {
     -fx-base: #1d1d1d;
     -fx-control-inner-background: #1d1d1d;
+    -fx-control-inner-background-alt: #333333;
     -fx-background-color: #1d1d1d;
     -fx-table-cell-border-color: transparent;
     -fx-table-header-border-color: transparent;
@@ -71,8 +72,10 @@
 .list-view:focused .list-cell:filled:focused:selected {
     -fx-background-color: -fx-focus-color;
 }
-.list-cell-highlighted{
-    -fx-background-color: #4d4d4d;
+.list-cell:highlighted{
+    -fx-text-fill: #cc7a00;
+    -fx-border-width: 1px;
+    -fx-border-color: white;
 }
 
 .table-view {
@@ -106,6 +109,26 @@
     -fx-text-fill: white;
     -fx-alignment: center-left;
     -fx-opacity: 1;
+}
+
+.table-view .table-row-cell {
+    -fx-control-inner-background: #1d1d1d;
+    -fx-control-inner-background-alt: #333333;
+}
+
+.table-view .table-row-cell:stock-out {
+    -fx-control-inner-background: #4d0000;
+    -fx-control-inner-background-alt: #4d0000;
+}
+
+.table-view .table-row-cell:stock-low {
+    -fx-control-inner-background: #4d2e00;
+    -fx-control-inner-background-alt: #4d2e00;
+}
+
+.table-view .table-row-cell:stock-high {
+    -fx-control-inner-background: #1a3300;
+    -fx-control-inner-background-alt: #1a3300;
 }
 
 .table-view:focused .table-row-cell:filled:focused:selected {
@@ -247,7 +270,7 @@
 .validator .button{
     -fx-pref-width: 150;
     -fx-pref-height: 50;
- }
+}
 
 .sidebar {
     -fx-background-color: #2e2e2e;
