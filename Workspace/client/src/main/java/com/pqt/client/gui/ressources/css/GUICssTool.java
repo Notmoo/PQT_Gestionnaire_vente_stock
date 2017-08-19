@@ -5,14 +5,6 @@ public class GUICssTool {
         return "/dark-theme.css";
     }
 
-    public static String getCollapsedSideBarCssStyle() {
-        return "sidebar-collapsed";
-    }
-
-    public static String getExpandedSideBarCssStyle() {
-        return "sidebar-expanded";
-    }
-
     public static String getMainModulePaneCssClass() {
         return "main-module-pane";
     }
