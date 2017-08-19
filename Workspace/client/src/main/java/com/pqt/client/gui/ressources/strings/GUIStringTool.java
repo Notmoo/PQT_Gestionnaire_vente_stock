@@ -36,9 +36,17 @@ public class GUIStringTool {
 
     public static IObjectStringRenderer<Product> getDetailledProductStringRenderer(){
         return product->{
-            if(product!=null)
-                return String.format("%s - %.2f€ (%s)", product.getName(), product.getPrice(), (product.getAmountRemaining()>=30?"30+": Integer.toString(product.getAmountRemaining())));
-            else
+            if(product!=null){
+                String amountStr;
+                if(product.getAmountRemaining()<=0){
+                    amountStr = "OUT OF STOCK";
+                }else if(product.getAmountRemaining()>=30){
+                    amountStr = "30+";
+                }else{
+                    amountStr = Integer.toString(product.getAmountRemaining());
+                }
+                return String.format("%s - %.2f€ (%s)", product.getName(), product.getPrice(), amountStr);
+            }else
                 return "null";
         };
     }
