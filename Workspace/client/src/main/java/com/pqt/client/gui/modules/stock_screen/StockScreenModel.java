@@ -35,15 +35,15 @@ class StockScreenModel {
     }
 
     void commitProductDeletion(Product product) {
-
+        stockService.commitUpdate(stockService.getNewUpdateBuilder().removeProduct(product));
     }
 
     void commitProductModification(Product oldProduct, Product newProduct) {
-
+        stockService.commitUpdate(stockService.getNewUpdateBuilder().modifyProduct(oldProduct, newProduct));
     }
 
     void commitProductAddition(Product product) {
-
+        stockService.commitUpdate(stockService.getNewUpdateBuilder().addProduct(product));
     }
 
     void addListener(IStockScreenModelListener l){
