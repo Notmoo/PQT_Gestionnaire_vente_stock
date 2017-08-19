@@ -8,15 +8,12 @@ import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.Sale;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-
-import java.util.ArrayList;
 
 public class CommandComposerSaleDisplayer implements IFXSaleDisplayerComponent {
 
@@ -35,7 +32,7 @@ public class CommandComposerSaleDisplayer implements IFXSaleDisplayerComponent {
         mainPane = new BorderPane();
         mainPane.getStyleClass().add("sale-displayer");
 
-        Label title = new Label(GUIStringTool.getCommandComposerTitleTitle());
+        Label title = new Label(GUIStringTool.getCommandComposerTitleLabel());
         title.setAlignment(Pos.CENTER);
         title.getStyleClass().add(GUICssTool.getTitleTextStyleClass());
 

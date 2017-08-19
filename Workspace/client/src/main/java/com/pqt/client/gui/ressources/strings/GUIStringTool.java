@@ -60,7 +60,7 @@ public class GUIStringTool {
         };
     }
 
-    public static String getCommandComposerTitleTitle() {
+    public static String getCommandComposerTitleLabel() {
         return "Commande";
     }
 
