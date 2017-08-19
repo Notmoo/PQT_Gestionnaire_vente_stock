@@ -20,8 +20,12 @@ public class MainFrame implements IFXComponent {
         ctrl.updateView();
     }
 
+    public void addModule(IGuiModule module, boolean setActive){
+        ctrl.addModule(module, setActive);
+    }
+
     public void addModule(IGuiModule module){
-        ctrl.addModule(module);
+        ctrl.addModule(module, false);
     }
 
     @Override

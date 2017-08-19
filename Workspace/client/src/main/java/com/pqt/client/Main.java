@@ -32,7 +32,7 @@ public class Main extends Application{
         StatService statService = new StatService();
 
         MainFrame mainFrame = new MainFrame(accountService);
-        mainFrame.addModule(new SaleScreen(accountService, stockService, saleService));
+        mainFrame.addModule(new SaleScreen(accountService, stockService, saleService), true);
         mainFrame.addModule(new StockScreen(stockService, accountService));
         mainFrame.addModule(new StatScreen(statService));
         mainFrame.addModule(new AccountScreen(accountService));

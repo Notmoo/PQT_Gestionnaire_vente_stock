@@ -15,6 +15,8 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -87,10 +89,11 @@ class MainFrameView implements IFXComponent{
         return mainPane;
     }
 
-    void addGuiModule(String moduleName, Pane moduleContent, AccountLevel requiredLevel){
+    void addGuiModule(String moduleName, Pane moduleContent, AccountLevel requiredLevel, boolean setActive){
         Button button = new Button(moduleName);
         button.getStyleClass().add("menu-button");
-        button.setOnMouseClicked(event->{
+
+        Runnable buttonActivationCode = ()->{
             buttonHolder.getChildren()
                     .stream()
                     .filter(Button.class::isInstance)
@@ -101,9 +104,19 @@ class MainFrameView implements IFXComponent{
                 buttonHolder.getChildren().forEach(Node::applyCss);
                 mainPane.setCenter(moduleContent);
             });
+        };
+        button.setOnMouseClicked(event-> {
+            if(event.getButton().equals(MouseButton.PRIMARY))
+                buttonActivationCode.run();
+        });
+        button.setOnKeyTyped(event->{
+            if (event.getCode().equals(KeyCode.ENTER))
+                buttonActivationCode.run();
         });
         currentAccountLevel.addListener((obs, oldVal, newVal)->button.setDisable(requiredLevel.compareTo(newVal)>0));
         button.setDisable(requiredLevel.compareTo(currentAccountLevel.get())>0);
+        if(setActive)
+            buttonActivationCode.run();
         buttonHolder.getChildren().add(button);
     }
 

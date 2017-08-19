@@ -31,8 +31,11 @@ class MainFrameController implements IMainFrameModelListener {
             view.updateModuleButtonLock(AccountLevel.getLowest());
     }
 
-    void addModule(IGuiModule module) {
-        this.view.addGuiModule(module.getModuleName(),module.getPane(), module.getLowestRequiredAccountLevel());
+    void addModule(IGuiModule module, boolean activationRequired) {
+        boolean activate = activationRequired
+                && model.getCurrentAccount()!=null
+                && model.getCurrentAccount().getPermissionLevel().compareTo(module.getLowestRequiredAccountLevel())>=0;
+        this.view.addGuiModule(module.getModuleName(),module.getPane(), module.getLowestRequiredAccountLevel(), activate);
     }
 
     IValidatorComponentListener getAccountManagerValidatorListener() {
