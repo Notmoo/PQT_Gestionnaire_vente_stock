@@ -59,7 +59,7 @@ class AccountManagerScreenView implements IFXComponent{
             if (event.getButton().equals(MouseButton.PRIMARY))
                 ctrl.onValidationEvent();
         });
-        Button cancelButton = new Button(GUIStringTool.getValidationButtonLabel());
+        Button cancelButton = new Button(GUIStringTool.getCancelButtonLabel());
         cancelButton.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY))
                 ctrl.onCancelEvent();

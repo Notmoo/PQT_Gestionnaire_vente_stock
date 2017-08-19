@@ -28,9 +28,9 @@ class AccountScreenController {
 
     private void updateViewActionLock() {
         if (model.getCurrentAccount() != null) {
-            view.setAddAccountActionLocked(model.getCurrentAccount().getPermissionLevel().compareTo(AccountLevel.MASTER) >= 0);
-            view.setDetailAccountActionLocked(view.isItemSelected() && model.getCurrentAccount().getPermissionLevel().compareTo(AccountLevel.MASTER) >= 0);
-            view.setRemoveAccountActionLocked(view.isItemSelected() && model.getCurrentAccount().getPermissionLevel().compareTo(AccountLevel.MASTER) >= 0);
+            view.setAddAccountActionLocked(AccountLevel.MASTER.compareTo(model.getCurrentAccount().getPermissionLevel()) > 0);
+            view.setDetailAccountActionLocked(!view.isItemSelected() || AccountLevel.MASTER.compareTo(model.getCurrentAccount().getPermissionLevel()) > 0);
+            view.setRemoveAccountActionLocked(!view.isItemSelected() || AccountLevel.MASTER.compareTo(model.getCurrentAccount().getPermissionLevel()) > 0);
         }else{
             view.setAddAccountActionLocked(true);
             view.setDetailAccountActionLocked(true);

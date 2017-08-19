@@ -13,6 +13,7 @@ import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.sale.SaleStatus;
 import com.pqt.core.entities.sale.SaleType;
 import com.pqt.core.entities.user_account.Account;
+import com.pqt.core.entities.user_account.AccountLevel;
 
 import javax.swing.event.EventListenerList;
 import java.util.Arrays;
@@ -100,7 +101,7 @@ class SaleScreenModel {
         accountService.addListener(new IAccountListener() {
             @Override
             public void onAccountStatusChangedEvent(boolean status) {
-
+                fireAccountConnectedStatusUpdateEvent();
             }
 
             @Override
@@ -130,6 +131,11 @@ class SaleScreenModel {
     private void fireAccountListUpdatedEvent(){
         Arrays.stream(listeners.getListeners(ISaleScreenModelListener.class))
                 .forEach(ISaleScreenModelListener::onAccountListUpdatedEvent);
+    }
+
+    private void fireAccountConnectedStatusUpdateEvent() {
+        Arrays.stream(listeners.getListeners(ISaleScreenModelListener.class))
+                .forEach(ISaleScreenModelListener::onAccountConnectedStateUpdatedEvent);
     }
 
     List<Account> getAccountList() {
@@ -204,5 +210,16 @@ class SaleScreenModel {
 
     void removeListener(ISaleScreenModelListener listener){
         listeners.remove(ISaleScreenModelListener.class, listener);
+    }
+
+    boolean isCurrentAccountConnected() {
+        return accountService.isCurrentAccountLoggedIn();
+    }
+
+    AccountLevel getCurrentAccountLevel() {
+        if(accountService.getCurrentAccount()!=null)
+            return accountService.getCurrentAccount().getPermissionLevel();
+        else
+            return AccountLevel.getLowest();
     }
 }

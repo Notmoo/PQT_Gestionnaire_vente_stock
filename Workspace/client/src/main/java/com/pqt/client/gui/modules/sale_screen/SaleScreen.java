@@ -6,6 +6,7 @@ import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.sale.SaleService;
 import com.pqt.client.module.stock.StockService;
+import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.scene.layout.Pane;
 
 public class SaleScreen implements IGuiModule {
@@ -29,5 +30,10 @@ public class SaleScreen implements IGuiModule {
     @Override
     public String getModuleName() {
         return GUIStringTool.getSaleGuiModuleName();
+    }
+
+    @Override
+    public AccountLevel getLowestRequiredAccountLevel() {
+        return AccountLevel.WAITER;
     }
 }

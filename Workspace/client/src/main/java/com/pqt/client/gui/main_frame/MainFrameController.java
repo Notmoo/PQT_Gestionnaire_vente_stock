@@ -5,6 +5,7 @@ import com.pqt.client.gui.modules.IGuiModule;
 import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentListener;
 import com.pqt.client.gui.ressources.components.specifics.account.listeners.IAccountComponentListener;
 import com.pqt.core.entities.user_account.Account;
+import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.event.Event;
 
 class MainFrameController implements IMainFrameModelListener {
@@ -21,8 +22,17 @@ class MainFrameController implements IMainFrameModelListener {
         this.view = view;
     }
 
-    void addModule(IGuiModule module, boolean setActive) {
-        this.view.addGuiModule(module.getModuleName(),module.getPane(), setActive);
+    void updateView(){
+        view.feedAccountCollectionToManager(model.getAccounts());
+        view.setCurrentAccount(model.getCurrentAccount());
+        if(model.getCurrentAccount()!=null)
+            view.updateModuleButtonLock(model.getCurrentAccount().getPermissionLevel());
+        else
+            view.updateModuleButtonLock(AccountLevel.getLowest());
+    }
+
+    void addModule(IGuiModule module) {
+        this.view.addGuiModule(module.getModuleName(),module.getPane(), module.getLowestRequiredAccountLevel());
     }
 
     IValidatorComponentListener getAccountManagerValidatorListener() {
@@ -71,11 +81,11 @@ class MainFrameController implements IMainFrameModelListener {
 
     @Override
     public void onAccountStatusChangedEvent(boolean status) {
-        view.setCurrentAccount(model.getCurrentAccount());
+        updateView();
     }
 
     @Override
     public void onAccountCollectionChangedEvent() {
-        view.feedAccountCollectionToManager(model.getAccounts());
+        updateView();
     }
 }

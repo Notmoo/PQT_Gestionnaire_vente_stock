@@ -6,7 +6,11 @@ import com.pqt.client.gui.ressources.components.generics.others.SideBar;
 import com.pqt.client.gui.ressources.components.generics.others.listeners.ISideBarListener;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.user_account.Account;
+import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -25,10 +29,11 @@ class MainFrameView implements IFXComponent{
     private BorderPane mainPane;
     private AccountManager accountManager;
     private VBox buttonHolder;
+    private ObjectProperty<AccountLevel> currentAccountLevel;
 
     MainFrameView(MainFrameController ctrl) {
-
         this.ctrl = ctrl;
+        currentAccountLevel = new SimpleObjectProperty<>(AccountLevel.getLowest());
         initGui();
     }
 
@@ -82,7 +87,7 @@ class MainFrameView implements IFXComponent{
         return mainPane;
     }
 
-    void addGuiModule(String moduleName, Pane moduleContent, boolean setActive){
+    void addGuiModule(String moduleName, Pane moduleContent, AccountLevel requiredLevel){
         Button button = new Button(moduleName);
         button.getStyleClass().add("menu-button");
         button.setOnMouseClicked(event->{
@@ -97,8 +102,8 @@ class MainFrameView implements IFXComponent{
                 mainPane.setCenter(moduleContent);
             });
         });
-        if(setActive)
-            button.getOnMouseClicked().handle(null);
+        currentAccountLevel.addListener((obs, oldVal, newVal)->button.setDisable(requiredLevel.compareTo(newVal)>0));
+        button.setDisable(requiredLevel.compareTo(currentAccountLevel.get())>0);
         buttonHolder.getChildren().add(button);
     }
 
@@ -116,5 +121,9 @@ class MainFrameView implements IFXComponent{
 
     void feedAccountCollectionToManager(Collection<Account> accounts){
         accountManager.display(accounts);
+    }
+
+    void updateModuleButtonLock(AccountLevel level) {
+        currentAccountLevel.setValue(level);
     }
 }

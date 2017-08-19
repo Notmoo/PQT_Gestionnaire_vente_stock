@@ -4,4 +4,5 @@ import java.util.EventListener;
 
 public interface IStockScreenModelListener extends EventListener {
     void onStockUpdatedEvent();
+    void onAcccountConnectedStatusUpdatedEvent();
 }

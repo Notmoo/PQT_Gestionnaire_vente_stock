@@ -7,6 +7,7 @@ import com.pqt.client.gui.modules.stock_screen.product_manager_screen.ProductMan
 import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentListener;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.user_account.AccountLevel;
 
 class StockScreenController implements IStockScreenModelListener{
 
@@ -86,5 +87,26 @@ class StockScreenController implements IStockScreenModelListener{
     @Override
     public void onStockUpdatedEvent() {
         refreshView();
+    }
+
+    @Override
+    public void onAcccountConnectedStatusUpdatedEvent() {
+        updateViewActionLock();
+    }
+
+    void updateViewActionLock(){
+        if(model.isAccountConnected() && model.getConnectedAccountLevel().compareTo(AccountLevel.MASTER)>=0){
+            view.setAddProductActionLocked(false);
+            view.setEditProductActionLocked(view.getSelectedProduct()==null);
+            view.setRemoveProductActionLocked(view.getSelectedProduct()==null);
+        }else{
+            view.setAddProductActionLocked(true);
+            view.setEditProductActionLocked(true);
+            view.setRemoveProductActionLocked(true);
+        }
+    }
+
+    void onProductSelectedChange(){
+        updateViewActionLock();
     }
 }

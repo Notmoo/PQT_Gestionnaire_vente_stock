@@ -8,5 +8,6 @@ public interface ISaleScreenModelListener extends EventListener {
     void onSaleValidatedEvent();
     void onSaleNotValidatedEvent(SaleStatus status, Throwable cause);
     void onStockUpdatedEvent();
+    void onAccountConnectedStateUpdatedEvent();
     void onAccountListUpdatedEvent();
 }

@@ -30,7 +30,7 @@ class SaleScreenController {
 
             @Override
             public void onSaleNotValidatedEvent(SaleStatus status, Throwable cause) {
-                SaleScreenController.this.onSaleValidationError(status, cause);
+                onSaleValidationError(status, cause);
             }
 
             @Override
@@ -39,9 +39,16 @@ class SaleScreenController {
             }
 
             @Override
+            public void onAccountConnectedStateUpdatedEvent() {
+                updateActionLock();
+            }
+
+            @Override
             public void onAccountListUpdatedEvent() {
                 view.setAccounts(model.getAccountList());
             }
+
+
         });
     }
 
@@ -67,7 +74,14 @@ class SaleScreenController {
 
     private void updateSale(){
         view.setSale(getCurrentSale());
-        view.setValidationButtonEnabled(model.checkValidity(getCurrentSale()));
+        updateActionLock();
+    }
+
+    private void updateActionLock() {
+        boolean validationButtonEnabled = model.checkValidity(getCurrentSale())
+                && model.isCurrentAccountConnected()
+                && model.getCurrentAccountLevel().compareTo(AccountLevel.WAITER)>=0;
+        view.setValidationButtonEnabled(validationButtonEnabled);
     }
 
     private void updateData(){

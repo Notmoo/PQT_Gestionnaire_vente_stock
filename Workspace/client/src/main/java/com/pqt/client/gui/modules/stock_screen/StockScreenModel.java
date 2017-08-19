@@ -1,9 +1,12 @@
 package com.pqt.client.gui.modules.stock_screen;
 
 import com.pqt.client.gui.modules.stock_screen.listeners.IStockScreenModelListener;
+import com.pqt.client.module.account.AccountService;
+import com.pqt.client.module.account.listeners.IAccountListener;
 import com.pqt.client.module.stock.Listeners.StockListenerAdapter;
 import com.pqt.client.module.stock.StockService;
 import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.user_account.AccountLevel;
 
 import javax.swing.event.EventListenerList;
 import java.util.Arrays;
@@ -12,9 +15,10 @@ import java.util.Collection;
 class StockScreenModel {
 
     private StockService stockService;
+    private AccountService accountService;
     private EventListenerList listenerList;
 
-    StockScreenModel(StockService stockService) {
+    StockScreenModel(StockService stockService, AccountService accountService) {
         listenerList = new EventListenerList();
         this.stockService = stockService;
         this.stockService.addListener(new StockListenerAdapter(){
@@ -23,6 +27,23 @@ class StockScreenModel {
                 StockScreenModel.this.fireProductCollectionChanged();
             }
         });
+        this.accountService = accountService;
+        this.accountService.addListener(new IAccountListener() {
+            @Override
+            public void onAccountStatusChangedEvent(boolean status) {
+                StockScreenModel.this.fireConnectedStatusChanged();
+            }
+
+            @Override
+            public void onAccountListChangedEvent() {
+
+            }
+        });
+    }
+
+    private void fireConnectedStatusChanged() {
+        Arrays.stream(listenerList.getListeners(IStockScreenModelListener.class))
+                .forEach(IStockScreenModelListener::onAcccountConnectedStatusUpdatedEvent);
     }
 
     private void fireProductCollectionChanged() {
@@ -52,5 +73,16 @@ class StockScreenModel {
 
     void removeListener(IStockScreenModelListener l){
         listenerList.remove(IStockScreenModelListener.class, l);
+    }
+
+    boolean isAccountConnected() {
+        return accountService.isCurrentAccountLoggedIn();
+    }
+
+    AccountLevel getConnectedAccountLevel() {
+        if(accountService.getCurrentAccount()!=null)
+            return accountService.getCurrentAccount().getPermissionLevel();
+        else
+            return AccountLevel.getLowest();
     }
 }

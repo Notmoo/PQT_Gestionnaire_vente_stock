@@ -34,6 +34,9 @@ class StockScreenView implements IFXComponent {
     private TableView<Product> stockTableView;
     private ProductManagerScreenFactory productManagerScreenFactory;
     private ProductManagerScreen currentDetailScreen;
+    private Button addProductButton;
+    private Button detailProductButton;
+    private Button removeProductButton;
 
     StockScreenView(StockScreenController ctrl, ProductManagerScreenFactory productManagerScreenFactory) {
         this.ctrl = ctrl;
@@ -49,12 +52,12 @@ class StockScreenView implements IFXComponent {
         mainPaneContent.prefWidthProperty().bind(mainPane.widthProperty());
         mainPaneContent.prefHeightProperty().bind(mainPane.heightProperty());
 
-        Button addProductButton = new Button(GUIStringTool.getAddButtonLabel());
+        addProductButton = new Button(GUIStringTool.getAddButtonLabel());
         addProductButton.setOnMouseClicked(event -> ctrl.onAddProductRequest());
-        Button detailProductButton = new Button(GUIStringTool.getDetailButtonLabel());
+        detailProductButton = new Button(GUIStringTool.getDetailButtonLabel());
         detailProductButton.setOnMouseClicked(event -> ctrl.onDetailProductRequest());
         detailProductButton.setDisable(true);
-        Button removeProductButton = new Button(GUIStringTool.getRemoveButtonLabel());
+        removeProductButton = new Button(GUIStringTool.getRemoveButtonLabel());
         removeProductButton.setDisable(true);
         removeProductButton.setOnMouseClicked(event -> ctrl.onDeleteProductRequest());
         Button refreshProductButton = new Button(GUIStringTool.getRefreshButtonLabel());
@@ -98,10 +101,7 @@ class StockScreenView implements IFXComponent {
             return row;
         });
         stockTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        stockTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal)->{
-            detailProductButton.setDisable(newVal==null);
-            removeProductButton.setDisable(newVal==null);
-        });
+        stockTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal)->ctrl.onProductSelectedChange());
         List<TableColumn<Product, ?>> columns = new ArrayList<>();
 
         columns.add(createNewTableColumn(String.class,
@@ -226,5 +226,17 @@ class StockScreenView implements IFXComponent {
             return currentDetailScreen.create();
         else
             return null;
+    }
+
+    void setAddProductActionLocked(boolean locked){
+        addProductButton.setDisable(locked);
+    }
+
+    void setRemoveProductActionLocked(boolean locked){
+        removeProductButton.setDisable(locked);
+    }
+
+    void setEditProductActionLocked(boolean locked){
+        detailProductButton.setDisable(locked);
     }
 }
