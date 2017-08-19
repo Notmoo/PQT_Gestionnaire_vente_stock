@@ -42,6 +42,7 @@ public class SideBar extends VBox {
                 setCycleDuration(Duration.millis(250));
             }
             protected void interpolate(double frac) {
+                SideBar.this.setVisible(true);
                 final double curWidth = expandedWidth.getValue().doubleValue() * frac;
                 setPrefWidth(curWidth);
                 setTranslateX(-expandedWidth.getValue().doubleValue() + curWidth);
@@ -64,9 +65,11 @@ public class SideBar extends VBox {
                 setTranslateX(-expandedWidth.getValue().doubleValue() + curWidth);
             }
         };
-        collapseSideBar.onFinishedProperty().set(actionEvent ->
-                Arrays.stream(listenerList.getListeners(ISideBarListener.class))
-                        .forEach(ISideBarListener::onCollapsedFinished));
+        collapseSideBar.onFinishedProperty().set(actionEvent ->{
+            setVisible(false);
+            Arrays.stream(listenerList.getListeners(ISideBarListener.class))
+                    .forEach(ISideBarListener::onCollapsedFinished);
+        });
         collapse();
     }
 
@@ -74,7 +77,6 @@ public class SideBar extends VBox {
         if (expandSideBar.statusProperty().get() == Animation.Status.STOPPED
                 && collapseSideBar.statusProperty().get() == Animation.Status.STOPPED) {
             if (!isVisible()) {
-                setVisible(true);
                 expandSideBar.play();
             }
         }
@@ -85,7 +87,6 @@ public class SideBar extends VBox {
                 && collapseSideBar.statusProperty().get() == Animation.Status.STOPPED) {
             if (isVisible()) {
                 collapseSideBar.play();
-                setVisible(false);
             }
         }
     }
