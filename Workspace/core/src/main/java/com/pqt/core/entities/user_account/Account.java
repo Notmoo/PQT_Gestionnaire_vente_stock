@@ -23,6 +23,10 @@ public class Account implements ILoggable, Serializable {
         this.permissionLevel = permissionLevel;
     }
 
+    public Account(Account account) {
+        this(account.getUsername(), account.getPassword(), account.getPermissionLevel());
+    }
+
     public String getUsername() {
         return username;
     }
