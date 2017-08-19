@@ -1,6 +1,7 @@
 package com.pqt.client;
 
 import com.pqt.client.gui.main_frame.MainFrame;
+import com.pqt.client.gui.modules.account_screen.AccountScreen;
 import com.pqt.client.gui.modules.sale_screen.SaleScreen;
 import com.pqt.client.gui.modules.stat_screen.StatScreen;
 import com.pqt.client.gui.modules.stock_screen.StockScreen;
@@ -34,7 +35,7 @@ public class Main extends Application{
         mainFrame.addModule(new SaleScreen(accountService, stockService, saleService), true);
         mainFrame.addModule(new StockScreen(stockService));
         mainFrame.addModule(new StatScreen(statService));
-        //TODO ajouter un module AccountScreen
+        mainFrame.addModule(new AccountScreen(accountService));
 
         Scene scene = new Scene(mainFrame.getPane(), 800, 600);
         scene.getStylesheets().clear();

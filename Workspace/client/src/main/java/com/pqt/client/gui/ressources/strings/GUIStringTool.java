@@ -284,6 +284,53 @@ public class GUIStringTool {
     public static String getComponentListTitleLabel() {
         return "Composants";
     }
+
+    public static String getAccountGuiModuleName() {
+        return "Utilisateurs";
+    }
+
+    public static IObjectStringRenderer<AccountLevel> getAccountLevelStringRenderer() {
+        return level->{
+            switch (level){
+                case LOWEST:
+                    return "autre";
+                case GUEST:
+                    return "Invité";
+                case STAFF:
+                    return "Staff";
+                case WAITER:
+                    return "Caissier";
+                case MASTER:
+                    return "Chef";
+                default:
+                    return "unknown";
+            }
+        };
+    }
+
+    public static String getAccountListTitleLabel() {
+        return "Utilisateurs";
+    }
+
+    public static String getUsernameLabel() {
+        return "Nom :";
+    }
+
+    public static String getPasswordLabel() {
+        return "Mot de passe : ";
+    }
+
+    public static String getUserLevelLabel() {
+        return "Niveau d'accréditation : ";
+    }
+
+    public static String getAccountNameColumnHeaderLabel() {
+        return "Nom d'utilisateur";
+    }
+
+    public static String getAccountLevelColumnHeaderLabel() {
+        return "Niveau d'accréditation";
+    }
 }
 
 
