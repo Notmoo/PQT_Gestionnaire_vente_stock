@@ -107,7 +107,6 @@ class ProductManagerScreenView implements IFXComponent {
         mainPaneContent.setCenter(mainPaneCenterContent);
 
         VBox mainPaneRightContent = new VBox();
-        mainPaneRightContent.getStyleClass().add(GUICssTool.getContainerStyleClass());
         mainPaneRightContent.setAlignment(Pos.CENTER);
         Label title = new Label(GUIStringTool.getComponentListTitleLabel());
         title.setAlignment(Pos.CENTER);

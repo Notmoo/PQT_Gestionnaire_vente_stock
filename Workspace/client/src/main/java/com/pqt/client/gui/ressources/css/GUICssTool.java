@@ -2,7 +2,8 @@ package com.pqt.client.gui.ressources.css;
 
 public class GUICssTool {
     public static String getCssFilePath(){
-        return "/dark-theme.css";
+        //return "/daymode-blue.css";
+        return "/nightmode.css";
     }
 
     public static String getMainModulePaneCssClass() {
@@ -15,9 +16,5 @@ public class GUICssTool {
 
     public static String getTitleTextStyleClass() {
         return "label-header";
-    }
-
-    public static String getContainerStyleClass() {
-        return "pqt-container";
     }
 }

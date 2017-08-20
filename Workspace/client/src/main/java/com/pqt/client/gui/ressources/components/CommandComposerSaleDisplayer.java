@@ -30,7 +30,6 @@ public class CommandComposerSaleDisplayer implements IFXSaleDisplayerComponent {
 
     private void init() {
         mainPane = new BorderPane();
-        mainPane.getStyleClass().add("sale-displayer");
 
         Label title = new Label(GUIStringTool.getCommandComposerTitleLabel());
         title.setAlignment(Pos.CENTER);

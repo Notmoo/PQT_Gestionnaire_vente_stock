@@ -5,6 +5,7 @@ import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
@@ -14,7 +15,7 @@ import java.util.Collection;
 
 class AccountManagerScreenView implements IFXComponent{
 
-    private Pane mainPane;
+    private StackPane mainPane;
     private AccountManagerScreenController ctrl;
 
     private ChoiceBox<AccountLevel> levelChoiceBox;
@@ -27,11 +28,13 @@ class AccountManagerScreenView implements IFXComponent{
     }
 
     private void initGui() {
-        mainPane = new Pane();
+        mainPane = new StackPane();
 
         BorderPane mainPaneContent = new BorderPane();
 
+
         GridPane mainPaneCenterContent = new GridPane();
+        mainPaneCenterContent.setAlignment(Pos.CENTER);
         Label nameLabel = new Label(GUIStringTool.getUsernameLabel());
         nameTextField = new TextField();
         nameTextField.textProperty().addListener((obs, oldVal, newVal)->ctrl.onNameChanged(oldVal, newVal));

@@ -67,7 +67,6 @@ public class CategoryTabStockDisplayer implements IFXDisplayerComponent<Collecti
 
     private void init(){
         mainPane = new BorderPane();
-        mainPane.getStyleClass().add("stock-displayer");
 
         Label title = new Label(GUIStringTool.getCategorytabStockDisplayerTitle());
         title.setAlignment(Pos.CENTER);
