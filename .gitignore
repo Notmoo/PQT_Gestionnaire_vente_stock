@@ -1,0 +1,8 @@
+#Ignoring Intellij workspace specific folders and files
+/**/.idea/workspace.xml
+/**/tasks.xml
+
+/**/.idea/libraries
+
+#Ignoring target folders
+**/target/

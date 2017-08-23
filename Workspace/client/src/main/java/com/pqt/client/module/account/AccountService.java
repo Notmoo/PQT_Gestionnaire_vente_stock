@@ -18,7 +18,7 @@ public class AccountService {
 
 	}
 
-	public boolean isAccountLoggedIn(Account account) {
+	public boolean isCurrentAccountLoggedIn() {
 		return false;
 	}
 
@@ -26,7 +26,7 @@ public class AccountService {
 
 	}
 
-	public void logOutCurrentAccount(String password) {
+	public void logOutCurrentAccount() {
 
 	}
 
@@ -42,4 +42,7 @@ public class AccountService {
 
 	}
 
+    public List<Account> getAllAccounts() {
+        return null;
+    }
 }

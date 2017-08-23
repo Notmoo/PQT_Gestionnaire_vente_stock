@@ -33,12 +33,8 @@ public class StockDao {
 	}
 
 	public synchronized Product getProduct(final int id) {
-		Optional<Product> match = products.stream().filter((product->product.getId()==id)).findFirst();
-		if(match.isPresent())
-			return match.get();
-
-		return null;
-	}
+		return products.stream().filter((product->product.getId()==id)).findFirst().orElse(null);
+    }
 
 	public void refreshProductList() {
 		QueryExecutor.INSTANCE.execute(QueryFactory.newStockQuery(), new IStockQueryCallback() {

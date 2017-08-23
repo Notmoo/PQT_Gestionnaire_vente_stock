@@ -4,6 +4,6 @@ import java.util.EventListener;
 
 public interface IAccountListener extends EventListener {
 
-	public void onAccountStatusChanged(boolean status);
-
+	void onAccountStatusChangedEvent(boolean status);
+	void onAccountListChangedEvent();
 }
