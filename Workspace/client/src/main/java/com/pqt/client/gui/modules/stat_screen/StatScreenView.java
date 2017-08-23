@@ -2,7 +2,6 @@ package com.pqt.client.gui.modules.stat_screen;
 
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.css.GUICssTool;
-import com.sun.deploy.util.StringUtils;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
@@ -43,7 +42,7 @@ class StatScreenView implements IFXComponent {
                 .map(key->String.format(" * %s : %s", key, statistics.get(key)))
                 .collect(Collectors.toList()));
 
-        Platform.runLater(()->statTextArea.setText(StringUtils.join(lines, "\n")));
+        Platform.runLater(()->lines.forEach(line -> statTextArea.appendText(line+"\n")));
     }
 
     @Override
