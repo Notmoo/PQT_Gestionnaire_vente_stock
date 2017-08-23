@@ -4,10 +4,12 @@ import java.util.EventListener;
 
 public interface IConnectionListener extends EventListener {
 
-	public abstract void onMessageReceivedEvent(String msg);
+	void onMessageReceivedEvent(String msg);
 
-	public abstract void onConnectedEvent();
+	void onConnectedEvent();
 
-	public abstract void onDisconnectedEvent();
+	void onDisconnectedEvent();
+
+	void onTimeOutEvent();
 
 }

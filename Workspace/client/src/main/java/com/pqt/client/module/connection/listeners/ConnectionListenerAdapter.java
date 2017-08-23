@@ -1,7 +1,5 @@
 package com.pqt.client.module.connection.listeners;
 
-//TODO écrire contenu méthodes
-//TODO écrire javadoc
 public class ConnectionListenerAdapter implements IConnectionListener {
 
 
@@ -10,6 +8,7 @@ public class ConnectionListenerAdapter implements IConnectionListener {
 	 * 
 	 *  
 	 */
+	@Override
 	public void onMessageReceivedEvent(String msg) {
 
 	}
@@ -20,6 +19,7 @@ public class ConnectionListenerAdapter implements IConnectionListener {
 	 * 
 	 *  
 	 */
+	@Override
 	public void onConnectedEvent() {
 
 	}
@@ -30,7 +30,19 @@ public class ConnectionListenerAdapter implements IConnectionListener {
 	 * 
 	 *  
 	 */
+	@Override
 	public void onDisconnectedEvent() {
+
+	}
+
+
+	/**
+	 * @see com.pqt.client.module.connection.listeners.IConnectionListener#onTimeOutEvent()
+	 *
+	 *
+	 */
+	@Override
+	public void onTimeOutEvent() {
 
 	}
 
