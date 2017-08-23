@@ -6,6 +6,9 @@ import com.pqt.client.module.query.query_callback.IIdQueryCallback;
 import com.pqt.client.module.sale.listeners.ISaleFirerer;
 import com.pqt.client.module.sale.listeners.ISaleListener;
 import com.pqt.client.module.sale.listeners.SimpleSaleFirerer;
+import com.pqt.core.entities.sale.SaleType;
+
+import java.util.List;
 
 //TODO écrire javadoc
 //TODO add log lines
@@ -55,4 +58,8 @@ public class SaleService {
         eventFirerer.removeListener(listener);
 	}
 
+    public List<SaleType> getSaleTypes() {
+	    //TODO
+        return null;
+    }
 }

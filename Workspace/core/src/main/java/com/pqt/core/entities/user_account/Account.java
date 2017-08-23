@@ -23,6 +23,10 @@ public class Account implements ILoggable, Serializable {
         this.permissionLevel = permissionLevel;
     }
 
+    public Account(Account account) {
+        this(account.getUsername(), account.getPassword(), account.getPermissionLevel());
+    }
+
     public String getUsername() {
         return username;
     }
@@ -49,7 +53,7 @@ public class Account implements ILoggable, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, passwordHash, permissionLevel);
+        return Objects.hash(username, password, permissionLevel);
     }
 
     @Override
@@ -61,9 +65,8 @@ public class Account implements ILoggable, Serializable {
             return false;
 
         Account acc = Account.class.cast(obj);
-        return this.id == acc.id
-                && Objects.equals(this.username, acc.username)
-                && Objects.equals(this.passwordHash, acc.passwordHash)
+        return Objects.equals(this.username, acc.username)
+                && Objects.equals(this.password, acc.password)
                 && Objects.equals(this.permissionLevel, acc.permissionLevel);
     }
 }

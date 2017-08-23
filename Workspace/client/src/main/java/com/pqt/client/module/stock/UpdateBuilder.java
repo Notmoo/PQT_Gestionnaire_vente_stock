@@ -16,20 +16,23 @@ public class UpdateBuilder {
         toModify = new HashMap<>();
     }
 
-    public void addProduct(Product product) {
+    public UpdateBuilder addProduct(Product product) {
         if(!toAdd.contains(product)){
             toAdd.add(product);
         }
+        return this;
 	}
 
-	public void removeProduct(Product product) {
+	public UpdateBuilder removeProduct(Product product) {
         if(toRemove.contains(product)){
             toRemove.remove(product);
         }
+        return this;
 	}
 
-	public void modifyProduct(Product oldVersion, Product newVersion) {
+	public UpdateBuilder modifyProduct(Product oldVersion, Product newVersion) {
         toModify.put(oldVersion, newVersion);
+        return this;
 	}
 
 	public List<ProductUpdate> build() {

@@ -28,21 +28,6 @@ public class Client extends PqtMember{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Client client = (Client) o;
-
-        return address.equals(client.address) && id==client.id && type.equals(client.type);
-    }
-
-    @Override
-    public int hashCode() {
-        return address.hashCode() + type.hashCode() + Integer.class.cast(id);
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), address);
     }
