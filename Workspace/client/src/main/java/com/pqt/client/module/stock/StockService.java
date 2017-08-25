@@ -1,5 +1,6 @@
 package com.pqt.client.module.stock;
 
+import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.core.entities.product.Product;
 import com.pqt.client.module.stock.Listeners.IStockListener;
 
@@ -9,12 +10,10 @@ import java.util.List;
 //TODO Add log lines
 public class StockService {
 
-	public static final StockService INSTANCE = new StockService();
-
 	private StockDao dao;
 
-	public StockService() {
-		dao = new StockDao();
+	public StockService(QueryExecutor executor) {
+		dao = new StockDao(executor);
 	}
 
     /**

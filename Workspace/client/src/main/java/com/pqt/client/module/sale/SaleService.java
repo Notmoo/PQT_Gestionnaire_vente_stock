@@ -1,8 +1,9 @@
 package com.pqt.client.module.sale;
 
 import com.pqt.client.module.query.QueryExecutor;
-import com.pqt.client.module.query.QueryFactory;
-import com.pqt.client.module.query.query_callback.IIdQueryCallback;
+import com.pqt.client.module.query.QueryMessageFactory;
+import com.pqt.client.module.query.query_callback.ICollectionItemMessageCallback;
+import com.pqt.client.module.query.query_callback.INoItemMessageCallback;
 import com.pqt.client.module.sale.listeners.ISaleFirerer;
 import com.pqt.client.module.sale.listeners.ISaleListener;
 import com.pqt.client.module.sale.listeners.SimpleSaleFirerer;
@@ -14,10 +15,14 @@ import java.util.List;
 //TODO add log lines
 public class SaleService {
 
+    private long saleId;
     private ISaleFirerer eventFirerer;
+    private QueryExecutor executor;
 
-	public SaleService() {
+	public SaleService(QueryExecutor executor) {
+	    saleId = 0;
 	    eventFirerer = new SimpleSaleFirerer();
+	    this.executor = executor;
 	}
 
 	public SaleBuilder getNewSaleBuilder() {
@@ -25,22 +30,30 @@ public class SaleService {
 	}
 
 	public long commitSale(SaleBuilder saleBuilder) {
-        return QueryExecutor.INSTANCE.execute(QueryFactory.newSaleQuery(saleBuilder.build()), new IIdQueryCallback() {
+        final long currentSaleId = saleId;
+        if(saleId<Long.MAX_VALUE)
+            saleId++;
+        else
+            saleId = 0;
+
+        executor.executeSaleQuery(saleBuilder.build(), new INoItemMessageCallback() {
             @Override
-            public void ack(long id) {
-                eventFirerer.fireSaleValidationSuccess(id);
+            public void ack() {
+                eventFirerer.fireSaleValidationSuccess(currentSaleId);
             }
 
             @Override
-            public void err(long id, Throwable cause) {
-                eventFirerer.fireSaleValidationError(id, cause);
+            public void err(Throwable cause) {
+                eventFirerer.fireSaleValidationError(currentSaleId, cause);
             }
 
             @Override
-            public void ref(long id, Throwable cause) {
-                eventFirerer.fireSaleValidationRefused(id, cause);
+            public void ref(Throwable cause) {
+                eventFirerer.fireSaleValidationRefused(currentSaleId, cause);
             }
         });
+
+        return currentSaleId;
 	}
 
 	/*

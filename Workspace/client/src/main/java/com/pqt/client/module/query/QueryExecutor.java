@@ -1,35 +1,170 @@
 package com.pqt.client.module.query;
 
-import com.pqt.client.module.query.query_callback.IIdQueryCallback;
-import com.pqt.core.entities.query.IQuery;
-import com.pqt.client.module.query.query_callback.ISimpleQueryCallback;
-import com.pqt.client.module.query.query_callback.IStatQueryCallback;
-import com.pqt.client.module.query.query_callback.IStockQueryCallback;
+import com.pqt.client.module.connection.ConnectionService;
+import com.pqt.client.module.connection.listeners.IConnectionListener;
+import com.pqt.client.module.query.exceptions.HeaderNotFoundException;
+import com.pqt.client.module.query.exceptions.MessageTimeoutException;
+import com.pqt.client.module.query.query_callback.*;
+import com.pqt.core.communication.GSonMessageToolFactory;
+import com.pqt.core.communication.IMessageToolFactory;
+import com.pqt.core.entities.messages.Message;
+import com.pqt.core.entities.messages.MessageType;
+import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.product.ProductUpdate;
+import com.pqt.core.entities.sale.Sale;
+import com.pqt.core.entities.user_account.Account;
 
-//TODO écrire contenu méthodes
+import java.util.List;
+
 //TODO écrire javadoc
 public class QueryExecutor {
 
-	public static final QueryExecutor INSTANCE = new QueryExecutor();
+	private IMessageToolFactory messageToolFactory;
+	private ConnectionService connectionService;
+	private QueryMessageFactory messageFactory;
 
-	private QueryExecutor(){
-
+	public QueryExecutor(ConnectionService connectionService){
+	    messageToolFactory = new GSonMessageToolFactory();
+	    this.connectionService = connectionService;
+	    this.messageFactory = new QueryMessageFactory(messageToolFactory);
 	}
 
-	public long execute(IQuery query, ISimpleQueryCallback callback) {
-        return 0;
-	}
-
-	public long execute(IQuery query, IStatQueryCallback callback) {
-        return 0;
-	}
-
-	public long execute(IQuery query, IStockQueryCallback callback) {
-        return 0;
-	}
-
-    public long execute(IQuery query, IIdQueryCallback callback) {
-        return 0;
+    public void executeSaleQuery(Sale sale, INoItemMessageCallback callback) {
+        sendMessage(messageFactory.newSaleMessage(sale), callback, MessageType.ACK_SALE);
     }
 
+    public void executePingQuery(INoItemMessageCallback callback){
+        sendMessage(messageFactory.newPingMessage(), callback, MessageType.ACK_PING);
+    }
+
+    public void executeUpdateQuery(List<ProductUpdate> updates, INoItemMessageCallback callback) {
+        sendMessage(messageFactory.newUpdateMessage(updates), callback, MessageType.ACK_UPDATE);
+    }
+
+    public void executeConnectAccountQuery(Account account, boolean desiredState, INoItemMessageCallback callback){
+        sendMessage(messageFactory.newConnectAccountMessage(account,desiredState), callback, MessageType.ACK_CONNECT_ACCOUNT);
+    }
+
+    private void sendMessage(Message message, INoItemMessageCallback callback, MessageType responseType){
+        connectionService.sendText(messageToolFactory.getObjectFormatter(Message.class).format(message), new IConnectionListener() {
+            @Override
+            public void onMessageReceivedEvent(String msg) {
+                Message response = messageToolFactory.getObjectParser(Message.class).parse(msg);
+                if(response.getType().equals(responseType))
+                    callback.ack();
+                else
+                    handleUnexpectedTypeInResponse(response, callback);
+            }
+
+            @Override
+            public void onConnectedEvent() {
+
+            }
+
+            @Override
+            public void onDisconnectedEvent() {
+
+            }
+
+            @Override
+            public void onTimeOutEvent() {
+                callback.err(new MessageTimeoutException());
+            }
+        });
+    }
+
+    public void executeStockQuery(ICollectionItemMessageCallback<Product> callback) {
+        sendMessage(messageFactory.newStockMessage(), callback, Product.class, MessageType.MSG_STOCK, "stock");
+    }
+
+    public void executeAccountListQuery(ICollectionItemMessageCallback<Account> callback){
+        sendMessage(messageFactory.newAccountListMessage(), callback, Account.class, MessageType.MSG_ACCOUNT_LIST, "accounts");
+    }
+
+    private <T> void sendMessage(Message message, ICollectionItemMessageCallback<T> callback, Class<T> clazz, MessageType responseType, String itemHeader){
+        connectionService.sendText(messageToolFactory.getObjectFormatter(Message.class).format(message), new IConnectionListener() {
+            @Override
+            public void onMessageReceivedEvent(String msg) {
+                Message response = messageToolFactory.getObjectParser(Message.class).parse(msg);
+                if(response.getType().equals(responseType)) {
+                    String item = response.getField(itemHeader);
+                    if (item != null)
+                        callback.ack(messageToolFactory.getListParser(clazz).parse(item));
+                    else
+                        callback.err(new HeaderNotFoundException("Missing expected header \""+
+                                itemHeader+"\" in response \""+responseType.name()+"\""));
+                }else
+                    handleUnexpectedTypeInResponse(response, callback);
+            }
+
+            @Override
+            public void onConnectedEvent() {
+
+            }
+
+            @Override
+            public void onDisconnectedEvent() {
+
+            }
+
+            @Override
+            public void onTimeOutEvent() {
+                callback.err(new MessageTimeoutException());
+            }
+        });
+    }
+
+    public void executeStatQuery(IMapItemMessageCallback<String, String> callback) {
+        sendMessage(messageFactory.newStatMessage(), callback, MessageType.MSG_STAT);
+    }
+
+    public void executeConfigListQuery(IMapItemMessageCallback<String, String> callback){
+        sendMessage(messageFactory.newConfigListMessage(), callback, MessageType.MSG_CONFIG_LIST);
+    }
+
+    //TODO à rendre générique pour toute Map<T, U> au lieu de Map<String, String>
+    private void sendMessage(Message message, IMapItemMessageCallback<String, String> callback, MessageType responseType){
+        connectionService.sendText(messageToolFactory.getObjectFormatter(Message.class).format(message), new IConnectionListener() {
+            @Override
+            public void onMessageReceivedEvent(String msg) {
+                Message response = messageToolFactory.getObjectParser(Message.class).parse(msg);
+                if(response.getType().equals(responseType)){
+                    callback.ack(response.getFields());
+                }else
+                    handleUnexpectedTypeInResponse(response, callback);
+            }
+
+            @Override
+            public void onConnectedEvent() {
+
+            }
+
+            @Override
+            public void onDisconnectedEvent() {
+
+            }
+
+            @Override
+            public void onTimeOutEvent() {
+                callback.err(new MessageTimeoutException());
+            }
+        });
+    }
+
+    private void handleUnexpectedTypeInResponse(Message response, IMessageCallback callback){
+        switch (response.getType()) {
+            case ERROR_QUERY:
+                callback.err(messageToolFactory.getObjectParser(Throwable.class).parse(response.getField("Detail_erreur")));
+                break;
+            case REFUSED_QUERY:
+                callback.ref(messageToolFactory.getObjectParser(Throwable.class).parse(response.getField("Detail_refus")));
+                break;
+            default:
+                callback.err(new IllegalArgumentException(
+                        "Illegal message type for response : " +
+                                "expected \"ACK_SALE\"`, found \"" + response.getType().name() + "\""
+                ));
+                break;
+        }
+    }
 }
