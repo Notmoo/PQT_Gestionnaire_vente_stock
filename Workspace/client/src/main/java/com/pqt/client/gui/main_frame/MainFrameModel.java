@@ -24,6 +24,11 @@ class MainFrameModel {
             }
 
             @Override
+            public void onAccountStatusNotChangedEvent(Throwable cause) {
+
+            }
+
+            @Override
             public void onAccountListChangedEvent() {
                 MainFrameModel.this.fireAccountCollectionChangedEvent();
             }

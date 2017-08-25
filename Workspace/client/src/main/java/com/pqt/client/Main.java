@@ -5,15 +5,10 @@ import com.pqt.client.gui.modules.account_screen.AccountScreen;
 import com.pqt.client.gui.modules.sale_screen.SaleScreen;
 import com.pqt.client.gui.modules.stat_screen.StatScreen;
 import com.pqt.client.gui.modules.stock_screen.StockScreen;
-import com.pqt.client.gui.ressources.components.generics.others.SideBar;
-import com.pqt.client.gui.ressources.components.generics.others.listeners.ISideBarListener;
 import com.pqt.client.gui.ressources.components.generics.toast.ToastFactory;
 import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
-import com.pqt.client.module.account.AccountService;
-import com.pqt.client.module.sale.SaleService;
-import com.pqt.client.module.stat.StatService;
-import com.pqt.client.module.stock.StockService;
+import com.pqt.client.module.ClientBackEndModuleManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -26,16 +21,15 @@ public class Main extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        SaleService saleService = new SaleService();
-        StockService stockService = new StockService();
-        AccountService accountService = new AccountService();
-        StatService statService = new StatService();
+        //TODO ajouter écran de préloading
 
-        MainFrame mainFrame = new MainFrame(accountService);
-        mainFrame.addModule(new SaleScreen(accountService, stockService, saleService), true);
-        mainFrame.addModule(new StockScreen(stockService, accountService));
-        mainFrame.addModule(new StatScreen(statService));
-        mainFrame.addModule(new AccountScreen(accountService));
+        ClientBackEndModuleManager moduleManager = new ClientBackEndModuleManager(null);
+
+        MainFrame mainFrame = new MainFrame(moduleManager.getAccountService());
+        mainFrame.addModule(new SaleScreen(moduleManager.getAccountService(), moduleManager.getStockService(), moduleManager.getSaleService()), true);
+        mainFrame.addModule(new StockScreen(moduleManager.getStockService(), moduleManager.getAccountService()));
+        mainFrame.addModule(new StatScreen(moduleManager.getStatService()));
+        mainFrame.addModule(new AccountScreen(moduleManager.getAccountService()));
 
 
         Scene scene = new Scene(mainFrame.getPane(), 800, 600);
