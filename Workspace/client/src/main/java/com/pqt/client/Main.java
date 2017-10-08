@@ -21,7 +21,7 @@ public class Main extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //TODO ajouter écran de préloading
+        //TODO ajouter écran de préloading : StartupFrame
 
         ClientBackEndModuleManager moduleManager = new ClientBackEndModuleManager(null);
 
