@@ -1,7 +1,6 @@
 package com.pqt.client.module.stat;
 
 import com.pqt.client.module.query.QueryExecutor;
-import com.pqt.client.module.query.QueryMessageFactory;
 import com.pqt.client.module.query.query_callback.IMapItemMessageCallback;
 import com.pqt.client.module.stat.listeners.IStatFirerer;
 import com.pqt.client.module.stat.listeners.IStatListener;

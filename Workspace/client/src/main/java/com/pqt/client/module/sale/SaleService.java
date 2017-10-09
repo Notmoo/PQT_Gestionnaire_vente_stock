@@ -1,8 +1,6 @@
 package com.pqt.client.module.sale;
 
 import com.pqt.client.module.query.QueryExecutor;
-import com.pqt.client.module.query.QueryMessageFactory;
-import com.pqt.client.module.query.query_callback.ICollectionItemMessageCallback;
 import com.pqt.client.module.query.query_callback.INoItemMessageCallback;
 import com.pqt.client.module.sale.listeners.ISaleFirerer;
 import com.pqt.client.module.sale.listeners.ISaleListener;

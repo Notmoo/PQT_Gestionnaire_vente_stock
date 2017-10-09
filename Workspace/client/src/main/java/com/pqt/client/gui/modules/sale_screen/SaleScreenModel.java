@@ -17,6 +17,7 @@ import com.pqt.core.entities.user_account.AccountLevel;
 
 import javax.swing.event.EventListenerList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,7 +144,7 @@ class SaleScreenModel {
                 .forEach(ISaleScreenModelListener::onAccountConnectedStateUpdatedEvent);
     }
 
-    List<Account> getAccountList() {
+    Collection<Account> getAccountList() {
         return accountService.getAllAccounts();
     }
 
