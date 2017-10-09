@@ -18,4 +18,17 @@ public class StartupFrameController implements IStartupFrameModelListener {
     public void updateView() {
         //TODO écrire corps méthd StartupFrameController.updateView()
     }
+
+    public void onValidation() {
+        if(!model.isStartupProcessRunning()){
+            //TODO catch following exceptions and update GUI when needed :
+            //NullPointerException && IllegalArgumentException
+            model.beginStartupProcess(
+                    view.getServerHostTextFieldContent(),
+                    view.getServerPortTextFieldContent(),
+                    view.getAccountUsernameTextFieldContent(),
+                    view.getAccountPasswordTextFieldContent()
+            );
+        }
+    }
 }

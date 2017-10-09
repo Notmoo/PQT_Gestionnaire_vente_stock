@@ -21,7 +21,7 @@ public class StartupFrame implements IFXComponent{
     }
 
     @Override
-    public Pane getMainPane() {
-        return view.getMainPane();
+    public Pane getPane() {
+        return view.getPane();
     }
 }

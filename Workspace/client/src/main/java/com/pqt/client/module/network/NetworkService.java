@@ -1,5 +1,6 @@
 package com.pqt.client.module.network;
 
+import com.pqt.client.module.connection.ConnectionService;
 import com.pqt.client.module.network.listeners.INetworkServiceListener;
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.query.query_callback.IMapItemMessageCallback;
@@ -18,11 +19,13 @@ import java.util.*;
 public class NetworkService {
 
     private final QueryExecutor queryExecutor;
+    private final ConnectionService connectionService;
     private final EventListenerList listenerList;
     private final ServerConfigCache configCache;
 
-    public NetworkService(QueryExecutor queryExecutor) {
+    public NetworkService(QueryExecutor queryExecutor, ConnectionService connectionService) {
         this.queryExecutor = queryExecutor;
+        this.connectionService = connectionService;
         listenerList = new EventListenerList();
         configCache = new ServerConfigCache();
     }
@@ -59,9 +62,18 @@ public class NetworkService {
         });
     }
 
+    public boolean hasServerConfig(String host, Integer port){
+        checkData(host, port);
+        return configCache.hasConfig(host, port);
+    }
+
     public ServerConfig getServerConfig(String host, Integer port){
         checkData(host, port);
         return configCache.getConfig(host, port);
+    }
+
+    public void setActiveServer(String host, Integer port){
+        connectionService.setServerUrl(String.format("%s:%s", host, port));
     }
 
     private void sendConfigRequest(String host, Integer port){

@@ -331,6 +331,22 @@ public class GUIStringTool {
     public static String getAccountLevelColumnHeaderLabel() {
         return "Niveau d'accréditation";
     }
+
+    public static String getServerSectionTitleLabel() {
+        return "Serveur";
+    }
+
+    public static String getAccountSectionTitleLabel() {
+        return "Compte";
+    }
+
+    public static String getServerHostLabel() {
+        return "Host : ";
+    }
+
+    public static String getServerPortLabel() {
+        return "Port : ";
+    }
 }
 
 

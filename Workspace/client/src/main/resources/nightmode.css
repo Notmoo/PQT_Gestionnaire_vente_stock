@@ -2,13 +2,6 @@
     -fx-background-color: #1d1d1d;
 }
 
-.label {
-    -fx-font-size: 11pt;
-    -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: white;
-    -fx-opacity: 0.8;
-}
-
 .label-bright {
     -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
@@ -127,15 +120,29 @@
 .context-menu {
     -fx-background-color: derive(#1d1d1d,5%);
 }
-.text-field, .password-field, .choice-box, .text-area, .combo-box, .button {
+
+.titled-pane, .titled-pane > .title, .titled-pane > *.content, .text-field,
+.password-field, .choice-box, .text-area, .combo-box, .button, .label {
     -fx-font-size: 12pt;
     -fx-font-family: "Segoe UI Semibold";
+    -fx-background-color: #1d1d1d;
+    -fx-text-fill: #d8d8d8;
+}
+
+.titled-pane, .titled-pane > .title, .titled-pane > *.content {
+    -fx-border-width: 0;
+}
+
+.text-field, .password-field, .choice-box, .text-area, .combo-box, .button{
     -fx-pref-width: 150;
     -fx-pref-height: 30;
-    -fx-background-color: #1d1d1d;
     -fx-border-color: #e2e2e2;
     -fx-border-width: 2;
-    -fx-text-fill: #d8d8d8;
+}
+
+.label{
+    -fx-pref-width: 150;
+    -fx-pref-height: 30;
 }
 
 .button:hover {

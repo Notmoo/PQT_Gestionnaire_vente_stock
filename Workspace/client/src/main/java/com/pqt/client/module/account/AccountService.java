@@ -27,7 +27,6 @@ public class AccountService {
 		this.executor = executor;
 		listenerList = new EventListenerList();
 		accounts = new ArrayList<>();
-		refreshAccounts();
 	}
 
 	public Account getCurrentAccount() {
