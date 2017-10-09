@@ -8,6 +8,7 @@ import com.pqt.client.gui.modules.stock_screen.StockScreen;
 import com.pqt.client.gui.ressources.components.generics.toast.ToastFactory;
 import com.pqt.client.gui.ressources.css.GUICssTool;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
+import com.pqt.client.gui.startup_frame.StartupFrame;
 import com.pqt.client.module.ClientBackEndModuleManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -31,8 +32,8 @@ public class Main extends Application{
         mainFrame.addModule(new StatScreen(moduleManager.getStatService()));
         mainFrame.addModule(new AccountScreen(moduleManager.getAccountService()));
 
-
-        Scene scene = new Scene(mainFrame.getPane(), 800, 600);
+        StartupFrame startupFrame = new StartupFrame(moduleManager.getAccountService(), moduleManager.getNetworkService());
+        Scene scene = new Scene(startupFrame.getPane());
         scene.getStylesheets().clear();
         scene.getStylesheets().addAll(getClass().getResource(GUICssTool.getCssFilePath()).toExternalForm());
 
