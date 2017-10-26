@@ -15,6 +15,7 @@ import java.util.List;
 
 //TODO écrire javadoc
 //TODO add log lines
+//TODO supporter la modif de comptes
 public class AccountService {
 
 	private QueryExecutor executor;

@@ -41,11 +41,7 @@ class MainFrameModel {
     }
 
     void disconnectCurrentAccount() {
-        fireAccountDisconnectedEvent();
-        //TODO uncomment code when test are to be done
-        /*
         accountService.logOutCurrentAccount();
-        */
     }
 
     void addListener(IMainFrameModelListener listener){

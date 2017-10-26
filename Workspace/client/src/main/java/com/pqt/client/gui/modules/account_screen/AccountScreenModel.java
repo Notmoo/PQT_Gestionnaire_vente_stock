@@ -37,8 +37,6 @@ class AccountScreenModel {
     }
 
     Collection<AccountLevel> getLevels() {
-        //TODO régler ça aussi
-        //return accountService.getAvailableLevels();
         return EnumSet.allOf(AccountLevel.class);
     }
 }

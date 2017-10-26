@@ -31,9 +31,6 @@ public class StartupFrameModel {
     }
 
     public void beginStartupProcess(String requiredHost, String requiredPort, String username, String password) {
-        //TODO uncomment code when test are to be done
-        firerer.fireStartupValidated();
-        /*
         if(!startupProcessBegan){
             checkParameters(requiredHost, requiredPort, username, password);
             startupProcessBegan = true;
@@ -65,7 +62,6 @@ public class StartupFrameModel {
                     })
                     .handle();
         }
-        */
     }
 
     private void checkParameters(String host, String port, String username, String password) {
