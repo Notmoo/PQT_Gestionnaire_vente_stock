@@ -4,6 +4,7 @@ import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 
 public class StartupFrameView implements IFXComponent{
 
@@ -16,6 +17,7 @@ public class StartupFrameView implements IFXComponent{
     private TextField passwordTextField;
 
     private Button validationButton;
+    private Text infoText;
 
     public StartupFrameView(StartupFrameController ctrl) {
         this.ctrl = ctrl;
@@ -58,7 +60,12 @@ public class StartupFrameView implements IFXComponent{
                 ctrl.onValidation();
             });
 
-            mainPane.getChildren().addAll(serverTitledPane, accountTitledPane, validationButton);
+            infoText = new Text("");
+            infoText.getStyleClass().add("text-displayer");
+            TitledPane errorConsoleTitledPane = new TitledPane(GUIStringTool.getErrorConsoleSectionTitleLabel(), infoText);
+            infoText.textProperty().addListener((obs, oldValue, newValue)->errorConsoleTitledPane.setExpanded(true));
+
+            mainPane.getChildren().addAll(serverTitledPane, accountTitledPane, errorConsoleTitledPane, validationButton);
         }catch(Exception e){
             //TODO Shutdown software on exception
             e.printStackTrace();
@@ -100,5 +107,9 @@ public class StartupFrameView implements IFXComponent{
 
     public void clearPasswordField() {
         passwordTextField.setText("");
+    }
+
+    public void displayError(String errorMsg) {
+        infoText.setText(errorMsg);
     }
 }

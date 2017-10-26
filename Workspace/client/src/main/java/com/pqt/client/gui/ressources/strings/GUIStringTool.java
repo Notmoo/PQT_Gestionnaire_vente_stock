@@ -340,12 +340,25 @@ public class GUIStringTool {
         return "Compte";
     }
 
+    public static String getErrorConsoleSectionTitleLabel() {
+        return "Informations";
+    }
+
     public static String getServerHostLabel() {
         return "Host : ";
     }
 
     public static String getServerPortLabel() {
         return "Port : ";
+    }
+
+    public static IObjectStringRenderer<Exception> getExceptionFormatter() {
+        return e->{
+            if(e.getMessage()==null || e.getMessage().isEmpty())
+                return String.format("%s", e.getClass().getName());
+            else
+                return String.format("%s : %s", e.getClass().getName(), e.getMessage());
+        };
     }
 }
 

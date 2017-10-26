@@ -1,5 +1,6 @@
 package com.pqt.client.gui.startup_frame;
 
+import com.pqt.client.gui.ressources.strings.GUIStringTool;
 import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
 
 public class StartupFrameController implements IStartupFrameModelListener {
@@ -27,14 +28,16 @@ public class StartupFrameController implements IStartupFrameModelListener {
 
     public void onValidation() {
         if(!model.isStartupProcessRunning()){
-            //TODO catch following exceptions and update GUI when needed :
-            //NullPointerException && IllegalArgumentException
-            model.beginStartupProcess(
-                    view.getServerHostTextFieldContent(),
-                    view.getServerPortTextFieldContent(),
-                    view.getAccountUsernameTextFieldContent(),
-                    view.getAccountPasswordTextFieldContent()
-            );
+            try {
+                model.beginStartupProcess(
+                        view.getServerHostTextFieldContent(),
+                        view.getServerPortTextFieldContent(),
+                        view.getAccountUsernameTextFieldContent(),
+                        view.getAccountPasswordTextFieldContent()
+                );
+            }catch(NullPointerException | IllegalArgumentException e){
+                view.displayError(GUIStringTool.getExceptionFormatter().render(e));
+            }
         }
     }
 

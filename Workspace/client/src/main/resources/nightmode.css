@@ -122,11 +122,14 @@
 }
 
 .titled-pane, .titled-pane > .title, .titled-pane > *.content, .text-field,
-.password-field, .choice-box, .text-area, .combo-box, .button, .label {
-    -fx-font-size: 12pt;
-    -fx-font-family: "Segoe UI Semibold";
+.password-field, .choice-box, .text-area, .combo-box, .button, .label, .text-displayer {
+    -fx-font: 12pt "Segoe UI Semibold";
     -fx-background-color: #1d1d1d;
     -fx-text-fill: #d8d8d8;
+}
+
+.text-displayer {
+    -fx-fill: #d8d8d8;
 }
 
 .titled-pane, .titled-pane > .title, .titled-pane > *.content {
