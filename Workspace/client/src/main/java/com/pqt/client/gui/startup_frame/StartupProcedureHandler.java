@@ -1,5 +1,7 @@
 package com.pqt.client.gui.startup_frame;
 
+import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureEventFirerer;
+import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureListener;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.account.listeners.AccountListenerAdapter;
 import com.pqt.client.module.account.listeners.IAccountListener;
@@ -14,6 +16,8 @@ class StartupProcedureHandler {
 
     private String host, username, password;
     private Integer port;
+
+    private IStartupProcedureEventFirerer firerer;
 
     StartupProcedureHandler(NetworkService networkService, AccountService accountService) {
         this.networkService = networkService;
@@ -39,7 +43,8 @@ class StartupProcedureHandler {
     }
 
     private void useRequestedServer(){
-        //TODO notify this
+        //Server found
+        firerer.fireServerFoundEvent(host, port);
         networkService.setActiveServer(host, port);
         accountService.addListener(getUpdateAccountListListener());
         accountService.refreshAccounts();
@@ -52,7 +57,8 @@ class StartupProcedureHandler {
                 .orElse(null);
 
         if(match==null){
-            //TODO notify this
+            //Compte spécifié inconnu
+            firerer.fireUserAccountUnknownEvent(username);
         }else{
             accountService.setCurrentAccount(match);
             accountService.addListener(getConnectAccountListener());
@@ -96,11 +102,23 @@ class StartupProcedureHandler {
             @Override
             public void onAccountStatusChangedEvent(boolean status) {
                 if(status){
-                    //TODO notify this
+                    //Compte connecté
+                    firerer.fireUserAccountConnectedEvent(username);
                 }else{
-                    //TODO notify this
+                    //Compte non-connecté
+                    firerer.fireUserAccountDisconnectedEvent(username);
                 }
             }
         };
+    }
+
+    public StartupProcedureHandler addListener(IStartupProcedureListener l){
+        firerer.addListener(l);
+        return this;
+    }
+
+    public StartupProcedureHandler removeListener(IStartupProcedureListener l){
+        firerer.removeListener(l);
+        return this;
     }
 }

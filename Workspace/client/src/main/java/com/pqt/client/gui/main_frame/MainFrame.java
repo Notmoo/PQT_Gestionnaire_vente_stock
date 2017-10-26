@@ -1,7 +1,9 @@
 package com.pqt.client.gui.main_frame;
 
+import com.pqt.client.gui.main_frame.listeners.IMainFrameModelListener;
 import com.pqt.client.gui.modules.IGuiModule;
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
+import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
 import com.pqt.client.module.account.AccountService;
 import javafx.scene.layout.Pane;
 
@@ -9,9 +11,10 @@ public class MainFrame implements IFXComponent {
 
     private MainFrameView view;
     private MainFrameController ctrl;
+    private MainFrameModel model;
 
     public MainFrame(AccountService accountService) {
-        MainFrameModel model = new MainFrameModel(accountService);
+        model = new MainFrameModel(accountService);
         ctrl = new MainFrameController(model);
         model.addListener(ctrl);
 
@@ -26,6 +29,10 @@ public class MainFrame implements IFXComponent {
 
     public void addModule(IGuiModule module){
         ctrl.addModule(module, false);
+    }
+
+    public void addFrameModelListener(IMainFrameModelListener l){
+        model.addListener(l);
     }
 
     @Override

@@ -1,31 +1,29 @@
 package com.pqt.client.gui.startup_frame;
 
-import com.pqt.client.gui.startup_frame.listeners.IStartupFrameModelListener;
+import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelEventFirerer;
+import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
+import com.pqt.client.gui.startup_frame.listeners.frame.SimpleStartupFrameModelEventFirerer;
+import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureListener;
 import com.pqt.client.module.account.AccountService;
-import com.pqt.client.module.account.listeners.AccountListenerAdapter;
-import com.pqt.client.module.account.listeners.IAccountListener;
 import com.pqt.client.module.network.NetworkService;
-import com.pqt.client.module.network.listeners.INetworkServiceListener;
-
-import javax.swing.event.EventListenerList;
 
 public class StartupFrameModel {
 
     private final AccountService accountService;
     private final NetworkService networkService;
-    private final EventListenerList listenerList;
+    private final IStartupFrameModelEventFirerer firerer;
 
     private boolean startupProcessBegan;
 
     public StartupFrameModel(AccountService accountService, NetworkService networkService) {
         this.accountService = accountService;
         this.networkService = networkService;
-        this.listenerList = new EventListenerList();
+        firerer = new SimpleStartupFrameModelEventFirerer();
         startupProcessBegan = false;
     }
 
     public void addListener(IStartupFrameModelListener ctrl) {
-        listenerList.add(IStartupFrameModelListener.class, ctrl);
+        firerer.addListener(ctrl);
     }
 
     public boolean isStartupProcessRunning() {
@@ -33,6 +31,9 @@ public class StartupFrameModel {
     }
 
     public void beginStartupProcess(String requiredHost, String requiredPort, String username, String password) {
+        //TODO uncomment code when test are to be done
+        firerer.fireStartupValidated();
+        /*
         if(!startupProcessBegan){
             checkParameters(requiredHost, requiredPort, username, password);
             startupProcessBegan = true;
@@ -41,8 +42,30 @@ public class StartupFrameModel {
 
             new StartupProcedureHandler(networkService, accountService)
                     .init(requiredHost, requiredIntPort, username, password)
+                    .addListener(new IStartupProcedureListener() {
+                        @Override
+                        public void onServerFoundEvent(String URL, Integer Port) {
+
+                        }
+
+                        @Override
+                        public void onUserAccountUnknownEvent(String username) {
+
+                        }
+
+                        @Override
+                        public void onUserAccountConnectedEvent(String username) {
+                            firerer.fireStartupValidated();
+                        }
+
+                        @Override
+                        public void onUserAccountDisconnectedEvent(String username) {
+
+                        }
+                    })
                     .handle();
         }
+        */
     }
 
     private void checkParameters(String host, String port, String username, String password) {

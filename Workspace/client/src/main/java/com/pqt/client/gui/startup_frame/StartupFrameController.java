@@ -1,6 +1,6 @@
 package com.pqt.client.gui.startup_frame;
 
-import com.pqt.client.gui.startup_frame.listeners.IStartupFrameModelListener;
+import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
 
 public class StartupFrameController implements IStartupFrameModelListener {
 
@@ -16,7 +16,13 @@ public class StartupFrameController implements IStartupFrameModelListener {
     }
 
     public void updateView() {
-        //TODO écrire corps méthd StartupFrameController.updateView()
+        view.setValidationButtonEnable(enableValidationButton());
+    }
+
+    private boolean enableValidationButton() {
+        return !view.getAccountUsernameTextFieldContent().isEmpty()
+                && !view.getServerPortTextFieldContent().isEmpty()
+                && !view.getServerPortTextFieldContent().isEmpty();
     }
 
     public void onValidation() {
@@ -30,5 +36,10 @@ public class StartupFrameController implements IStartupFrameModelListener {
                     view.getAccountPasswordTextFieldContent()
             );
         }
+    }
+
+    @Override
+    public void onStartupValidated() {
+        view.clearPasswordField();
     }
 }

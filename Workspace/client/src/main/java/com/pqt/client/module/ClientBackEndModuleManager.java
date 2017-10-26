@@ -23,7 +23,7 @@ public class ClientBackEndModuleManager {
         stockService = new StockService(queryExecutor);
         accountService = new AccountService(queryExecutor);
         statService = new StatService(queryExecutor);
-        networkService = new NetworkService(queryExecutor);
+        networkService = new NetworkService(queryExecutor, connectionService);
     }
 
     public SaleService getSaleService() {
