@@ -4,7 +4,6 @@ import com.pqt.core.entities.product.Product;
 import com.pqt.server.tools.entities.SaleContent;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Interface définissant les méthodes requises pour tout DAO du service de gestion des commandes {@link StockService}.

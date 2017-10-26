@@ -1,7 +1,6 @@
 package com.pqt.server.module.sale;
 
 import com.pqt.core.entities.sale.Sale;
-import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.module.sale.listeners.ISaleFirerer;
 import com.pqt.server.module.sale.listeners.ISaleListener;
 import com.pqt.server.module.sale.listeners.SimpleSaleFirerer;

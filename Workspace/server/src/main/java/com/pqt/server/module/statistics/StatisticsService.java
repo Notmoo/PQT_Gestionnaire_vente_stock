@@ -3,12 +3,10 @@ package com.pqt.server.module.statistics;
 import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.Sale;
-import com.pqt.server.module.sale.listeners.ISaleListener;
 import com.pqt.server.module.sale.listeners.SaleListenerAdapter;
 import com.pqt.server.module.stock.StockService;
 import com.pqt.server.module.sale.SaleService;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -6,7 +6,6 @@ import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.tools.entities.SaleContent;
 
 import java.util.List;
-import java.util.Map;
 
 //TODO ajouter logs
 
