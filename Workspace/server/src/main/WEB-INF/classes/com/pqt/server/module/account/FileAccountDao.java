@@ -5,7 +5,7 @@ import com.pqt.core.entities.user_account.AccountLevel;
 import com.pqt.server.tools.io.ISerialFileManager;
 import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
 import com.pqt.server.tools.security.IHashTool;
-import com.pqt.server.tools.security.MD5HashTool;
+import com.pqt.server.tools.security.SHA256HashTool;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * Cette classe n'est pas faite pour gérer les accès concurentiels au fichier assurant la persistance, et n'est donc pas
  * thread-safe. Elle est conçue pour que tous les accès soient effectués depuis un même thread et depuis un unique objet.
  * <p/>
- * Cette classe manipule les mot de passe sous forme chiffrée via un système de hash (md5) + salt, et ne fait pas
+ * Cette classe manipule les mot de passe sous forme chiffrée via un système de hash (SHA-256) + salt, et ne fait pas
  * persister les mots de passes non-chiffrées. Les noms d'utilisateurs sont stockés sans chiffrage.
  */
 class FileAccountDao implements IAccountDao {
@@ -34,7 +34,7 @@ class FileAccountDao implements IAccountDao {
     FileAccountDao() {
         accountEntries = new HashSet<>();
         connectedAccount = new HashSet<>();
-        hashTool = new MD5HashTool();
+        hashTool = new SHA256HashTool();
         fileManager = SimpleSerialFileManagerFactory.getFileManager(AccountEntry.class, ACCOUNT_FILE_NAME);
         loadFromFile();
     }
