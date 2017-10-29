@@ -2,14 +2,16 @@ package com.pqt.client.module.connection.listeners;
 
 public interface IConnectionFirerer {
 
-	public abstract void fireMessageReceivedEvent(String msg);
+	void fireMessageReceivedEvent(String msg);
 
-	public abstract void fireConnectedEvent();
+	void fireConnectedEvent();
 
-	public abstract void fireDisconnectedEvent();
+	void fireDisconnectedEvent();
 
-	public abstract void addListener(IConnectionListener listener);
+	void fireTimeOutEvent();
 
-	public abstract void removeListener(IConnectionListener listener);
+	void addListener(IConnectionListener listener);
+
+	void removeListener(IConnectionListener listener);
 
 }

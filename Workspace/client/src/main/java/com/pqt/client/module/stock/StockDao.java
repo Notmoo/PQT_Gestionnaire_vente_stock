@@ -1,9 +1,8 @@
 package com.pqt.client.module.stock;
 
 import com.pqt.client.module.query.QueryExecutor;
-import com.pqt.client.module.query.QueryFactory;
-import com.pqt.client.module.query.query_callback.IStockQueryCallback;
-import com.pqt.client.module.query.query_callback.IIdQueryCallback;
+import com.pqt.client.module.query.query_callback.ICollectionItemMessageCallback;
+import com.pqt.client.module.query.query_callback.INoItemMessageCallback;
 import com.pqt.client.module.stock.Listeners.IStockFirerer;
 import com.pqt.client.module.stock.Listeners.IStockListener;
 import com.pqt.client.module.stock.Listeners.SimpleStockFirerer;
@@ -11,18 +10,22 @@ import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 //TODO écrire javadoc
 public class StockDao {
 
+    private long updateId;
 	private IStockFirerer eventFirerer;
 	private Date lastRefreshTimestamp;
 	private List<Product> products;
+	private QueryExecutor executor;
 
-	public StockDao() {
+	public StockDao(QueryExecutor executor) {
+	    this.executor = executor;
+	    updateId = 0;
 		eventFirerer = new SimpleStockFirerer();
 		products = new ArrayList<>();
 		lastRefreshTimestamp = null;
@@ -37,9 +40,9 @@ public class StockDao {
     }
 
 	public void refreshProductList() {
-		QueryExecutor.INSTANCE.execute(QueryFactory.newStockQuery(), new IStockQueryCallback() {
+        executor.executeStockQuery(new ICollectionItemMessageCallback<Product>() {
 			@Override
-			public void ack(List<Product> products) {
+			public void ack(Collection<Product> obj) {
 				replaceProductList(products);
 				eventFirerer.fireGetProductListSuccessEvent();
 				//TODO add log line
@@ -71,27 +74,33 @@ public class StockDao {
 	}
 
 	public long commitUpdate(List<ProductUpdate> updates){
-		return QueryExecutor.INSTANCE.execute(QueryFactory.newUpdateQuery(updates),new IIdQueryCallback(){
-
+        final long currentUpdateId = updateId;
+        if(updateId<Long.MAX_VALUE)
+            updateId++;
+        else
+            updateId = 0;
+        executor.executeUpdateQuery(updates, new INoItemMessageCallback() {
 			@Override
-			public void ack(long id) {
+			public void ack() {
 				//TODO add log line
 				refreshProductList();
-				eventFirerer.fireProductListUpdateSuccessEvent(id);
+				eventFirerer.fireProductListUpdateSuccessEvent(currentUpdateId);
 			}
 
 			@Override
-			public void err(long id, Throwable cause) {
-				//TODO add log line
-				eventFirerer.fireProductListUpdateErrorEvent(id, cause);
+			public void err(Throwable cause) {
+                //TODO add log line
+                eventFirerer.fireProductListUpdateErrorEvent(currentUpdateId, cause);
 			}
 
 			@Override
-			public void ref(long id, Throwable cause) {
-				//TODO add log line
-				eventFirerer.fireProductListUpdateRefusedEvent(id, cause);
+			public void ref(Throwable cause) {
+                //TODO add log line
+                eventFirerer.fireProductListUpdateRefusedEvent(currentUpdateId, cause);
 			}
 		});
+
+		return currentUpdateId;
 	}
 
 	/**

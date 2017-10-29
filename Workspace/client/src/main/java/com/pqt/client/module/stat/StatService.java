@@ -1,5 +1,6 @@
 package com.pqt.client.module.stat;
 
+import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.stat.listeners.IStatListener;
 
 import java.util.Map;
@@ -10,8 +11,8 @@ public class StatService {
 
 	private StatDao dao;
 
-    public StatService() {
-        dao = new StatDao();
+    public StatService(QueryExecutor executor) {
+        dao = new StatDao(executor);
     }
 
     public Map<String,String> getStats() {

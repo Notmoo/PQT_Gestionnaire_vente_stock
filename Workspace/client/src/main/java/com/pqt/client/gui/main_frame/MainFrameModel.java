@@ -20,35 +20,28 @@ class MainFrameModel {
         this.accountService.addListener(new IAccountListener() {
             @Override
             public void onAccountStatusChangedEvent(boolean status) {
-                MainFrameModel.this.fireAccountStatusChangedEvent(status);
+                if(!status){
+                    MainFrameModel.this.fireAccountDisconnectedEvent();
+                }
+            }
+
+            @Override
+            public void onAccountStatusNotChangedEvent(Throwable cause) {
+
             }
 
             @Override
             public void onAccountListChangedEvent() {
-                MainFrameModel.this.fireAccountCollectionChangedEvent();
             }
         });
     }
 
-    private void fireAccountCollectionChangedEvent() {
-        Arrays.stream(listenerList.getListeners(IMainFrameModelListener.class)).forEach(IMainFrameModelListener::onAccountCollectionChangedEvent);
-    }
-
-    private void fireAccountStatusChangedEvent(boolean status) {
-        Arrays.stream(listenerList.getListeners(IMainFrameModelListener.class)).forEach(l->l.onAccountStatusChangedEvent(status));
-    }
-
-    void connectAccount(Account account) {
-        accountService.setCurrentAccount(account);
-        accountService.logInCurrentAccount(account.getPassword());
+    private void fireAccountDisconnectedEvent() {
+        Arrays.stream(listenerList.getListeners(IMainFrameModelListener.class)).forEach(IMainFrameModelListener::onAccountDisconnectedEvent);
     }
 
     void disconnectCurrentAccount() {
         accountService.logOutCurrentAccount();
-    }
-
-    Collection<Account> getAccounts(){
-        return accountService.getAllAccounts();
     }
 
     void addListener(IMainFrameModelListener listener){

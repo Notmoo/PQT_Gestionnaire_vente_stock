@@ -10,6 +10,7 @@ public class ServerConfig {
     private Map<ConfigFields, Boolean> fields;
 
     public ServerConfig() {
+        fields = new HashMap<>();
     }
 
     public ServerConfig(Map<ConfigFields, Boolean> fields) {
