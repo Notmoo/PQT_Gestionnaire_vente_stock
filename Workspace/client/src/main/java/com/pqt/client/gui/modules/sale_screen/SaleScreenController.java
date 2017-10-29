@@ -13,7 +13,9 @@ import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.event.Event;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class SaleScreenController {
 
@@ -45,7 +47,7 @@ class SaleScreenController {
 
             @Override
             public void onAccountListUpdatedEvent() {
-                view.setAccounts(model.getAccountList());
+                view.setAccounts(new ArrayList<>(model.getAccountList()));
             }
 
 
@@ -99,7 +101,7 @@ class SaleScreenController {
         return model.getProductList();
     }
     private List<Account> fetchAccountList(){
-        return model.getAccountList();
+        return new ArrayList<>(model.getAccountList());
     }
     private List<SaleType> fetchSaleTypeList(){
         return model.getSaleTypeList();

@@ -9,7 +9,6 @@ import javafx.scene.layout.Pane;
 
 import java.util.Collection;
 
-//TODO à faire
 public class AccountManagerScreen implements IFXValidatorComponent, IFXCreatorComponent<Account>{
 
     private AccountManagerScreenModel model;

@@ -1,6 +1,5 @@
 package com.pqt.client.gui.main_frame;
 
-import com.pqt.client.gui.ressources.components.AccountManager;
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.components.generics.others.SideBar;
 import com.pqt.client.gui.ressources.components.generics.others.listeners.ISideBarListener;
@@ -10,11 +9,9 @@ import com.pqt.core.entities.user_account.AccountLevel;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
@@ -22,16 +19,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.util.Collection;
-
 class MainFrameView implements IFXComponent{
 
     private final MainFrameController ctrl;
 
     private BorderPane mainPane;
-    private AccountManager accountManager;
     private VBox buttonHolder;
     private ObjectProperty<AccountLevel> currentAccountLevel;
+    private Label accountNameLabel;
 
     MainFrameView(MainFrameController ctrl) {
         this.ctrl = ctrl;
@@ -51,11 +46,10 @@ class MainFrameView implements IFXComponent{
         buttonHolder.prefWidthProperty().bind(sidebar.widthProperty());
         sidebar.getChildren().add(buttonHolder);
 
-        accountManager = new AccountManager();
-        accountManager.addListener(ctrl.getAccountManagerValidatorListener());
-        accountManager.addListener(ctrl.getAccountManagerAccountListener());
-        accountManager.getPane().prefWidthProperty().bind(sidebar.widthProperty());
-        sidebar.getChildren().add(accountManager.getPane());
+        accountNameLabel = new Label();
+        Button disconnectionButton = new Button(GUIStringTool.getLogoutButtonLabel());
+        disconnectionButton.setOnAction((event -> ctrl.onAccountDisconnectionRequested()));
+        sidebar.getChildren().addAll(accountNameLabel, disconnectionButton);
 
         mainPane.setLeft(sidebar);
 
@@ -120,20 +114,8 @@ class MainFrameView implements IFXComponent{
         buttonHolder.getChildren().add(button);
     }
 
-    boolean isAccountCreationPossible(){
-        return accountManager.isCreationPossible();
-    }
-
-    Account create(){
-        return accountManager.create();
-    }
-
     void setCurrentAccount(Account account){
-        accountManager.setCurrentAccount(account);
-    }
-
-    void feedAccountCollectionToManager(Collection<Account> accounts){
-        accountManager.display(accounts);
+        accountNameLabel.setText(GUIStringTool.getAccountStringConverter().toString(account));
     }
 
     void updateModuleButtonLock(AccountLevel level) {
