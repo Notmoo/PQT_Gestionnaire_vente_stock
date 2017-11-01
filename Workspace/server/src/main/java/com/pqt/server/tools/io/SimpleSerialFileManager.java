@@ -38,7 +38,7 @@ public class SimpleSerialFileManager<T> implements ISerialFileManager<T> {
         }catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class SimpleSerialFileManager<T> implements ISerialFileManager<T> {
         }catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
-        return null;
+        return new HashSet<>();
     }
 
     private void fillCollection(Collection<T> collection) throws IOException, ClassNotFoundException {

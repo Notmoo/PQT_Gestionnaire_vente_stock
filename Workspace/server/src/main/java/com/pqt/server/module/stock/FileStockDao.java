@@ -19,14 +19,15 @@ import java.util.*;
  */
 public class FileStockDao implements IStockDao {
 
-    private static final String STOCK_FILE_NAME = "stock.pqt";
+    //TODO to modify
+    private static final String STOCK_FILE_NAME = "G:\\temp\\stock.pqt";
     private ISerialFileManager<Product> fileManager;
     private long nextProductId;
     private Random random;
 
 	private Map<Long, Product> products;
 
-    FileStockDao() {
+    public FileStockDao() {
         random = new Random();
         fileManager = SimpleSerialFileManagerFactory.getFileManager(Product.class, STOCK_FILE_NAME);
         loadFromFile();

@@ -35,7 +35,7 @@ public class StartupFrameController implements IStartupFrameModelListener {
                         view.getAccountUsernameTextFieldContent(),
                         view.getAccountPasswordTextFieldContent()
                 );
-            }catch(NullPointerException | IllegalArgumentException e){
+            }catch(Exception e){
                 view.displayError(GUIStringTool.getExceptionFormatter().render(e));
             }
         }

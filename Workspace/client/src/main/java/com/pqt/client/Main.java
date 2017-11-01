@@ -58,8 +58,11 @@ public class Main extends Application{
     }
 
     private IStartupFrameModelListener getStartupFrameListener(Stage primaryStage, Scene sceneToDisplay){
-        return () -> trySwitchScene(primaryStage, sceneToDisplay, true);
+        return () -> {
+            Platform.runLater(()->trySwitchScene(primaryStage, sceneToDisplay, true));
+        };
     }
+
 
     private IMainFrameModelListener getMainFrameListener(Stage primaryStage, Scene sceneToDisplay){
         return () -> trySwitchScene(primaryStage, sceneToDisplay, false);

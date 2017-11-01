@@ -5,6 +5,7 @@ import com.pqt.core.entities.user_account.AccountLevel;
 import com.pqt.server.tools.io.ISerialFileManager;
 import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
 import com.pqt.server.tools.security.IHashTool;
+import com.pqt.server.tools.security.RandomString;
 import com.pqt.server.tools.security.SHA256HashTool;
 
 import java.util.*;
@@ -22,19 +23,22 @@ import java.util.stream.Collectors;
  * Cette classe manipule les mot de passe sous forme chiffrée via un système de hash (SHA-256) + salt, et ne fait pas
  * persister les mots de passes non-chiffrées. Les noms d'utilisateurs sont stockés sans chiffrage.
  */
-class FileAccountDao implements IAccountDao {
+public class FileAccountDao implements IAccountDao {
 
-    private static final String ACCOUNT_FILE_NAME = "acc.pqt";
+    //TODO to modify
+    private static final String ACCOUNT_FILE_NAME = "G:\\temp\\acc.pqt";
 
     private Set<AccountEntry> accountEntries;
     private Set<AccountEntry> connectedAccount;
     private IHashTool hashTool;
+    private RandomString randomString;
     private ISerialFileManager<AccountEntry> fileManager;
 
-    FileAccountDao() {
+    public FileAccountDao() {
         accountEntries = new HashSet<>();
         connectedAccount = new HashSet<>();
         hashTool = new SHA256HashTool();
+        randomString = new RandomString(10);
         fileManager = SimpleSerialFileManagerFactory.getFileManager(AccountEntry.class, ACCOUNT_FILE_NAME);
         loadFromFile();
     }
@@ -96,7 +100,7 @@ class FileAccountDao implements IAccountDao {
     }
 
     /**
-     * Passe un comtpe connecté dans l'état déconnecté. N'effectue le changement que si un compte connecté correspond
+     * Passe un compte connecté dans l'état déconnecté. N'effectue le changement que si un compte connecté correspond
      * aux données fournies.
      * @param account données à utiliser pour efffectuer la correspondance avec un compte
      * @return {@code true} si le changement d'état a eu lieu, {@code false sinon}
@@ -132,6 +136,18 @@ class FileAccountDao implements IAccountDao {
      */
     private void saveToFile(){
         fileManager.saveSetToFile(accountEntries);
+    }
+
+    public boolean addAccount(Account account){
+        if(accountEntries.stream().filter(accountEntry -> accountEntry.getUsername().equals(account.getUsername())).count()==0) {
+            String salt = randomString.nextString();
+            String passwordHash = hashTool.hashAndSalt(account.getPassword(), salt);
+            accountEntries.add(new AccountEntry(account.getUsername(), passwordHash, salt, account.getPermissionLevel()));
+            saveToFile();
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**

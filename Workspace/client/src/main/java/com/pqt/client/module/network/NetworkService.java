@@ -73,7 +73,9 @@ public class NetworkService {
     }
 
     public void setActiveServer(String host, Integer port){
-        connectionService.setServerUrl(String.format("%s:%s", host, port));
+        //TODO changer le nom de context de la webapp
+        String webAppContext = "pqt-server";
+        connectionService.setServerUrl(String.format("%s:%s/%s", host, port, webAppContext));
     }
 
     private void sendConfigRequest(String host, Integer port){

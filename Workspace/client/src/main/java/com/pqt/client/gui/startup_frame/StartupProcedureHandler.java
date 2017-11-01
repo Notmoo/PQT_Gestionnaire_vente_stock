@@ -2,6 +2,7 @@ package com.pqt.client.gui.startup_frame;
 
 import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureEventFirerer;
 import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureListener;
+import com.pqt.client.gui.startup_frame.listeners.procedure.SimpleStartupProcedureEventFirerer;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.account.listeners.AccountListenerAdapter;
 import com.pqt.client.module.account.listeners.IAccountListener;
@@ -22,6 +23,7 @@ class StartupProcedureHandler {
     StartupProcedureHandler(NetworkService networkService, AccountService accountService) {
         this.networkService = networkService;
         this.accountService = accountService;
+        firerer = new SimpleStartupProcedureEventFirerer();
     }
 
     StartupProcedureHandler init(String host, Integer port, String username, String password){
@@ -39,13 +41,13 @@ class StartupProcedureHandler {
 
     private void testConnection(){
         networkService.addListener(getPingListener());
+        networkService.setActiveServer(host, port);
         networkService.sendPQTPing(host, port);
     }
 
     private void useRequestedServer(){
         //Server found
         firerer.fireServerFoundEvent(host, port);
-        networkService.setActiveServer(host, port);
         accountService.addListener(getUpdateAccountListListener());
         accountService.refreshAccounts();
     }

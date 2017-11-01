@@ -1,6 +1,7 @@
 package com.pqt.client.module.connection.senders;
 
 import com.pqt.client.module.connection.listeners.IConnectionListener;
+import com.sun.javafx.binding.StringFormatter;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -14,7 +15,10 @@ public class HttpTextSender implements ITextSender{
     @Override
     public void send(String url, String text, IConnectionListener listener) {
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+            String trueURL = String.format("http://%s?message=%s", url, text);
+
+
+            HttpURLConnection con = (HttpURLConnection) new URL(trueURL).openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type", "application/json");
             con.setConnectTimeout(5000);

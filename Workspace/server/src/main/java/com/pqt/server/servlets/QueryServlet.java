@@ -28,10 +28,16 @@ public class QueryServlet extends HttpServlet {
         IMessageToolFactory messageToolFactory = new GSonMessageToolFactory();
         IMessageHandler msgHandler = new SimpleMessageHandler();
 
-        if (request.getParameter("message") != null) {
-            Message resp = msgHandler.handleMessage(messageToolFactory.getObjectParser(Message.class).parse(request.getParameter("message")));
+        if (request.getQueryString() != null && !request.getQueryString().isEmpty() && request.getParameter("message")!=null) {
+            try {
+                Message resp = msgHandler.handleMessage(messageToolFactory.getObjectParser(Message.class).parse(request.getParameter("message")));
 
-            response.getWriter().write(messageToolFactory.getObjectFormatter(Message.class).format(resp));
+                response.getWriter().write(messageToolFactory.getObjectFormatter(Message.class).format(resp));
+            }catch(Exception e){
+                response.getWriter().write(String.format("%s : %s", e.getClass().getName(), e.getMessage()));
+            }
+        }else{
+            response.getWriter().write("Query message was not correctly made : "+request.getQueryString());
         }
     }
 }

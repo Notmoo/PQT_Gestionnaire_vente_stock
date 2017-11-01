@@ -23,7 +23,7 @@ public class FileUtil {
      * @throws IOException if any IOException happend during this method's execution.
      */
     public static boolean createFileIfNotExist(Path filePath) throws IOException {
-        if(FileUtil.exist(filePath)){
+        if(!FileUtil.exist(filePath)){
             Files.createFile(filePath);
             return true;
         }
