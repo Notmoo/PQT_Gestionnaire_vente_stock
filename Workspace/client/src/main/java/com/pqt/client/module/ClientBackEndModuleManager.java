@@ -3,6 +3,7 @@ package com.pqt.client.module;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.connection.ConnectionService;
 import com.pqt.client.module.network.NetworkService;
+import com.pqt.client.module.network.listeners.INetworkServiceListener;
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.sale.SaleService;
 import com.pqt.client.module.stat.StatService;
@@ -24,6 +25,27 @@ public class ClientBackEndModuleManager {
         accountService = new AccountService(queryExecutor);
         statService = new StatService(queryExecutor);
         networkService = new NetworkService(queryExecutor, connectionService);
+
+        networkService.addListener(new INetworkServiceListener() {
+            @Override
+            public void onPQTPingSuccessEvent(String host, Integer port) {
+                //No-op
+            }
+
+            @Override
+            public void onPQTPingFailureEvent(String host, Integer port, Throwable cause) {
+                //No-op
+            }
+
+            @Override
+            public void onNewServerConfigData() {
+                //On bind un refresh automatique des données
+                //sur la réception d'une nouvelle config serveur
+                stockService.refreshProductList();
+                accountService.refreshAccounts();
+                statService.refreshStats();
+            }
+        });
     }
 
     public SaleService getSaleService() {
