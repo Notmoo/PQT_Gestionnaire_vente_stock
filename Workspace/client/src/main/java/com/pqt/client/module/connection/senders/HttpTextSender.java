@@ -17,6 +17,12 @@ public class HttpTextSender implements ITextSender{
         try {
             String trueURL = String.format("http://%s?message=%s", url, text);
 
+            //TODO remove sysout
+            {
+                System.out.println(" --- --- ---");
+                System.out.println("Sending : ");
+                System.out.println(trueURL);
+            }
 
             HttpURLConnection con = (HttpURLConnection) new URL(trueURL).openConnection();
             con.setRequestMethod("GET");
@@ -41,6 +47,13 @@ public class HttpTextSender implements ITextSender{
                 while ((inputLine = in.readLine()) != null) {
                     content.append(inputLine);
                 }
+
+                //TODO remove sysout
+                {
+                    System.out.println("Received : ");
+                    System.out.println(content);
+                }
+
                 listener.onMessageReceivedEvent(content.toString());
             }
 

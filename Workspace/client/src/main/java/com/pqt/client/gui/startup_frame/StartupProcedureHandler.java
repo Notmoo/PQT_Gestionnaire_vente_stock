@@ -18,6 +18,9 @@ class StartupProcedureHandler {
     private String host, username, password;
     private Integer port;
 
+    private IAccountListener updateAccountListListener, connectAccountListener;
+    private  INetworkServiceListener pingListener;
+
     private IStartupProcedureEventFirerer firerer;
 
     StartupProcedureHandler(NetworkService networkService, AccountService accountService) {
@@ -40,78 +43,136 @@ class StartupProcedureHandler {
     }
 
     private void testConnection(){
-        networkService.addListener(getPingListener());
+        //TODO remove sysout
+        System.out.println("Test de connexion");
+        networkService.addListener(getPingListener(networkService));
         networkService.setActiveServer(host, port);
         networkService.sendPQTPing(host, port);
     }
 
     private void useRequestedServer(){
         //Server found
+        //TODO remove sysout
+        System.out.println("Serveur trouvé");
         firerer.fireServerFoundEvent(host, port);
         accountService.addListener(getUpdateAccountListListener());
         accountService.refreshAccounts();
     }
 
     private void connectAccount(){
-        Account match = accountService.getAllAccounts().stream()
-                .filter(account -> account.getUsername().equals(username))
-                .findFirst()
-                .orElse(null);
 
-        if(match==null){
-            //Compte spécifié inconnu
-            firerer.fireUserAccountUnknownEvent(username);
-        }else{
-            accountService.setCurrentAccount(match);
-            accountService.addListener(getConnectAccountListener());
-            accountService.logInCurrentAccount(StartupProcedureHandler.this.password);
+        //TODO remove sysout
+        System.out.println("Connexion de compte");
+
+        //TODO remove try-catch(Throwable)
+        try {
+            Account match = accountService.getAllAccounts().stream()
+                    .filter(account -> account.getUsername().equals(username))
+                    .findFirst()
+                    .orElse(null);
+
+            //TODO remove sysout
+            System.out.println("Account match value : "+match);
+
+            if(match==null){
+                //TODO remove sysout
+                System.out.println(" --> Compte inconnu");
+                //Compte spécifié inconnu
+                firerer.fireUserAccountUnknownEvent(username);
+            }else{
+                //TODO remove sysout
+                System.out.println(" --> Compte connu");
+                accountService.setCurrentAccount(match);
+                accountService.addListener(getConnectAccountListener());
+                accountService.logInCurrentAccount(StartupProcedureHandler.this.password);
+            }
+        }catch(Throwable e){
+            e.printStackTrace();
         }
     }
 
-    private INetworkServiceListener getPingListener(){
-        return new INetworkServiceListener() {
-            @Override
-            public void onPQTPingSuccessEvent(String host, Integer port) {
-                if(StartupProcedureHandler.this.host.equals(host)
-                        && StartupProcedureHandler.this.port.equals(port)){
-                    useRequestedServer();
+    private INetworkServiceListener getPingListener(NetworkService networkService){
+        if(pingListener==null) {
+            pingListener = new INetworkServiceListener() {
+                @Override
+                public void onPQTPingSuccessEvent(String host, Integer port) {
+                    if (StartupProcedureHandler.this.host.equals(host)
+                            && StartupProcedureHandler.this.port.equals(port)) {
+                        useRequestedServer();
+                    }
+                    StartupProcedureHandler.this.removePingListener();
                 }
-            }
 
-            @Override
-            public void onPQTPingFailureEvent(String host, Integer port, Throwable cause) {
+                @Override
+                public void onPQTPingFailureEvent(String host, Integer port, Throwable cause) {
+                    StartupProcedureHandler.this.removePingListener();
+                }
 
-            }
+                @Override
+                public void onNewServerConfigData() {
+                    StartupProcedureHandler.this.removePingListener();
+                }
+            };
+        }
+        return pingListener;
+    }
 
-            @Override
-            public void onNewServerConfigData() {
-
-            }
-        };
+    private void removePingListener(){
+        if(pingListener!=null){
+            networkService.removeListener(pingListener);
+            pingListener = null;
+        }
     }
 
     private IAccountListener getUpdateAccountListListener(){
-        return new AccountListenerAdapter(){
-            @Override
-            public void onAccountListChangedEvent(){
-                connectAccount();
-            }
-        };
+        if(updateAccountListListener==null){
+            updateAccountListListener =  new AccountListenerAdapter(){
+                @Override
+                public void onAccountListChangedEvent(){
+                    connectAccount();
+                    StartupProcedureHandler.this.removeUpdateAccountListListener();
+                }
+            };
+        }
+        return updateAccountListListener;
+    }
+
+    private void removeUpdateAccountListListener(){
+        if(updateAccountListListener!=null){
+            accountService.removeListener(updateAccountListListener);
+            updateAccountListListener=null;
+        }
     }
 
     private IAccountListener getConnectAccountListener(){
-        return new AccountListenerAdapter(){
-            @Override
-            public void onAccountStatusChangedEvent(boolean status) {
-                if(status){
-                    //Compte connecté
-                    firerer.fireUserAccountConnectedEvent(username);
-                }else{
-                    //Compte non-connecté
-                    firerer.fireUserAccountDisconnectedEvent(username);
+        if(connectAccountListener==null){
+            connectAccountListener = new AccountListenerAdapter(){
+                @Override
+                public void onAccountStatusChangedEvent(boolean status) {
+                    if(status){
+                        //Compte connecté
+                        //TODO remove sysout
+                        System.out.println("Connecté en tant que '"+username+"'");
+                        StartupProcedureHandler.this.removeConnectAccountListener();
+                        firerer.fireUserAccountConnectedEvent(username);
+                    }else{
+                        //Compte non-connecté
+                        //TODO remove sysout
+                        System.out.println("Non-connecté en tant que '"+username+"'");
+                        StartupProcedureHandler.this.removeConnectAccountListener();
+                        firerer.fireUserAccountDisconnectedEvent(username);
+                    }
                 }
-            }
-        };
+            };
+        }
+        return connectAccountListener;
+    }
+
+    private void removeConnectAccountListener(){
+        if(connectAccountListener!=null){
+            accountService.removeListener(connectAccountListener);
+            connectAccountListener = null;
+        }
     }
 
     public StartupProcedureHandler addListener(IStartupProcedureListener l){
