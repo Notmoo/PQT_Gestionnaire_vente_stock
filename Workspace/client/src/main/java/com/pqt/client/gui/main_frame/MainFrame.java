@@ -3,11 +3,12 @@ package com.pqt.client.gui.main_frame;
 import com.pqt.client.gui.main_frame.listeners.IMainFrameModelListener;
 import com.pqt.client.gui.modules.IGuiModule;
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
+import com.pqt.client.gui.ressources.components.generics.frames.IFXFrame;
 import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
 import com.pqt.client.module.account.AccountService;
 import javafx.scene.layout.Pane;
 
-public class MainFrame implements IFXComponent {
+public class MainFrame implements IFXFrame {
 
     private MainFrameView view;
     private MainFrameController ctrl;
@@ -35,6 +36,9 @@ public class MainFrame implements IFXComponent {
         model.addListener(l);
     }
 
+    public void requestFrameUpdate(){
+        ctrl.updateView();
+    }
     @Override
     public Pane getPane() {
         return view.getPane();
