@@ -31,6 +31,7 @@ class SaleScreenModel {
 
     private SaleBuilder currentSaleBuilder;
     private long tempSaleId;
+    private Object currentAccount;
 
     SaleScreenModel(AccountService accountService, StockService stockService, SaleService saleService) {
         if(accountService==null || stockService==null || saleService==null)
@@ -227,5 +228,9 @@ class SaleScreenModel {
             return accountService.getCurrentAccount().getPermissionLevel();
         else
             return AccountLevel.getLowest();
+    }
+
+    public Account getCurrentAccount() {
+        return accountService.getCurrentAccount();
     }
 }

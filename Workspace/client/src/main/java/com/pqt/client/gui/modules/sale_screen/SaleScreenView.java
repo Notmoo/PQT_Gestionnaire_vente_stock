@@ -221,4 +221,8 @@ class SaleScreenView implements IFXComponent {
     void setValidationButtonEnabled(boolean validationButtonEnabled) {
         validator.setValidationButtonEnable(validationButtonEnabled);
     }
+
+    public void setCurrentAccount(Account currentAccount) {
+        Platform.runLater(()->saleMakerAccountDisplayer.setText(GUIStringTool.getAccountStringConverter().toString(currentAccount)));
+    }
 }
