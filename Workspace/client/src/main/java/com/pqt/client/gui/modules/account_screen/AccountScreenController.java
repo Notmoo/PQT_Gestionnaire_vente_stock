@@ -1,5 +1,6 @@
 package com.pqt.client.gui.modules.account_screen;
 
+import com.pqt.client.gui.modules.account_screen.listeners.IAccountScreenModelListener;
 import com.pqt.client.gui.ressources.components.generics.validators.listeners.IValidatorComponentListener;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
@@ -11,6 +12,12 @@ class AccountScreenController {
 
     AccountScreenController(AccountScreenModel model) {
         this.model = model;
+        model.addListener(new IAccountScreenModelListener() {
+            @Override
+            public void onAccountListChangedEvent() {
+                updateView();
+            }
+        });
     }
 
     void setView(AccountScreenView view) {
