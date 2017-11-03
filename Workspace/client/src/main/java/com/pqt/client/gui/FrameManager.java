@@ -57,7 +57,7 @@ public class FrameManager {
         return () -> Platform.runLater(()->trySwitchScene(stage, startupFrameScene, false));
     }
 
-    private void trySwitchScene(Stage stage, FrameScene sceneToDisplay, boolean maximize){
+    private synchronized void trySwitchScene(Stage stage, FrameScene sceneToDisplay, boolean maximize){
         if(sceneToDisplay!=null) {
             stage.hide();
             stage.setScene(sceneToDisplay);
