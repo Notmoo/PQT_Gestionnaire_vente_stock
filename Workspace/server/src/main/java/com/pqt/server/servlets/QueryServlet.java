@@ -16,6 +16,17 @@ import java.io.IOException;
 //TODO ajouter logs
 @WebServlet(name = "QueryServlet", urlPatterns = "/")
 public class QueryServlet extends HttpServlet {
+
+    private final IMessageToolFactory messageToolFactory;
+    private final IMessageHandler msgHandler;
+
+    public QueryServlet() {
+        super();
+
+        this.messageToolFactory = new GSonMessageToolFactory();
+        this.msgHandler = new SimpleMessageHandler();
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         executeServletProcess(request, response);
     }
@@ -25,8 +36,6 @@ public class QueryServlet extends HttpServlet {
     }
 
     private void executeServletProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        IMessageToolFactory messageToolFactory = new GSonMessageToolFactory();
-        IMessageHandler msgHandler = new SimpleMessageHandler();
 
         if (request.getQueryString() != null && !request.getQueryString().isEmpty() && request.getParameter("message")!=null) {
             try {
@@ -34,7 +43,10 @@ public class QueryServlet extends HttpServlet {
 
                 response.getWriter().write(messageToolFactory.getObjectFormatter(Message.class).format(resp));
             }catch(Exception e){
+                e.printStackTrace();
                 response.getWriter().write(String.format("%s : %s", e.getClass().getName(), e.getMessage()));
+                response.getWriter().write("StackTrace :");
+                e.printStackTrace(response.getWriter());
             }
         }else{
             response.getWriter().write("Query message was not correctly made : "+request.getQueryString());

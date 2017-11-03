@@ -52,7 +52,13 @@ public class FileAccountDao implements IAccountDao {
      * @return La première correspondance trouvée, ou {@code null} si aucune correspondance n'a pu être faite.
      */
     private AccountEntry lookupMatchingEntry(Account account, Collection<AccountEntry> entries){
-        return entries.stream().filter(accountEntry -> accountEntry.getUsername().equals(account.getUsername())).findFirst().orElse(null);
+        return entries.stream()
+                .filter(accountEntry ->
+                    accountEntry != null
+                            && account != null
+                            && accountEntry.getUsername().equals(account.getUsername()))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
