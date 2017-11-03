@@ -1,5 +1,6 @@
 package com.pqt.client.module.query;
 
+import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.connection.ConnectionService;
 import com.pqt.client.module.connection.listeners.IConnectionListener;
 import com.pqt.client.module.query.exceptions.HeaderNotFoundException;
@@ -28,6 +29,10 @@ public class QueryExecutor {
 	    this.connectionService = connectionService;
 	    this.messageFactory = new QueryMessageFactory(messageToolFactory);
 	}
+
+	public void setAccountService(AccountService accountService){
+	    messageFactory.setAccountService(accountService);
+    }
 
     public void executeSaleQuery(Sale sale, INoItemMessageCallback callback) {
         sendMessage(messageFactory.newSaleMessage(sale), callback, MessageType.ACK_SALE);

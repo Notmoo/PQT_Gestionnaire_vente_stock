@@ -1,5 +1,6 @@
 package com.pqt.client.module.query;
 
+import com.pqt.client.module.account.AccountService;
 import com.pqt.core.communication.IMessageToolFactory;
 import com.pqt.core.entities.messages.Message;
 import com.pqt.core.entities.messages.MessageType;
@@ -15,9 +16,15 @@ import java.util.Map;
 class QueryMessageFactory {
 
     private final IMessageToolFactory messageToolFactory;
+    private AccountService accountService;
 
     QueryMessageFactory(IMessageToolFactory messageToolFactory) {
         this.messageToolFactory = messageToolFactory;
+        accountService = null;
+    }
+
+    void setAccountService(AccountService accountService){
+        this.accountService = accountService;
     }
 
     Message newSaleMessage(Sale sale) {
@@ -60,8 +67,10 @@ class QueryMessageFactory {
 	}
 
     private  Message newSimpleMessage(MessageType type, Map<String, String> fields){
-        return new Message(type, null, null, null, null, fields);
-    }
+	    //TODO add emitter
+        Account account = accountService!=null?accountService.getCurrentAccount():null;
+        return new Message(type, null, null, account, null, fields);
+	}
 
     private  Message newSimpleMessage(MessageType type){
         return newSimpleMessage(type, null);

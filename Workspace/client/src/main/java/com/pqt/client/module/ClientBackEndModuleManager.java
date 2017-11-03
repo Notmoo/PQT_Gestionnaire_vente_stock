@@ -26,6 +26,8 @@ public class ClientBackEndModuleManager {
         statService = new StatService(queryExecutor);
         networkService = new NetworkService(queryExecutor, connectionService);
 
+        queryExecutor.setAccountService(accountService);
+
         networkService.addListener(new INetworkServiceListener() {
             @Override
             public void onPQTPingSuccessEvent(String host, Integer port) {
