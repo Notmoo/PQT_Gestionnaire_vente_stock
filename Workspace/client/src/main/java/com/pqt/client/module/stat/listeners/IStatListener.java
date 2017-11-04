@@ -5,10 +5,12 @@ import java.util.Map;
 
 public interface IStatListener extends EventListener {
 
-	public abstract void onGetStatSuccess();
+	void onGetStatSuccess();
 
-	public abstract void onGetStatError(Throwable cause);
+	void onGetStatError(Throwable cause);
 
-	public abstract void onGetStatRefused(Throwable cause);
+	void onGetStatRefused(Throwable cause);
+
+	void onStatChangedEvent();
 
 }

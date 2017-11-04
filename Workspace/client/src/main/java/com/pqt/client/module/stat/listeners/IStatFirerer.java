@@ -4,13 +4,11 @@ import java.util.Map;
 
 public interface IStatFirerer {
 
-	public abstract void fireGetStatSuccess();
-
-	public abstract void fireGetStatError(Throwable cause);
-
-	public abstract void fireGetStatRefused(Throwable cause);
+	void fireGetStatSuccess();
+	void fireGetStatError(Throwable cause);
+	void fireGetStatRefused(Throwable cause);
+	void fireStatChangedEvent();
 
 	void removeListener(IStatListener listener);
-
 	void addListener(IStatListener listener);
 }

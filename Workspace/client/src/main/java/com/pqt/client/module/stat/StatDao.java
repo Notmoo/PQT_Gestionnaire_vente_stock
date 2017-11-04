@@ -57,6 +57,7 @@ public class StatDao {
         private synchronized void replaceStats(Map<String, String> stats) {
             this.stats = new HashMap<>(stats);
             this.lastRefreshTimestamp = new Date();
+            eventFirerer.fireStatChangedEvent();
         }
 
     public void removeListener(IStatListener listener) {

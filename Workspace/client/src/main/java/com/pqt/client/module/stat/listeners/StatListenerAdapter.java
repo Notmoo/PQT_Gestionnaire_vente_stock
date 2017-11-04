@@ -6,6 +6,7 @@ public class StatListenerAdapter implements IStatListener {
 	/**
 	 * @see com.pqt.client.module.stat.listeners.IStatListener#onGetStatSuccess()
 	 */
+	@Override
 	public void onGetStatSuccess() {
 
 	}
@@ -14,6 +15,7 @@ public class StatListenerAdapter implements IStatListener {
 	/**
 	 * @see com.pqt.client.module.stat.listeners.IStatListener#onGetStatError(Throwable)
 	 */
+	@Override
 	public void onGetStatError(Throwable cause) {
 
 	}
@@ -22,7 +24,13 @@ public class StatListenerAdapter implements IStatListener {
 	/**
 	 * @see com.pqt.client.module.stat.listeners.IStatListener#onGetStatRefused(Throwable)
 	 */
+	@Override
 	public void onGetStatRefused(Throwable cause) {
+
+	}
+
+	@Override
+	public void onStatChangedEvent() {
 
 	}
 

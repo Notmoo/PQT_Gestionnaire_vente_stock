@@ -14,6 +14,7 @@ public class SimpleStatFirerer implements IStatFirerer {
 	/**
 	 * @see com.pqt.client.module.stat.listeners.IStatFirerer#fireGetStatSuccess()
 	 */
+	@Override
 	public void fireGetStatSuccess() {
 		for(IStatListener l : listeners.getListeners(IStatListener.class)){
 			l.onGetStatSuccess();
@@ -24,6 +25,7 @@ public class SimpleStatFirerer implements IStatFirerer {
 	/**
 	 * @see com.pqt.client.module.stat.listeners.IStatFirerer#fireGetStatError(Throwable)
 	 */
+	@Override
 	public void fireGetStatError(Throwable cause) {
 		for(IStatListener l : listeners.getListeners(IStatListener.class)){
 			l.onGetStatError(cause);
@@ -34,9 +36,17 @@ public class SimpleStatFirerer implements IStatFirerer {
 	/**
 	 * @see com.pqt.client.module.stat.listeners.IStatFirerer#fireGetStatRefused(Throwable)
 	 */
+	@Override
 	public void fireGetStatRefused(Throwable cause) {
 		for(IStatListener l : listeners.getListeners(IStatListener.class)){
 			l.onGetStatRefused(cause);
+		}
+	}
+
+	@Override
+	public void fireStatChangedEvent() {
+		for(IStatListener l : listeners.getListeners(IStatListener.class)){
+			l.onStatChangedEvent();
 		}
 	}
 
