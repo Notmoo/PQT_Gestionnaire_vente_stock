@@ -24,6 +24,7 @@ class StockScreenModel {
         this.stockService.addListener(new StockListenerAdapter(){
             @Override
             public void onProductListChangedEvent() {
+                System.out.println("Product list changed event");
                 StockScreenModel.this.fireProductCollectionChanged();
             }
         });
@@ -57,6 +58,14 @@ class StockScreenModel {
     }
 
     Collection<Product> getProductCollection() {
+        {//TODO delete print block
+            System.out.println("------------------------------------------");
+            System.out.println("Stock service's list : ");
+            for(Product p : stockService.getProducts()){
+                System.out.println(p);
+            }
+            System.out.println("------------------------------------------");
+        }
         return stockService.getProducts();
     }
 

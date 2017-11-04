@@ -15,6 +15,7 @@ public class StatScreen implements IGuiModule {
         StatScreenController ctrl = new StatScreenController(model);
         view = new StatScreenView();
 
+        model.addListener(ctrl);
         ctrl.setView(view);
     }
 

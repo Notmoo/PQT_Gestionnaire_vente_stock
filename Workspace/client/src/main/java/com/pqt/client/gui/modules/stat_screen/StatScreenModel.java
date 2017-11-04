@@ -18,7 +18,7 @@ class StatScreenModel {
         listenerList = new EventListenerList();
         this.statService.addListener(new StatListenerAdapter() {
             @Override
-            public void onGetStatSuccess() {
+            public void onStatChangedEvent() {
                 Arrays.stream(listenerList.getListeners(IStatScreenModelListener.class)).forEach(IStatScreenModelListener::onStatisticsChangedEvent);
             }
         });

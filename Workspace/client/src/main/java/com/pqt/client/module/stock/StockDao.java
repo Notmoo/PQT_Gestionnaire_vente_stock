@@ -43,7 +43,7 @@ public class StockDao {
         executor.executeStockQuery(new ICollectionItemMessageCallback<Product>() {
 			@Override
 			public void ack(Collection<Product> obj) {
-				replaceProductList(products);
+				replaceProductList(obj);
 				eventFirerer.fireGetProductListSuccessEvent();
 				//TODO add log line
 			}
@@ -66,7 +66,15 @@ public class StockDao {
 		return lastRefreshTimestamp;
 	}
 
-	private synchronized void replaceProductList(List<Product> products){
+	private synchronized void replaceProductList(Collection<Product> products){
+        {//TODO delete print block
+            System.out.println("------------------------------------------");
+            System.out.println("Stock dao's list : ");
+            for(Product p : products){
+                System.out.println(p);
+            }
+            System.out.println("------------------------------------------");
+        }
 		this.products.clear();
 		this.products.addAll(products);
 		this.lastRefreshTimestamp = new Date();
