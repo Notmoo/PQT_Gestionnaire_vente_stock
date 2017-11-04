@@ -1,4 +1,4 @@
-package com.pqt.client.gui.main_frame;
+package com.pqt.client.gui.frames.main_frame;
 
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.components.generics.others.SideBar;

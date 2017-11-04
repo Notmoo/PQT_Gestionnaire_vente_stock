@@ -1,8 +1,8 @@
-package com.pqt.client.gui.startup_frame;
+package com.pqt.client.gui.frames.startup_frame;
 
-import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureEventFirerer;
-import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureListener;
-import com.pqt.client.gui.startup_frame.listeners.procedure.SimpleStartupProcedureEventFirerer;
+import com.pqt.client.gui.frames.startup_frame.listeners.procedure.IStartupProcedureEventFirerer;
+import com.pqt.client.gui.frames.startup_frame.listeners.procedure.IStartupProcedureListener;
+import com.pqt.client.gui.frames.startup_frame.listeners.procedure.SimpleStartupProcedureEventFirerer;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.account.listeners.AccountListenerAdapter;
 import com.pqt.client.module.account.listeners.IAccountListener;

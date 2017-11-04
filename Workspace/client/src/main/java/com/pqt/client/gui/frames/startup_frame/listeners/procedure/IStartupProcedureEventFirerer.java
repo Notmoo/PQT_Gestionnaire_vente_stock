@@ -1,4 +1,4 @@
-package com.pqt.client.gui.startup_frame.listeners.procedure;
+package com.pqt.client.gui.frames.startup_frame.listeners.procedure;
 
 public interface IStartupProcedureEventFirerer {
 

@@ -1,7 +1,7 @@
-package com.pqt.client.gui.startup_frame;
+package com.pqt.client.gui.frames.startup_frame;
 
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
-import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
+import com.pqt.client.gui.frames.startup_frame.listeners.frame.IStartupFrameModelListener;
 
 public class StartupFrameController implements IStartupFrameModelListener {
 

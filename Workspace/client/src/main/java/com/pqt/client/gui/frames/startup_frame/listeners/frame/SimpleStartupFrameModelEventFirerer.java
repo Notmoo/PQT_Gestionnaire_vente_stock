@@ -1,4 +1,4 @@
-package com.pqt.client.gui.startup_frame.listeners.frame;
+package com.pqt.client.gui.frames.startup_frame.listeners.frame;
 
 import javax.swing.event.EventListenerList;
 import java.util.Arrays;

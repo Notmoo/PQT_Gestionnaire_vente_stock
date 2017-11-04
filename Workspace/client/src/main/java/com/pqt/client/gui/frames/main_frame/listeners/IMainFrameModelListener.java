@@ -1,4 +1,4 @@
-package com.pqt.client.gui.main_frame.listeners;
+package com.pqt.client.gui.frames.main_frame.listeners;
 
 import java.util.EventListener;
 

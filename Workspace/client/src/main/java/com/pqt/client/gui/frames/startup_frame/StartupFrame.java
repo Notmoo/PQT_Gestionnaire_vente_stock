@@ -1,8 +1,7 @@
-package com.pqt.client.gui.startup_frame;
+package com.pqt.client.gui.frames.startup_frame;
 
-import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.components.generics.frames.IFXFrame;
-import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
+import com.pqt.client.gui.frames.startup_frame.listeners.frame.IStartupFrameModelListener;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.network.NetworkService;
 import javafx.scene.layout.Pane;

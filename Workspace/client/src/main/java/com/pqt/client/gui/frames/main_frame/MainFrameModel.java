@@ -1,13 +1,12 @@
-package com.pqt.client.gui.main_frame;
+package com.pqt.client.gui.frames.main_frame;
 
-import com.pqt.client.gui.main_frame.listeners.IMainFrameModelListener;
+import com.pqt.client.gui.frames.main_frame.listeners.IMainFrameModelListener;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.account.listeners.IAccountListener;
 import com.pqt.core.entities.user_account.Account;
 
 import javax.swing.event.EventListenerList;
 import java.util.Arrays;
-import java.util.Collection;
 
 class MainFrameModel {
 

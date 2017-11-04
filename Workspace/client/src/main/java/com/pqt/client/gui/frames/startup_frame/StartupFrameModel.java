@@ -1,9 +1,9 @@
-package com.pqt.client.gui.startup_frame;
+package com.pqt.client.gui.frames.startup_frame;
 
-import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelEventFirerer;
-import com.pqt.client.gui.startup_frame.listeners.frame.IStartupFrameModelListener;
-import com.pqt.client.gui.startup_frame.listeners.frame.SimpleStartupFrameModelEventFirerer;
-import com.pqt.client.gui.startup_frame.listeners.procedure.IStartupProcedureListener;
+import com.pqt.client.gui.frames.startup_frame.listeners.frame.IStartupFrameModelEventFirerer;
+import com.pqt.client.gui.frames.startup_frame.listeners.frame.IStartupFrameModelListener;
+import com.pqt.client.gui.frames.startup_frame.listeners.frame.SimpleStartupFrameModelEventFirerer;
+import com.pqt.client.gui.frames.startup_frame.listeners.procedure.IStartupProcedureListener;
 import com.pqt.client.module.account.AccountService;
 import com.pqt.client.module.network.NetworkService;
 

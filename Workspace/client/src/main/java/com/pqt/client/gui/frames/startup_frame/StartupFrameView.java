@@ -1,4 +1,4 @@
-package com.pqt.client.gui.startup_frame;
+package com.pqt.client.gui.frames.startup_frame;
 
 import com.pqt.client.gui.ressources.components.generics.IFXComponent;
 import com.pqt.client.gui.ressources.strings.GUIStringTool;
