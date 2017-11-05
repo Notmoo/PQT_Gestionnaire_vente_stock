@@ -34,7 +34,7 @@ public class SaleService {
         else
             saleId = 0;
 
-        executor.executeSaleQuery(saleBuilder.build(), new INoItemMessageCallback() {
+        executor.executeSaleQuery(saleBuilder.buildLightweight(), new INoItemMessageCallback() {
             @Override
             public void ack() {
                 eventFirerer.fireSaleValidationSuccess(currentSaleId);

@@ -5,6 +5,7 @@ import com.pqt.core.communication.IMessageToolFactory;
 import com.pqt.core.entities.messages.Message;
 import com.pqt.core.entities.messages.MessageType;
 import com.pqt.core.entities.product.ProductUpdate;
+import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.user_account.Account;
 
@@ -27,9 +28,9 @@ class QueryMessageFactory {
         this.accountService = accountService;
     }
 
-    Message newSaleMessage(Sale sale) {
+    Message newSaleMessage(LightweightSale sale) {
         Map<String, String> fields = new HashMap<>();
-        fields.put("sale", messageToolFactory.getObjectFormatter(Sale.class).format(sale));
+        fields.put("lightweight_sale", messageToolFactory.getObjectFormatter(LightweightSale.class).format(sale));
         return newSimpleMessage(MessageType.QUERY_SALE, fields);
 	}
 

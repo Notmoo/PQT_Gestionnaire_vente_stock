@@ -12,6 +12,7 @@ import com.pqt.core.entities.messages.Message;
 import com.pqt.core.entities.messages.MessageType;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
+import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.user_account.Account;
 
@@ -34,7 +35,7 @@ public class QueryExecutor {
 	    messageFactory.setAccountService(accountService);
     }
 
-    public void executeSaleQuery(Sale sale, INoItemMessageCallback callback) {
+    public void executeSaleQuery(LightweightSale sale, INoItemMessageCallback callback) {
         sendMessage(messageFactory.newSaleMessage(sale), callback, MessageType.ACK_SALE);
     }
 

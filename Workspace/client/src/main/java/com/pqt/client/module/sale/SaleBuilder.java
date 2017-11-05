@@ -3,6 +3,7 @@ package com.pqt.client.module.sale;
 import com.pqt.client.module.stock.StockDao;
 import com.pqt.core.entities.members.Client;
 import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.sale.SaleStatus;
 import com.pqt.core.entities.sale.SaleType;
@@ -91,7 +92,11 @@ public class SaleBuilder {
     }
 
 	public Sale build() {
-        return new Sale(0, products, new Date(), orderedWith, orderedBy, orderedFor, type, SaleStatus.PENDING);
+        return new Sale(0, products, orderedWith, orderedBy, orderedFor, type, SaleStatus.PENDING);
 	}
+
+	public LightweightSale buildLightweight(){
+        return new LightweightSale(build());
+    }
 
 }
