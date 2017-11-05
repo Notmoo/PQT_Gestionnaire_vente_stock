@@ -13,9 +13,9 @@ import java.net.URLEncoder;
 
 public class HttpTextSender implements ITextSender{
     @Override
-    public void send(String url, String text, IConnectionListener listener) {
+    public void send(String host, String text, IConnectionListener listener) {
         try {
-            String trueURL = String.format("http://%s?message=%s", url, text);
+            String trueURL = String.format("http://%s?%s", host, encode(text));
 
             //TODO remove sysout
             {
@@ -31,12 +31,7 @@ public class HttpTextSender implements ITextSender{
             con.setReadTimeout(5000);
             con.setInstanceFollowRedirects(true);
 
-            String params = URLEncoder.encode("message="+text, "UTF-8");
             con.setDoOutput(true);
-            try(DataOutputStream out = new DataOutputStream(con.getOutputStream())) {
-                out.writeBytes(params);
-                out.flush();
-            }
             con.connect();
             listener.onConnectedEvent();
 
@@ -66,5 +61,10 @@ public class HttpTextSender implements ITextSender{
         }finally {
             listener.onDisconnectedEvent();
         }
+    }
+
+    // Méthode à modifier pour encoder le message suivant un algorithme spécifique
+    private String encode(String toEncode){
+        return toEncode;
     }
 }
