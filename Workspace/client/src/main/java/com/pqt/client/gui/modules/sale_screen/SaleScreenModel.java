@@ -31,7 +31,6 @@ class SaleScreenModel {
 
     private SaleBuilder currentSaleBuilder;
     private long tempSaleId;
-    private Object currentAccount;
 
     SaleScreenModel(AccountService accountService, StockService stockService, SaleService saleService) {
         if(accountService==null || stockService==null || saleService==null)
@@ -48,6 +47,7 @@ class SaleScreenModel {
                 if(saleId == SaleScreenModel.this.tempSaleId){
                     SaleScreenModel.this.fireSaleValidatedEvent();
                 }
+                stockService.refreshProductList();
             }
 
             @Override
