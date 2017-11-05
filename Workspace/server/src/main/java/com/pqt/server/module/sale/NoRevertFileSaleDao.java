@@ -1,6 +1,7 @@
 package com.pqt.server.module.sale;
 
 import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.server.module.stock.StockService;
 import com.pqt.server.tools.FileUtil;
@@ -10,7 +11,10 @@ import org.apache.commons.io.input.ReversedLinesFileReader;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Implémentation de l'interface {@link ISaleDao} utilisant un fichier comme moyen pour assurer la persistance des
@@ -55,9 +59,24 @@ public class NoRevertFileSaleDao implements ISaleDao {
 
         long saleId = nextSaleId;
         stockService.applySale(new SaleContent(sale));
-        logSale(sale, saleId);
+        logSale(sale, new Date(), saleId);
         generateNextSaleId();
         return saleId;
+    }
+
+    public Sale convert(LightweightSale lwSale){
+        Map<Product, Integer> products = new HashMap<>();
+
+        lwSale.getProducts().keySet()
+                .forEach(pId->{
+                    Product p = stockService.getProduct(pId);
+                    if(p!=null)
+                        products.put(p, lwSale.getProducts().get(pId));
+                });
+        if(products.keySet().size()!=lwSale.getProducts().keySet().size())
+            return null;
+
+        return new Sale(lwSale.getId(), products, lwSale.getOrderedWith(), lwSale.getOrderedBy(), lwSale.getOrderedFor(), lwSale.getType(), lwSale.getStatus());
     }
 
     private void generateNextSaleId() {
@@ -111,24 +130,24 @@ public class NoRevertFileSaleDao implements ISaleDao {
         throw new UnsupportedOperationException("Le revert de commandes n'est pas supporté");
     }
 
-    private void logSale(Sale sale, long saleId){
+    private void logSale(Sale sale, Date date, long saleId){
         try(FileOutputStream fos = new FileOutputStream(SALE_LOG_FILE_NAME);
             PrintWriter pw = new PrintWriter(fos)){
 
-            pw.append(renderer.render(sale, saleId));
+            pw.append(renderer.render(sale, date, saleId));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private ISaleRenderer getRenderer(){
-        return(sale, id)->{
+        return(sale, date, id)->{
             StringBuffer sb = new StringBuffer("\n#").append(id).append("\n");
             String separator = "-----";
             DateFormat dateFormat = new SimpleDateFormat("<dd/ww/yyyy - HH:mm:ss>");
 
             sb.append("type : ").append(sale.getType().name()).append("\n");
-            sb.append("at : ").append(dateFormat.format(sale.getOrderedAt())).append("\n");
+            sb.append("at : ").append(dateFormat.format(date)).append("\n");
             if(sale.getOrderedBy()!=null)
                 sb.append("by : ").append(sale.getOrderedBy().getUsername()).append("(").append(sale.getOrderedBy().getPermissionLevel().name()).append(")").append("\n");
             if(sale.getOrderedFor()!=null)
@@ -145,6 +164,6 @@ public class NoRevertFileSaleDao implements ISaleDao {
     }
 
     private interface ISaleRenderer{
-        String render(Sale sale, long saleId);
+        String render(Sale sale, Date date, long saleId);
     }
 }

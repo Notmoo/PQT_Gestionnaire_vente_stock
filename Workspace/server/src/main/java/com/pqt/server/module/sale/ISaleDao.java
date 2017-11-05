@@ -1,5 +1,6 @@
 package com.pqt.server.module.sale;
 
+import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 
 /**
@@ -17,6 +18,8 @@ import com.pqt.core.entities.sale.Sale;
 public interface ISaleDao {
 
 	long submitSale(Sale sale);
+
+	Sale convert(LightweightSale lwSale);
 
 	boolean isSaleRevertSupported();
 	boolean submitSaleRevert(long id);

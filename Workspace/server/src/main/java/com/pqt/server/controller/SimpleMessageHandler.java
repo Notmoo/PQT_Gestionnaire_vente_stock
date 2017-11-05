@@ -7,6 +7,7 @@ import com.pqt.core.entities.messages.MessageType;
 import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
+import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.server_config.ServerConfig;
 import com.pqt.core.entities.user_account.Account;
@@ -87,7 +88,7 @@ public class SimpleMessageHandler implements IMessageHandler {
         manager.supportForConnectedAccounts(MessageType.QUERY_SALE, (message)->{
             Map<String, String> fields = new HashMap<>();
             try {
-                long saleId = saleService.submitSale(messageToolFactory.getObjectParser(Sale.class).parse(message.getField("sale")));
+                long saleId = saleService.submitSale(messageToolFactory.getObjectParser(LightweightSale.class).parse(message.getField("lightweight_sale")));
                 fields.put("saleId", Long.toString(saleId));
                 return new Message(MessageType.ACK_SALE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
             }catch(NullPointerException e){

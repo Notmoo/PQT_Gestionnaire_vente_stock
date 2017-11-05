@@ -1,10 +1,15 @@
 package com.pqt.server.module.sale;
 
+import com.pqt.core.entities.product.Product;
+import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.server.module.sale.listeners.ISaleFirerer;
 import com.pqt.server.module.sale.listeners.ISaleListener;
 import com.pqt.server.module.sale.listeners.SimpleSaleFirerer;
 import com.pqt.server.module.stock.StockService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //TODO ajouter logs
 
@@ -46,6 +51,25 @@ public class SaleService {
         if(id!=-1) eventFirerer.fireSaleValidatedEvent(sale);
 		return id;
 	}
+
+    /**
+     * Soumet une commande au service pour validation. Si la commande est validée, les stocks seront débités et
+     * l'identifiant de la commande sera renvoyé. Si la commande n'est pas validée, la valeur {@value -1} sera renvoyée
+     * et les stocks resterons inchangés.
+     * <p/>
+     * Les produits de la commande seront récupéré automatiquement via le service de stocks en se basant sur les id
+     * présent dans {@code sale}. Si un id ne correspond pas à un produit, la totalité de la commande sera refusée.
+     *
+     * @param lwSale commande à valider
+     * @return l'identifiant positif non-nul attribué à la commande si elle est validée, {@value -1} sinon.
+     */
+    public long submitSale(LightweightSale lwSale) {
+        Sale sale = dao.convert(lwSale);
+        if(sale!=null)
+            return submitSale(sale);
+
+        return -1;
+    }
 
     /**
      * Détermine si le rollback de commande est supporté par la configuration actuelle du serveur ou non.
