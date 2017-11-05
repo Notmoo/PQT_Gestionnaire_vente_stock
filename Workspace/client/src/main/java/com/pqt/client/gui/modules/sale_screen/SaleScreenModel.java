@@ -103,6 +103,7 @@ class SaleScreenModel {
         accountService.addListener(new IAccountListener() {
             @Override
             public void onAccountStatusChangedEvent(boolean status) {
+                currentSaleBuilder.orderedBy(accountService.getCurrentAccount());
                 fireAccountConnectedStatusUpdateEvent();
             }
 

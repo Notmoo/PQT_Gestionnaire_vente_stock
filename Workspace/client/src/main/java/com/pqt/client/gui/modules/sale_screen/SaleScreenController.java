@@ -42,8 +42,7 @@ class SaleScreenController {
 
             @Override
             public void onAccountConnectedStateUpdatedEvent() {
-                updateActionLock();
-                view.setCurrentAccount(model.getCurrentAccount());
+                updateSale();
             }
 
             @Override
