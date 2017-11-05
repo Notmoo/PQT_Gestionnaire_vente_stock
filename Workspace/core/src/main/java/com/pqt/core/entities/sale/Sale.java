@@ -17,7 +17,6 @@ public class Sale implements ILoggable, Serializable{
 
     private int id;
     private Map<Product, Integer> products;
-    private Date orderedAt;
     private Client orderedWith;
     private Account orderedBy;
     private Account orderedFor;
@@ -27,10 +26,9 @@ public class Sale implements ILoggable, Serializable{
     public Sale() {
     }
 
-    public Sale(int id, Map<Product, Integer> products, Date orderedAt, Client orderedWith, Account orderedBy, Account orderedFor, SaleType type, SaleStatus status) {
+    public Sale(int id, Map<Product, Integer> products, Client orderedWith, Account orderedBy, Account orderedFor, SaleType type, SaleStatus status) {
         this.id = id;
         this.products = products;
-        this.orderedAt = orderedAt;
         this.orderedWith = orderedWith;
         this.orderedBy = orderedBy;
         this.orderedFor = orderedFor;
@@ -52,14 +50,6 @@ public class Sale implements ILoggable, Serializable{
 
     public void setProducts(Map<Product, Integer> products) {
         this.products = products;
-    }
-
-    public Date getOrderedAt() {
-        return orderedAt;
-    }
-
-    public void setOrderedAt(Date orderedAt) {
-        this.orderedAt = orderedAt;
     }
 
     public Client getOrderedWith() {

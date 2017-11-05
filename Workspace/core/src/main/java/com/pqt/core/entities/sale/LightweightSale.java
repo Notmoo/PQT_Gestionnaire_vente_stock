@@ -14,19 +14,18 @@ public class LightweightSale {
 
     private int id;
     private Map<Long, Integer> products;
-    private Date orderedAt;
     private Client orderedWith;
     private Account orderedBy;
     private Account orderedFor;
     private SaleType type;
     private SaleStatus status;
+    private Double worth;
 
     public LightweightSale() {
     }
 
     public LightweightSale(Sale sale) {
         this.id = sale.getId();
-        this.orderedAt = sale.getOrderedAt();
         this.orderedWith = sale.getOrderedWith();
         this.orderedBy = sale.getOrderedBy();
         this.orderedFor = sale.getOrderedFor();
@@ -52,14 +51,6 @@ public class LightweightSale {
 
     public void setProducts(Map<Long, Integer> products) {
         this.products = products;
-    }
-
-    public Date getOrderedAt() {
-        return orderedAt;
-    }
-
-    public void setOrderedAt(Date orderedAt) {
-        this.orderedAt = orderedAt;
     }
 
     public Client getOrderedWith() {
