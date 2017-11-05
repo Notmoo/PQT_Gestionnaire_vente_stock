@@ -24,7 +24,6 @@ class StockScreenModel {
         this.stockService.addListener(new StockListenerAdapter(){
             @Override
             public void onProductListChangedEvent() {
-                System.out.println("Product list changed event");
                 StockScreenModel.this.fireProductCollectionChanged();
             }
         });
