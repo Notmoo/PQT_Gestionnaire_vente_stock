@@ -16,6 +16,7 @@ import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
 
 import javax.swing.event.EventListenerList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +48,6 @@ class SaleScreenModel {
                 if(saleId == SaleScreenModel.this.tempSaleId){
                     SaleScreenModel.this.fireSaleValidatedEvent();
                 }
-                stockService.refreshProductList();
             }
 
             @Override
@@ -151,7 +151,7 @@ class SaleScreenModel {
     }
 
     List<SaleType> getSaleTypeList() {
-        return saleService.getSaleTypes();
+        return new ArrayList<>(saleService.getSaleTypes());
     }
 
     Sale getCurrentSale() {

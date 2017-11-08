@@ -6,6 +6,7 @@ import com.pqt.client.module.network.NetworkService;
 import com.pqt.client.module.network.listeners.INetworkServiceListener;
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.sale.SaleService;
+import com.pqt.client.module.sale.listeners.ISaleListener;
 import com.pqt.client.module.stat.StatService;
 import com.pqt.client.module.stock.StockService;
 
@@ -46,6 +47,24 @@ public class ClientBackEndModuleManager {
                 stockService.refreshProductList();
                 accountService.refreshAccounts();
                 statService.refreshStats();
+            }
+        });
+
+        saleService.addListener(new ISaleListener() {
+            @Override
+            public void onSaleValidationSuccess(long saleId) {
+                stockService.refreshProductList();
+                statService.refreshStats();
+            }
+
+            @Override
+            public void onSaleValidationError(long saleId, Throwable cause) {
+                //No-op
+            }
+
+            @Override
+            public void onSaleValidationRefused(long saleId, Throwable cause) {
+                //No-op
             }
         });
     }

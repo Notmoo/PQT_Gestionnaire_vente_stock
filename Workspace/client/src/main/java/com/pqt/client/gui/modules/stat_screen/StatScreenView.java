@@ -42,7 +42,10 @@ class StatScreenView implements IFXComponent {
                 .map(key->String.format(" * %s : %s", key, statistics.get(key)))
                 .collect(Collectors.toList()));
 
-        Platform.runLater(()->lines.forEach(line -> statTextArea.appendText(line+"\n")));
+        Platform.runLater(()-> {
+            statTextArea.setText("");
+            lines.forEach(line -> statTextArea.appendText(line + "\n"));
+        });
     }
 
     @Override
