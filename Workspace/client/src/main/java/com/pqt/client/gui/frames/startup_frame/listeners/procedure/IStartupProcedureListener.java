@@ -8,4 +8,5 @@ public interface IStartupProcedureListener extends EventListener{
     void onUserAccountUnknownEvent(String username);
     void onUserAccountConnectedEvent(String username);
     void onUserAccountDisconnectedEvent(String username);
+    void onStartupProcedureFinishedEvent(boolean success);
 }

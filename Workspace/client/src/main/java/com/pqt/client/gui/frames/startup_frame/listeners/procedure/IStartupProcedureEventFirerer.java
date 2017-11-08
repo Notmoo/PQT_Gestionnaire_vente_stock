@@ -6,6 +6,7 @@ public interface IStartupProcedureEventFirerer {
     void fireUserAccountUnknownEvent(String username);
     void fireUserAccountConnectedEvent(String username);
     void fireUserAccountDisconnectedEvent(String username);
+    void fireStartupProcedureFinishedEvent(boolean success);
 
     void addListener(IStartupProcedureListener l );
     void removeListener(IStartupProcedureListener l );

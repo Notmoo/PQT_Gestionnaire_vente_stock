@@ -36,6 +36,12 @@ public class SimpleStartupProcedureEventFirerer implements IStartupProcedureEven
     }
 
     @Override
+    public void fireStartupProcedureFinishedEvent(boolean success) {
+        Arrays.stream(listenerList.getListeners(IStartupProcedureListener.class))
+                .forEach(l->l.onStartupProcedureFinishedEvent(success));
+    }
+
+    @Override
     public void addListener(IStartupProcedureListener l) {
         listenerList.add(IStartupProcedureListener.class, l);
     }

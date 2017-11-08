@@ -52,12 +52,19 @@ public class StartupFrameModel {
 
                         @Override
                         public void onUserAccountConnectedEvent(String username) {
-                            firerer.fireStartupValidated();
                         }
 
                         @Override
                         public void onUserAccountDisconnectedEvent(String username) {
 
+                        }
+
+                        @Override
+                        public void onStartupProcedureFinishedEvent(boolean success) {
+                            if(success)
+                                firerer.fireStartupValidated();
+
+                            startupProcessBegan = false;
                         }
                     })
                     .handle();

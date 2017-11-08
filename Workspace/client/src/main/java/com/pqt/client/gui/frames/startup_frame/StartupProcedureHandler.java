@@ -79,6 +79,7 @@ class StartupProcedureHandler {
                 System.out.println(" --> Compte inconnu");
                 //Compte spécifié inconnu
                 firerer.fireUserAccountUnknownEvent(username);
+                firerer.fireStartupProcedureFinishedEvent(false);
             }else{
                 //TODO remove sysout
                 System.out.println(" --> Compte connu");
@@ -88,6 +89,7 @@ class StartupProcedureHandler {
             }
         }catch(Throwable e){
             e.printStackTrace();
+            firerer.fireStartupProcedureFinishedEvent(false);
         }
     }
 
@@ -106,6 +108,7 @@ class StartupProcedureHandler {
                 @Override
                 public void onPQTPingFailureEvent(String host, Integer port, Throwable cause) {
                     StartupProcedureHandler.this.removePingListener();
+                    firerer.fireStartupProcedureFinishedEvent(false);
                 }
 
                 @Override
@@ -153,15 +156,24 @@ class StartupProcedureHandler {
                         //Compte connecté
                         //TODO remove sysout
                         System.out.println("Connecté en tant que '"+username+"'");
+
                         StartupProcedureHandler.this.removeConnectAccountListener();
                         firerer.fireUserAccountConnectedEvent(username);
+                        firerer.fireStartupProcedureFinishedEvent(true);
                     }else{
                         //Compte non-connecté
                         //TODO remove sysout
                         System.out.println("Non-connecté en tant que '"+username+"'");
-                        StartupProcedureHandler.this.removeConnectAccountListener();
+
                         firerer.fireUserAccountDisconnectedEvent(username);
+                        firerer.fireStartupProcedureFinishedEvent(false);
                     }
+                }
+
+                @Override
+                public void onAccountStatusNotChangedEvent(Throwable cause) {
+                    StartupProcedureHandler.this.removeConnectAccountListener();
+                    firerer.fireStartupProcedureFinishedEvent(false);
                 }
             };
         }
