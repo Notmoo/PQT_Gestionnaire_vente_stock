@@ -19,11 +19,12 @@ public class FrameManager {
     private FrameScene mainFrameScene;
     private FrameScene startupFrameScene;
     private Stage stage;
+    private ClientBackEndModuleManager moduleManager;
 
     public FrameManager(Stage stage) {
         this.stage = stage;
 
-        ClientBackEndModuleManager moduleManager = new ClientBackEndModuleManager(null);
+        moduleManager = new ClientBackEndModuleManager(null);
 
         MainFrame mainFrame = new MainFrame(moduleManager.getAccountService());
         mainFrame.addModule(new SaleScreen(moduleManager.getAccountService(), moduleManager.getStockService(), moduleManager.getSaleService()), true);
@@ -67,5 +68,9 @@ public class FrameManager {
         }else{
             Platform.exit();
         }
+    }
+
+    public void onCloseEvent() {
+        moduleManager.shutdown();
     }
 }

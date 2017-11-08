@@ -63,4 +63,8 @@ public class ConnectionService {
 	        throw new IllegalStateException("Service was shut down : unable to send text");
         executor.submit(()->textSender.send(serverUrl, "message="+text, listener));
     }
+
+    public void shutdown() {
+        stop(false);
+    }
 }

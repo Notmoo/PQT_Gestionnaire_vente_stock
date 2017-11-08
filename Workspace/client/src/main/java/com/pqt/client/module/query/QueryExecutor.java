@@ -173,4 +173,8 @@ public class QueryExecutor {
                 break;
         }
     }
+
+    public void shutdown() {
+        //Nothing to do
+    }
 }

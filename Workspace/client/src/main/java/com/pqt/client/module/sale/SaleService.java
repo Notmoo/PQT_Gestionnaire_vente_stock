@@ -7,7 +7,7 @@ import com.pqt.client.module.sale.listeners.ISaleListener;
 import com.pqt.client.module.sale.listeners.SimpleSaleFirerer;
 import com.pqt.core.entities.sale.SaleType;
 
-import java.util.List;
+import java.util.*;
 
 //TODO écrire javadoc
 //TODO add log lines
@@ -69,8 +69,17 @@ public class SaleService {
         eventFirerer.removeListener(listener);
 	}
 
-    public List<SaleType> getSaleTypes() {
-	    //TODO
-        return null;
+    public Collection<SaleType> getSaleTypes() {
+        //TODO faire en sorte que cette liste soit donnée par le serveur
+
+	    Set<SaleType> types = new HashSet<>();
+	    types.add(SaleType.CASH);
+        types.add(SaleType.OFFERED_GUEST);
+        types.add(SaleType.OFFERED_STAFF_MEMBER);
+        return types;
+    }
+
+    public void shutdown() {
+	    //Nothing to do
     }
 }

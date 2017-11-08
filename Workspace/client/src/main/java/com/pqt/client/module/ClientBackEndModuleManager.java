@@ -12,6 +12,8 @@ import com.pqt.client.module.stock.StockService;
 
 public class ClientBackEndModuleManager {
 
+    private final ConnectionService connectionService;
+    private final QueryExecutor queryExecutor;
     private final SaleService saleService;
     private final StockService stockService;
     private final AccountService accountService;
@@ -19,8 +21,8 @@ public class ClientBackEndModuleManager {
     private final NetworkService networkService;
 
     public ClientBackEndModuleManager(String serverUrl) {
-        ConnectionService connectionService = new ConnectionService(serverUrl);
-        QueryExecutor queryExecutor = new QueryExecutor(connectionService);
+        connectionService = new ConnectionService(serverUrl);
+        queryExecutor = new QueryExecutor(connectionService);
         saleService = new SaleService(queryExecutor);
         stockService = new StockService(queryExecutor);
         accountService = new AccountService(queryExecutor);
@@ -87,5 +89,23 @@ public class ClientBackEndModuleManager {
 
     public NetworkService getNetworkService() {
         return networkService;
+    }
+
+    public void shutdown() {
+        shutHighLevelServices();
+        shutLowLevelServices();
+    }
+
+    private void shutHighLevelServices(){
+        saleService.shutdown();
+        stockService.shutdown();
+        statService.shutdown();
+        networkService.shutdown();
+        accountService.shutdown();
+    }
+
+    private void shutLowLevelServices(){
+        queryExecutor.shutdown();
+        connectionService.shutdown();
     }
 }

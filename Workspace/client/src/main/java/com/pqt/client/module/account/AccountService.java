@@ -1,5 +1,6 @@
 package com.pqt.client.module.account;
 
+import com.pqt.client.module.account.listeners.AccountListenerAdapter;
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.query.query_callback.ICollectionItemMessageCallback;
 import com.pqt.client.module.query.query_callback.INoItemMessageCallback;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 //TODO écrire javadoc
 //TODO add log lines
@@ -119,5 +121,38 @@ public class AccountService {
                         .forEach(IAccountListener::onAccountListChangedEvent);
             }
         });
+    }
+
+    public void shutdown() {
+        if(connected) {
+            try {
+                CountDownLatch latch = new CountDownLatch(1);
+                new Thread(() ->{
+                    this.addListener(new AccountListenerAdapter() {
+                        @Override
+                        public void onAccountStatusChangedEvent(boolean status) {
+                            //TODO ajouter des logs
+                            latch.countDown();
+                        }
+
+                        @Override
+                        public void onAccountStatusNotChangedEvent(Throwable cause) {
+                            //TODO ajouter des logs
+                            cause.printStackTrace();
+                            latch.countDown();
+                        }
+                    });
+                    logOutCurrentAccount();
+                }).start();
+                latch.await(); // Wait for thread to call latch.countDown()
+            } catch (InterruptedException e) {
+                //TODO ajouter des logs
+                e.printStackTrace();
+            }finally {
+                listenerList = null;
+            }
+        }else{
+            //Nothing to do
+        }
     }
 }

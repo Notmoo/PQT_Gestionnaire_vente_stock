@@ -12,6 +12,10 @@ public class Main extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        new FrameManager(primaryStage).show();
+        FrameManager fm = new FrameManager(primaryStage);
+
+        primaryStage.setOnCloseRequest(event->fm.onCloseEvent());
+
+        fm.show();
     }
 }

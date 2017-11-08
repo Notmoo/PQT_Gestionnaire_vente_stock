@@ -31,4 +31,7 @@ public class StatService {
         dao.removeListener(listener);
 	}
 
+    public void shutdown() {
+        //Nothing to do
+    }
 }

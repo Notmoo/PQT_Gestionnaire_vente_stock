@@ -129,4 +129,8 @@ public class StockService {
 	public void removeListener(IStockListener listener) {
 		dao.removeListener(listener);
 	}
+
+    public void shutdown() {
+		//Nothing to do
+    }
 }

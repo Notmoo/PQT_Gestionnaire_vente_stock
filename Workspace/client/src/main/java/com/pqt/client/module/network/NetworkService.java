@@ -139,4 +139,8 @@ public class NetworkService {
         if(port<1 || port>65535)
             throw new IllegalArgumentException("port number must be an unsigned 16-bit integer (0<n<65536)");
     }
+
+    public void shutdown() {
+        //Nothing to do
+    }
 }
