@@ -67,14 +67,6 @@ public class StockDao {
 	}
 
 	private synchronized void replaceProductList(Collection<Product> products){
-        {//TODO delete print block
-            System.out.println("------------------------------------------");
-            System.out.println("Stock dao's list : ");
-            for(Product p : products){
-                System.out.println(p);
-            }
-            System.out.println("------------------------------------------");
-        }
 		this.products.clear();
 		this.products.addAll(products);
 		this.lastRefreshTimestamp = new Date();

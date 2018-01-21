@@ -57,14 +57,6 @@ class StockScreenModel {
     }
 
     Collection<Product> getProductCollection() {
-        {//TODO delete print block
-            System.out.println("------------------------------------------");
-            System.out.println("Stock service's list : ");
-            for(Product p : stockService.getProducts()){
-                System.out.println(p);
-            }
-            System.out.println("------------------------------------------");
-        }
         return stockService.getProducts();
     }
 

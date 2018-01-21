@@ -43,8 +43,6 @@ class StartupProcedureHandler {
     }
 
     private void testConnection(){
-        //TODO remove sysout
-        System.out.println("Test de connexion");
         networkService.addListener(getPingListener(networkService));
         networkService.setActiveServer(host, port);
         networkService.sendPQTPing(host, port);
@@ -52,8 +50,6 @@ class StartupProcedureHandler {
 
     private void useRequestedServer(){
         //Server found
-        //TODO remove sysout
-        System.out.println("Serveur trouvé");
         firerer.fireServerFoundEvent(host, port);
         accountService.addListener(getUpdateAccountListListener());
         accountService.refreshAccounts();
@@ -61,33 +57,22 @@ class StartupProcedureHandler {
 
     private void connectAccount(){
 
-        //TODO remove sysout
-        System.out.println("Connexion de compte");
-
-        //TODO remove try-catch(Throwable)
         try {
             Account match = accountService.getAllAccounts().stream()
                     .filter(account -> account.getUsername().equals(username))
                     .findFirst()
                     .orElse(null);
 
-            //TODO remove sysout
-            System.out.println("Account match value : "+match);
-
             if(match==null){
-                //TODO remove sysout
-                System.out.println(" --> Compte inconnu");
                 //Compte spécifié inconnu
                 firerer.fireUserAccountUnknownEvent(username);
                 firerer.fireStartupProcedureFinishedEvent(false);
             }else{
-                //TODO remove sysout
-                System.out.println(" --> Compte connu");
                 accountService.setCurrentAccount(match);
                 accountService.addListener(getConnectAccountListener());
                 accountService.logInCurrentAccount(StartupProcedureHandler.this.password);
             }
-        }catch(Throwable e){
+        }catch(Exception e){
             e.printStackTrace();
             firerer.fireStartupProcedureFinishedEvent(false);
         }
@@ -154,16 +139,12 @@ class StartupProcedureHandler {
                 public void onAccountStatusChangedEvent(boolean status) {
                     if(status){
                         //Compte connecté
-                        //TODO remove sysout
-                        System.out.println("Connecté en tant que '"+username+"'");
 
                         StartupProcedureHandler.this.removeConnectAccountListener();
                         firerer.fireUserAccountConnectedEvent(username);
                         firerer.fireStartupProcedureFinishedEvent(true);
                     }else{
                         //Compte non-connecté
-                        //TODO remove sysout
-                        System.out.println("Non-connecté en tant que '"+username+"'");
 
                         firerer.fireUserAccountDisconnectedEvent(username);
                         firerer.fireStartupProcedureFinishedEvent(false);
@@ -172,6 +153,7 @@ class StartupProcedureHandler {
 
                 @Override
                 public void onAccountStatusNotChangedEvent(Throwable cause) {
+
                     StartupProcedureHandler.this.removeConnectAccountListener();
                     firerer.fireStartupProcedureFinishedEvent(false);
                 }
