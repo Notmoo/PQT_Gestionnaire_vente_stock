@@ -160,11 +160,20 @@ public class QueryExecutor {
     private void handleUnexpectedTypeInResponse(Message response, IMessageCallback callback){
         switch (response.getType()) {
             case ERROR_QUERY:
-                callback.err(messageToolFactory.getObjectParser(Throwable.class).parse(response.getField("Detail_erreur")));
+                try{
+                    callback.err(new Exception(response.getField("Detail_erreur")));
                 }catch(Throwable e){
+                    e.printStackTrace();
+                    callback.err(null);
+                }
                 break;
             case REFUSED_QUERY:
-                callback.ref(messageToolFactory.getObjectParser(Throwable.class).parse(response.getField("Detail_refus")));
+                try{
+                    callback.ref(new Exception(response.getField("Detail_refus")));
+                }catch(Throwable e){
+                    e.printStackTrace();
+                    callback.ref(null);
+                }
                 break;
             default:
                 callback.err(new IllegalArgumentException(
