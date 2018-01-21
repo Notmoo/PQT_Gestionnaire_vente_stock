@@ -161,6 +161,7 @@ public class QueryExecutor {
         switch (response.getType()) {
             case ERROR_QUERY:
                 callback.err(messageToolFactory.getObjectParser(Throwable.class).parse(response.getField("Detail_erreur")));
+                }catch(Throwable e){
                 break;
             case REFUSED_QUERY:
                 callback.ref(messageToolFactory.getObjectParser(Throwable.class).parse(response.getField("Detail_refus")));
