@@ -6,3 +6,4 @@
 
 #Ignoring target folders
 **/target/
+Workspace/.idea/codeStyles/codeStyleConfig.xml
