@@ -28,10 +28,22 @@ public class StartupFrameView implements IFXComponent{
         try {
             mainPane = new VBox();
 
+            //TODO to uncomment
+            /*
             Label serverHostLabel = new Label(GUIStringTool.getServerHostLabel());
             serverHostTextField = makeTextField(TextField.class);
             Label serverPortLabel = new Label(GUIStringTool.getServerPortLabel());
             serverPortTextField = makeTextField(TextField.class);
+            /**/
+
+            //TODO to remove
+            Label serverHostLabel = new Label(GUIStringTool.getServerHostLabel());
+            serverHostTextField = new TextField("localhost");
+            serverHostTextField.textProperty().addListener((obs, oldVal, newVal)->ctrl.updateView());
+            Label serverPortLabel = new Label(GUIStringTool.getServerPortLabel());
+            serverPortTextField = new TextField("8080");
+            serverPortTextField.textProperty().addListener((obs, oldVal, newVal)->ctrl.updateView());
+            /**/
 
             GridPane serverFieldGridPane = new GridPane();
             serverFieldGridPane.add(serverHostLabel, 0, 0);
@@ -74,9 +86,7 @@ public class StartupFrameView implements IFXComponent{
 
     private <T extends TextField> T makeTextField(Class<T> clazz) throws IllegalAccessException, InstantiationException {
         T ntf = clazz.newInstance();
-        ntf.textProperty().addListener((obs, oldVal, newVal)->{
-            ctrl.updateView();
-        });
+        ntf.textProperty().addListener((obs, oldVal, newVal)->ctrl.updateView());
         return ntf;
     }
 
