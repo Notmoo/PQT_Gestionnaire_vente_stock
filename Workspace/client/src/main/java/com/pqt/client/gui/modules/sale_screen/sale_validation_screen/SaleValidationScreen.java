@@ -14,6 +14,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 import javax.swing.event.EventListenerList;
@@ -42,29 +43,30 @@ public class SaleValidationScreen {
         GridPane centerPane = new CssEnabledGridPane();
         centerPane.setAlignment(Pos.CENTER);
 
+
+        progressIndicator = new ProgressIndicator();
+        centerPane.add(progressIndicator, 0, 1, 1, 2);
+
         Label saleIdLabel = new Label(GUIStringTool.getSaleIdLabel());
-        centerPane.add(saleIdLabel, 0, 0);
+        centerPane.add(saleIdLabel, 1, 0);
 
         TextField saleIdTextField = new TextField(Long.toString(saleId));
         saleIdTextField.setEditable(false);
-        centerPane.add(saleIdTextField, 1, 0);
+        centerPane.add(saleIdTextField, 2, 0);
 
         Label saleStatusLabel = new Label(GUIStringTool.getSaleStatusLabel());
-        centerPane.add(saleStatusLabel, 0, 1);
+        centerPane.add(saleStatusLabel, 1, 1);
 
         saleStatusTextField = new TextField(GUIStringTool.getSaleStatusRenderer().render(saleStatus));
         saleStatusTextField.setEditable(false);
-        centerPane.add(saleStatusTextField, 1, 1);
+        centerPane.add(saleStatusTextField, 2, 1);
 
         validationButton = new Button(GUIStringTool.getOkButtonLabel());
         validationButton.setDisable(saleStatus.equals(SaleStatus.PENDING));
         validationButton.setOnMouseClicked(event->fireScreenClose(saleStatus.equals(SaleStatus.ACCEPTED)));
-        centerPane.add(validationButton, 1,2);
+        centerPane.add(validationButton, 2,2);
 
         mainPaneContent.setCenter(centerPane);
-
-        progressIndicator = new ProgressIndicator();
-        mainPaneContent.setLeft(progressIndicator);
 
         mainPaneContent.prefHeightProperty().bind(mainPane.heightProperty());
         mainPaneContent.prefWidthProperty().bind(mainPane.widthProperty());
