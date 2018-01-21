@@ -50,7 +50,17 @@ public class FrameManager {
     }
 
     private IStartupFrameModelListener getStartupFrameListener(){
-        return () -> Platform.runLater(()->trySwitchScene(stage, mainFrameScene, true));
+        return new IStartupFrameModelListener() {
+            @Override
+            public void onStartupValidated() {
+                Platform.runLater(() -> trySwitchScene(stage, mainFrameScene, true));
+            }
+
+            @Override
+            public void onStartupFailed() {
+
+            }
+        };
     }
 
 

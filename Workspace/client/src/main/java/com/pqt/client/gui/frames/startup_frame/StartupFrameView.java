@@ -122,4 +122,8 @@ public class StartupFrameView implements IFXComponent{
     public void displayError(String errorMsg) {
         infoText.setText(errorMsg);
     }
+
+    public void clearErrorField() {
+        infoText.setText("");
+    }
 }

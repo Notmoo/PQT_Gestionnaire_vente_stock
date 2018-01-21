@@ -18,6 +18,12 @@ public class SimpleStartupFrameModelEventFirerer implements IStartupFrameModelEv
     }
 
     @Override
+    public void fireStartupFailed() {
+        Arrays.stream(listenerList.getListeners(IStartupFrameModelListener.class))
+                .forEach(IStartupFrameModelListener::onStartupFailed);
+    }
+
+    @Override
     public void addListener(IStartupFrameModelListener l) {
         listenerList.add(IStartupFrameModelListener.class, l);
     }

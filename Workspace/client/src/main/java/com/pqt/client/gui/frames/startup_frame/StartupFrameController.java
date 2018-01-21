@@ -43,6 +43,14 @@ public class StartupFrameController implements IStartupFrameModelListener {
 
     @Override
     public void onStartupValidated() {
+        view.clearErrorField();
+        view.clearPasswordField();
+    }
+
+    @Override
+    public void onStartupFailed() {
+        view.clearErrorField();
+        view.displayError("Echec de la connexion");
         view.clearPasswordField();
     }
 }

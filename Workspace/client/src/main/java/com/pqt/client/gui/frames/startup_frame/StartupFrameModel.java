@@ -63,7 +63,8 @@ public class StartupFrameModel {
                         public void onStartupProcedureFinishedEvent(boolean success) {
                             if(success)
                                 firerer.fireStartupValidated();
-
+                            else
+                                firerer.fireStartupFailed();
                             startupProcessBegan = false;
                         }
                     })
