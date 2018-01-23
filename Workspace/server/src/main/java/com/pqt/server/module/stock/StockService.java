@@ -7,7 +7,7 @@ import com.pqt.server.tools.entities.SaleContent;
 
 import java.util.List;
 
-//TODO ajouter logs
+//TODO Issue #6 : ajouter logs
 
 /**
  *  Cette classe correspond au service de gestion du stock de produits. Il est en charge de la persistance des
@@ -27,8 +27,8 @@ public class StockService {
 
     private IStockDao dao;
 
-    public StockService() {
-        dao = new FileStockDao();
+    public StockService(String ressourceFolderPathStr) {
+        dao = new FileStockDao(ressourceFolderPathStr);
     }
 
     public List<Product> getProductList() {

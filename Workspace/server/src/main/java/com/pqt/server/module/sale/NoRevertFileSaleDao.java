@@ -30,12 +30,14 @@ import java.util.Map;
 public class NoRevertFileSaleDao implements ISaleDao {
 
     private static final String SALE_LOG_FILE_NAME = "sale_log.txt";
+    private final String SALE_LOG_FILE_FOLDER_PATH;
     private static final long DEFAULT_SALE_ID = 0; //équivaut à la valeur du premier id - 1
     private StockService stockService;
     private long nextSaleId;
     private ISaleRenderer renderer;
 
-    NoRevertFileSaleDao(StockService stockService) {
+    NoRevertFileSaleDao(StockService stockService, String ressourceFolderPathStr) {
+        SALE_LOG_FILE_FOLDER_PATH = ressourceFolderPathStr;
         this.stockService = stockService;
         this.renderer = getRenderer();
         nextSaleId = readLastSaleIdFromFile()+1;
@@ -96,7 +98,7 @@ public class NoRevertFileSaleDao implements ISaleDao {
      */
     private long readLastSaleIdFromFile(){
         long id  = DEFAULT_SALE_ID;
-        if(FileUtil.exist(SALE_LOG_FILE_NAME)){
+        if(FileUtil.exist(getLogFilePath())){
             try(ReversedLinesFileReader rlfr = new ReversedLinesFileReader(new File("SALE_LOG_FILE_NAME"))){
                 boolean stop = false;
                 do{
@@ -131,7 +133,7 @@ public class NoRevertFileSaleDao implements ISaleDao {
     }
 
     private void logSale(Sale sale, Date date, long saleId){
-        try(FileOutputStream fos = new FileOutputStream(SALE_LOG_FILE_NAME);
+        try(FileOutputStream fos = new FileOutputStream(getLogFilePath());
             PrintWriter pw = new PrintWriter(fos)){
 
             pw.append(renderer.render(sale, date, saleId));
@@ -165,5 +167,9 @@ public class NoRevertFileSaleDao implements ISaleDao {
 
     private interface ISaleRenderer{
         String render(Sale sale, Date date, long saleId);
+    }
+
+    private String getLogFilePath(){
+        return SALE_LOG_FILE_FOLDER_PATH + File.separator + SALE_LOG_FILE_NAME;
     }
 }

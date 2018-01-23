@@ -5,7 +5,7 @@ import com.pqt.core.entities.user_account.AccountLevel;
 
 import java.util.List;
 
-//TODO ajouter logs
+//TODO Issue #6 : ajouter logs
 /**
  * Cette classe correspond au service de gestion des comptes utilisateurs. Il permet la vérification de l'existance
  * d'un compte, de son état (connecté/déconnecté), de changer son état ainsi que de récupérer son niveau d'accréditation.
@@ -18,8 +18,8 @@ public class AccountService {
 
 	private IAccountDao dao;
 
-    public AccountService() {
-		dao = new FileAccountDao();
+    public AccountService(String ressourceFolderPathStr) {
+		dao = new FileAccountDao(ressourceFolderPathStr);
     }
 
     /**

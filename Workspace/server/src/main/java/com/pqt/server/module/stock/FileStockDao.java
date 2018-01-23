@@ -5,6 +5,7 @@ import com.pqt.server.tools.entities.SaleContent;
 import com.pqt.server.tools.io.ISerialFileManager;
 import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
 
+import java.io.File;
 import java.lang.IllegalStateException;
 import java.util.*;
 
@@ -19,17 +20,22 @@ import java.util.*;
  */
 public class FileStockDao implements IStockDao {
 
-    //TODO to modify
-    private static final String STOCK_FILE_NAME = "G:\\temp\\stock.pqt";
+    private static final String STOCK_FILE_NAME = "stock.pqt";
+    private final String STOCK_FILE_FOLDER_PATH;
     private ISerialFileManager<Product> fileManager;
     private long nextProductId;
     private Random random;
 
 	private Map<Long, Product> products;
 
-    public FileStockDao() {
+	private String getStockFilePathStr(){
+	    return STOCK_FILE_FOLDER_PATH + File.separator + STOCK_FILE_NAME;
+    }
+
+    public FileStockDao(String ressourceFolderPathStr) {
+        STOCK_FILE_FOLDER_PATH = ressourceFolderPathStr;
         random = new Random();
-        fileManager = SimpleSerialFileManagerFactory.getFileManager(Product.class, STOCK_FILE_NAME);
+        fileManager = SimpleSerialFileManagerFactory.getFileManager(Product.class, getStockFilePathStr());
         loadFromFile();
         generateNextProductId();
     }

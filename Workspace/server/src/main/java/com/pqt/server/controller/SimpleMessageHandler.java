@@ -18,6 +18,8 @@ import com.pqt.server.module.sale.SaleService;
 import com.pqt.server.module.state.ServerStateService;
 import com.pqt.server.module.statistics.StatisticsService;
 import com.pqt.server.module.stock.StockService;
+import com.pqt.server.tools.io.ISerialFileManager;
+import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
 
 import java.util.*;
 
@@ -66,12 +68,13 @@ public class SimpleMessageHandler implements IMessageHandler {
 
     private MessageManager manager;
 
-    public SimpleMessageHandler() {
+    public SimpleMessageHandler(String ressourceFolderPathStr) {
+
         serverStateService = new ServerStateService();
-        accountService = new AccountService();
+        accountService = new AccountService(ressourceFolderPathStr);
         //clientService = new ClientService();
-        stockService = new StockService();
-        saleService = new SaleService(stockService);
+        stockService = new StockService(ressourceFolderPathStr);
+        saleService = new SaleService(stockService, ressourceFolderPathStr);
         statisticsService = new StatisticsService(stockService, saleService);
         messageToolFactory = new GSonMessageToolFactory();
 

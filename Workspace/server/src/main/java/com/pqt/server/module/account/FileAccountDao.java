@@ -8,10 +8,11 @@ import com.pqt.server.tools.security.IHashTool;
 import com.pqt.server.tools.security.RandomString;
 import com.pqt.server.tools.security.SHA256HashTool;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO ajouter logs
+//TODO Issue #6 : ajouter logs
 
 /**
  * Implémentation de l'interface {@link IAccountDao} utilisant un fichier contenant des objets sérialisés comme
@@ -25,8 +26,8 @@ import java.util.stream.Collectors;
  */
 public class FileAccountDao implements IAccountDao {
 
-    //TODO to modify
-    private static final String ACCOUNT_FILE_NAME = "G:\\temp\\acc.pqt";
+    private static final String ACCOUNT_FILE_NAME = "acc.pqt";
+    private final String ACCOUNT_FILE_FOLDER_PATH;
 
     private Set<AccountEntry> accountEntries;
     private Set<AccountEntry> connectedAccount;
@@ -34,13 +35,18 @@ public class FileAccountDao implements IAccountDao {
     private RandomString randomString;
     private ISerialFileManager<AccountEntry> fileManager;
 
-    public FileAccountDao() {
+    public FileAccountDao(String ressourceFolderPathStr) {
+        ACCOUNT_FILE_FOLDER_PATH = ressourceFolderPathStr;
         accountEntries = new HashSet<>();
         connectedAccount = new HashSet<>();
         hashTool = new SHA256HashTool();
         randomString = new RandomString(10);
-        fileManager = SimpleSerialFileManagerFactory.getFileManager(AccountEntry.class, ACCOUNT_FILE_NAME);
+        fileManager = SimpleSerialFileManagerFactory.getFileManager(AccountEntry.class, getAccountFilePathStr());
         loadFromFile();
+    }
+
+    private String getAccountFilePathStr(){
+        return ACCOUNT_FILE_FOLDER_PATH + File.separator + ACCOUNT_FILE_NAME;
     }
 
     /**

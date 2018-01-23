@@ -11,7 +11,7 @@ import com.pqt.server.module.stock.StockService;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO ajouter logs
+//TODO Issue #6 : ajouter logs
 
 /**
  * Cette classe correspond au service de validation des commandes de produits.
@@ -34,8 +34,8 @@ public class SaleService {
     private ISaleDao dao;
     private ISaleFirerer eventFirerer;
 
-    public SaleService(StockService stockService) {
-        dao = new NoRevertFileSaleDao(stockService);
+    public SaleService(StockService stockService, String ressourceFolderPathStr) {
+        dao = new NoRevertFileSaleDao(stockService, ressourceFolderPathStr);
         eventFirerer = new SimpleSaleFirerer();
     }
 
