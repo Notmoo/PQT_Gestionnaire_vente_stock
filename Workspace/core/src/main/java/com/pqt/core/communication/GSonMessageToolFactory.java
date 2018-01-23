@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO écrire Javadoc
+//TODO Issue #5 : écrire Javadoc
 public class GSonMessageToolFactory implements IMessageToolFactory {
     private Gson gson;
 
