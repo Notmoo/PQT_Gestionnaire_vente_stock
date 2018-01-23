@@ -98,15 +98,18 @@ public class SimpleMessageHandler implements IMessageHandler {
         }, AccountLevel.WAITER);
         manager.supportForConnectedAccounts(MessageType.QUERY_STAT, (message)->{
             Map<String, String> fields = new HashMap<>();
-            fields.put(StatisticFields.TOTAL_SALE_WORTH.getStr(), Double.toString(statisticsService.getTotalSaleWorth()));
-            fields.put(StatisticFields.TOTAL_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getTotalAmountSale()));
-            fields.put(StatisticFields.TOTAL_MONEY_MADE.getStr(), Double.toString(statisticsService.getTotalMoneyMade()));
-            fields.put(StatisticFields.TOP_POPULAR_PRODUCTS.getStr(), messageToolFactory.getListFormatter(LightweightProduct.class).format(statisticsService.getTopPopularProducts(5)));
-            fields.put(StatisticFields.STAFF_SALE_WORTH.getStr(), Double.toString(statisticsService.getStaffSaleWorth()));
-            fields.put(StatisticFields.STAFF_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getStaffSaleAmount()));
-            fields.put(StatisticFields.GUEST_SALE_WORTH.getStr(), Double.toString(statisticsService.getGuestSaleWorth()));
-            fields.put(StatisticFields.GUEST_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getGuestSaleAmount()));
-
+            try{
+                fields.put(StatisticFields.TOTAL_SALE_WORTH.getStr(), Double.toString(statisticsService.getTotalSaleWorth()));
+                fields.put(StatisticFields.TOTAL_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getTotalAmountSale()));
+                fields.put(StatisticFields.TOTAL_MONEY_MADE.getStr(), Double.toString(statisticsService.getTotalMoneyMade()));
+                fields.put(StatisticFields.TOP_POPULAR_PRODUCTS.getStr(), messageToolFactory.getListFormatter(LightweightProduct.class).format(statisticsService.getTopPopularProducts(5)));
+                fields.put(StatisticFields.STAFF_SALE_WORTH.getStr(), Double.toString(statisticsService.getStaffSaleWorth()));
+                fields.put(StatisticFields.STAFF_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getStaffSaleAmount()));
+                fields.put(StatisticFields.GUEST_SALE_WORTH.getStr(), Double.toString(statisticsService.getGuestSaleWorth()));
+                fields.put(StatisticFields.GUEST_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getGuestSaleAmount()));
+            }catch(Exception e){
+                e.printStackTrace();
+            }
             return new Message(MessageType.MSG_STAT, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
         }, AccountLevel.WAITER);
 

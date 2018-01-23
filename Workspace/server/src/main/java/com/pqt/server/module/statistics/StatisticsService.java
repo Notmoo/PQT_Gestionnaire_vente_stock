@@ -50,7 +50,7 @@ public class StatisticsService {
                         break;
                     case OFFERED_STAFF_MEMBER:
                         staffSaleAmount++;
-                        staffSaleWorth+=price;
+                        staffSaleWorth+=worth;
                         break;
                 }
             }
@@ -71,7 +71,7 @@ public class StatisticsService {
 
 	public List<LightweightProduct> getTopPopularProducts(int amount) {
 		return stockService.getProductList().stream()
-                .sorted(Comparator.comparingInt(Product::getAmountSold))
+                .sorted((prod1, prod2)->prod2.getAmountSold()-prod1.getAmountSold())
                 .limit(amount)
                 .map(LightweightProduct::new)
                 .collect(Collectors.toList());
