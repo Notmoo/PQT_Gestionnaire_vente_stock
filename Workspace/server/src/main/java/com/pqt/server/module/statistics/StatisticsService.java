@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO Ajouter logs
+//TODO Issue #6 : Ajouter logs
 
 /**
  * Cette classe correspond au sservices de statistiques du serveur, chargé de calculer et de mettre à disposition

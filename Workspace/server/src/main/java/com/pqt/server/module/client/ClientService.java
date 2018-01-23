@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//TODO ajouter logs
+//TODO Issue #6 : ajouter logs
 
 /**
  * Cette classe correspond au service de gestion des clients.
