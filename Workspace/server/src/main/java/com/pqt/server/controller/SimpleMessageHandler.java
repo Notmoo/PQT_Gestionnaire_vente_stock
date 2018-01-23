@@ -1,5 +1,6 @@
 package com.pqt.server.controller;
 
+import com.pqt.core.common_resources.statistics.StatisticFields;
 import com.pqt.core.communication.GSonMessageToolFactory;
 import com.pqt.core.communication.IMessageToolFactory;
 import com.pqt.core.entities.messages.Message;
@@ -8,7 +9,6 @@ import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.LightweightSale;
-import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.server_config.ServerConfig;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
@@ -98,14 +98,14 @@ public class SimpleMessageHandler implements IMessageHandler {
         }, AccountLevel.WAITER);
         manager.supportForConnectedAccounts(MessageType.QUERY_STAT, (message)->{
             Map<String, String> fields = new HashMap<>();
-            fields.put("total_sale_worth", Double.toString(statisticsService.getTotalSaleWorth()));
-            fields.put("total_sale_amount", Integer.toString(statisticsService.getTotalAmountSale()));
-            fields.put("total_money_made", Double.toString(statisticsService.getTotalMoneyMade()));
-            fields.put("top_popular_products", messageToolFactory.getListFormatter(LightweightProduct.class).format(statisticsService.getTopPopularProducts(5)));
-            fields.put("staff_sale_worth",Double.toString(statisticsService.getStaffSaleWorth()));
-            fields.put("staff_sale_amount",Integer.toString(statisticsService.getStaffSaleAmount()));
-            fields.put("guest_sale_worth",Double.toString(statisticsService.getGuestSaleWorth()));
-            fields.put("guest_sale_amount",Integer.toString(statisticsService.getGuestSaleAmount()));
+            fields.put(StatisticFields.TOTAL_SALE_WORTH.getStr(), Double.toString(statisticsService.getTotalSaleWorth()));
+            fields.put(StatisticFields.TOTAL_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getTotalAmountSale()));
+            fields.put(StatisticFields.TOTAL_MONEY_MADE.getStr(), Double.toString(statisticsService.getTotalMoneyMade()));
+            fields.put(StatisticFields.TOP_POPULAR_PRODUCTS.getStr(), messageToolFactory.getListFormatter(LightweightProduct.class).format(statisticsService.getTopPopularProducts(5)));
+            fields.put(StatisticFields.STAFF_SALE_WORTH.getStr(), Double.toString(statisticsService.getStaffSaleWorth()));
+            fields.put(StatisticFields.STAFF_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getStaffSaleAmount()));
+            fields.put(StatisticFields.GUEST_SALE_WORTH.getStr(), Double.toString(statisticsService.getGuestSaleWorth()));
+            fields.put(StatisticFields.GUEST_SALE_AMOUNT.getStr(), Integer.toString(statisticsService.getGuestSaleAmount()));
 
             return new Message(MessageType.MSG_STAT, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
         }, AccountLevel.WAITER);
