@@ -47,8 +47,11 @@ class StatScreenView implements IFXComponent {
                     .map(field -> {
                         if(statistics.containsKey(field.getStr())){
                             switch (field.getType()){
-                                case SIMPLE:
+                                case OTHER:
+                                case SIMPLE_NUMBER:
                                     return String.format("%s : %s", GUIStringTool.getStatisticFieldsRenderer().render(field), statistics.get(field.getStr()));
+                                case SIMPLE_CURRENCY:
+                                    return String.format("%s : %s€", GUIStringTool.getStatisticFieldsRenderer().render(field), statistics.get(field.getStr()));
                                 default :
                                     break;
                             }
