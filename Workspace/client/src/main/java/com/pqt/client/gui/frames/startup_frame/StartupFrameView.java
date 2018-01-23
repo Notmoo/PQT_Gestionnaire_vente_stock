@@ -79,7 +79,7 @@ public class StartupFrameView implements IFXComponent{
 
             mainPane.getChildren().addAll(serverTitledPane, accountTitledPane, errorConsoleTitledPane, validationButton);
         }catch(Exception e){
-            //TODO Shutdown software on exception
+            //TODO Shutdown software on exception and show error alert
             e.printStackTrace();
         }
     }

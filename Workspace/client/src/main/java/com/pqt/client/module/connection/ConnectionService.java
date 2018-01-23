@@ -6,7 +6,7 @@ import com.pqt.client.module.connection.senders.ITextSender;
 
 import java.util.concurrent.*;
 
-//TODO écrire javadoc
+//TODO Issue #5 : écrire javadoc
 public class ConnectionService {
 
     private String serverUrl;

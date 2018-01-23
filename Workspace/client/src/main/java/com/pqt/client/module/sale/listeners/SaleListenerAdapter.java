@@ -2,7 +2,6 @@ package com.pqt.client.module.sale.listeners;
 
 import com.pqt.core.entities.sale.Sale;
 
-//TODO écrire javadoc
 public class SaleListenerAdapter implements ISaleListener {
 
 

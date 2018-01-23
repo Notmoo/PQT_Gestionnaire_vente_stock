@@ -18,7 +18,7 @@ import com.pqt.core.entities.user_account.Account;
 
 import java.util.List;
 
-//TODO écrire javadoc
+//TODO Issue #5 : écrire javadoc
 public class QueryExecutor {
 
 	private IMessageToolFactory messageToolFactory;

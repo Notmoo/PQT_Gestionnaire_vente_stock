@@ -3,7 +3,6 @@ package com.pqt.client.module.stock.Listeners;
 
 import javax.swing.event.EventListenerList;
 
-//TODO écrire javadoc
 public class SimpleStockFirerer implements IStockFirerer {
 
 	private EventListenerList listeners;

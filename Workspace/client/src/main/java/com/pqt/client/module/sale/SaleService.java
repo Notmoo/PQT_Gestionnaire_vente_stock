@@ -9,8 +9,8 @@ import com.pqt.core.entities.sale.SaleType;
 
 import java.util.*;
 
-//TODO écrire javadoc
-//TODO add log lines
+//TODO Issue #5 : écrire javadoc
+//TODO Issue #6 : add log lines
 public class SaleService {
 
     private long saleId;

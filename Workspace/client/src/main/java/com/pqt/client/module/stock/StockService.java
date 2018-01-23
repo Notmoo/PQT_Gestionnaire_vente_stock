@@ -7,7 +7,7 @@ import com.pqt.client.module.stock.Listeners.IStockListener;
 import java.util.Date;
 import java.util.List;
 
-//TODO Add log lines
+//TODO Issue #6 : Add log lines
 public class StockService {
 
 	private StockDao dao;

@@ -11,7 +11,7 @@ import com.pqt.core.entities.server_config.ServerConfig;
 import javax.swing.event.EventListenerList;
 import java.util.*;
 
-//TODO ajout javadoc
+//TODO Issue #5 : ajout javadoc
 
 /*
  * Ce service doit permettre de faire des ping et de récupérer la config d'un serveur distant
@@ -83,12 +83,12 @@ public class NetworkService {
 
             @Override
             public void err(Throwable cause) {
-                //TODO ajouter log erreur
+                //TODO Issue #6 : ajouter log erreur
             }
 
             @Override
             public void ref(Throwable cause) {
-                //TODO ajouter log erreur
+                //TODO Issue #6 : ajouter log erreur
             }
 
             @Override

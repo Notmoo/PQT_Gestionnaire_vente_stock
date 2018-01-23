@@ -1,7 +1,5 @@
 package com.pqt.client.module.log.listeners;
 
-//TODO écrire contenu méthodes
-//TODO écrire javadoc
 public class LogListenerAdapter implements ILogListener {
 
 

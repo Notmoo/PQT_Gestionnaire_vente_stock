@@ -5,8 +5,8 @@ import com.pqt.core.entities.log.LogLine;
 
 import java.util.List;
 
-//TODO écrire contenu méthodes
-//TODO écrire javadoc
+//TODO Issue #6 : écrire contenu méthodes
+//TODO Issue #5 : écrire javadoc
 public class LogService {
 
 	public void log(ILoggable loggable) {

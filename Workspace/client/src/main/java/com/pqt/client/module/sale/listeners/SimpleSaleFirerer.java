@@ -2,7 +2,6 @@ package com.pqt.client.module.sale.listeners;
 
 import javax.swing.event.EventListenerList;
 
-//TODO écrire javadoc
 public class SimpleSaleFirerer implements ISaleFirerer {
 
 

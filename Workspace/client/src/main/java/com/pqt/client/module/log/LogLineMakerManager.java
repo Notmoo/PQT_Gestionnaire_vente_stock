@@ -1,7 +1,7 @@
 package com.pqt.client.module.log;
 
-//TODO écrire contenu méthodes
-//TODO écrire javadoc
+//TODO Issue #6 : écrire contenu méthodes
+//TODO Issue #5 : écrire javadoc
 public class LogLineMakerManager {
 
 	public ILogLineMaker getMaker(Class clazz) {

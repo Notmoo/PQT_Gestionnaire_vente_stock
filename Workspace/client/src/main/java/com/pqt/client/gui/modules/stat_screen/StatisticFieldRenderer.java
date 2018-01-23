@@ -25,7 +25,6 @@ public class StatisticFieldRenderer implements IObjectStringRenderer<StatisticFi
 
     @Override
     public String render(StatisticFields field){
-        //TODO faire le renderer
         if(strings.containsKey(field))
             return strings.get(field);
         return field.getStr();

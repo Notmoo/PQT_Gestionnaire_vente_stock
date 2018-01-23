@@ -1,6 +1,6 @@
 package com.pqt.client.module.account.listeners;
 
-//TODO écrire contenu méthodes
+//TODO Issue #17 : écrire contenu méthodes
 //TODO écrire javadoc
 public class SimpleAccountFirerer implements IAccountFirerer {
 

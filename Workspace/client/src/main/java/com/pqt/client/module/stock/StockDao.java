@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-//TODO écrire javadoc
+//TODO Issue #5 : écrire javadoc
 public class StockDao {
 
     private long updateId;
@@ -45,18 +45,18 @@ public class StockDao {
 			public void ack(Collection<Product> obj) {
 				replaceProductList(obj);
 				eventFirerer.fireGetProductListSuccessEvent();
-				//TODO add log line
+				//TODO Issue #6 : add log line
 			}
 
 			@Override
 			public void err(Throwable cause) {
-				//TODO add log line
+				//TODO Issue #6 : add log line
 				eventFirerer.fireGetProductListErrorEvent(cause);
 			}
 
 			@Override
 			public void ref(Throwable cause) {
-				//TODO add log line
+				//TODO Issue #6 : add log line
 				eventFirerer.fireGetProductListRefusedEvent(cause);
 			}
 		});
@@ -82,20 +82,20 @@ public class StockDao {
         executor.executeUpdateQuery(updates, new INoItemMessageCallback() {
 			@Override
 			public void ack() {
-				//TODO add log line
+				//TODO Issue #6 : add log line
 				refreshProductList();
 				eventFirerer.fireProductListUpdateSuccessEvent(currentUpdateId);
 			}
 
 			@Override
 			public void err(Throwable cause) {
-                //TODO add log line
+                //TODO Issue #6 : add log line
                 eventFirerer.fireProductListUpdateErrorEvent(currentUpdateId, cause);
 			}
 
 			@Override
 			public void ref(Throwable cause) {
-                //TODO add log line
+                //TODO Issue #6 : add log line
                 eventFirerer.fireProductListUpdateRefusedEvent(currentUpdateId, cause);
 			}
 		});

@@ -11,7 +11,7 @@ import com.pqt.core.entities.user_account.Account;
 
 import java.util.*;
 
-//TODO écrire javadoc
+//TODO Issue #5 : écrire javadoc
 public class SaleBuilder {
 
 	private Map<Product, Integer> products;

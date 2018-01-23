@@ -63,7 +63,7 @@ class StatScreenView implements IFXComponent {
             if(statistics.containsKey(StatisticFields.TOP_POPULAR_PRODUCTS.getStr())){
                 StringBuffer sb = new StringBuffer(GUIStringTool.getStatisticFieldsRenderer().render(StatisticFields.TOP_POPULAR_PRODUCTS)).append(" :");
 
-                //TODO centraliser la récupération de la message factory, pour éviter les erreurs de aprsing quand il y aura plusieurs impl. de factory différentes
+                //TODO centraliser la récupération de la message factory, pour éviter les erreurs de parsing quand il y aura plusieurs impl. de factory différentes
                 IObjectParser<List<LightweightProduct>> parser =
                         new GSonMessageToolFactory().getListParser(LightweightProduct.class);
 

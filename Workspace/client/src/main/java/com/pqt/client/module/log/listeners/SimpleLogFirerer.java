@@ -1,7 +1,6 @@
 package com.pqt.client.module.log.listeners;
 
-//TODO écrire contenu méthodes
-//TODO écrire javadoc
+//TODO Issue #6 : écrire contenu méthodes
 public class SimpleLogFirerer implements ILogFirerer {
 
 

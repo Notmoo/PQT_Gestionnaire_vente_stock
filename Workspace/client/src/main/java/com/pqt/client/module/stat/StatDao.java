@@ -8,7 +8,7 @@ import com.pqt.client.module.stat.listeners.SimpleStatFirerer;
 
 import java.util.*;
 
-//TODO écrire javadoc
+//TODO Issue #5 : écrire javadoc
 public class StatDao {
 
         private Date lastRefreshTimestamp;
@@ -32,20 +32,20 @@ public class StatDao {
                 @Override
                 public void err(Throwable cause) {
                     eventFirerer.fireGetStatError(cause);
-                    //TODO add log line
+                    //TODO Issue #6 : add log line
                 }
 
                 @Override
                 public void ref(Throwable cause) {
                     eventFirerer.fireGetStatRefused(cause);
-                    //TODO add log line
+                    //TODO Issue #6 : add log line
                 }
 
                 @Override
                 public void ack(Map<String, String> stats) {
                     replaceStats(stats);
                     eventFirerer.fireGetStatSuccess();
-                    //TODO add log line
+                    //TODO Issue #6 : add log line
                 }
             });
         }

@@ -5,8 +5,8 @@ import com.pqt.client.module.stat.listeners.IStatListener;
 
 import java.util.Map;
 
-//TODO écrire javadoc
-//TODO add log lines
+//TODO Issue #5 : écrire javadoc
+//TODO Issue #6 : add log lines
 public class StatService {
 
 	private StatDao dao;

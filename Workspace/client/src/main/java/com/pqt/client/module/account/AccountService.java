@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 //TODO écrire javadoc
-//TODO add log lines
-//TODO supporter la modif de comptes
+//TODO Issue #6 : add log lines
+//TODO Issue #17 : supporter la modif de comptes
 public class AccountService {
 
 	private QueryExecutor executor;
@@ -131,13 +131,13 @@ public class AccountService {
                     this.addListener(new AccountListenerAdapter() {
                         @Override
                         public void onAccountStatusChangedEvent(boolean status) {
-                            //TODO ajouter des logs
+                            //TODO Issue #6 : ajouter des logs
                             latch.countDown();
                         }
 
                         @Override
                         public void onAccountStatusNotChangedEvent(Throwable cause) {
-                            //TODO ajouter des logs
+                            //TODO Issue #6 : ajouter des logs
                             cause.printStackTrace();
                             latch.countDown();
                         }
@@ -146,7 +146,7 @@ public class AccountService {
                 }).start();
                 latch.await(); // Wait for thread to call latch.countDown()
             } catch (InterruptedException e) {
-                //TODO ajouter des logs
+                //TODO Issue #6 : ajouter des logs
                 e.printStackTrace();
             }finally {
                 listenerList = null;

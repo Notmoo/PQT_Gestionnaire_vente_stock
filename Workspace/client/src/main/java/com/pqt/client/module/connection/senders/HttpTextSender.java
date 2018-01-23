@@ -43,7 +43,7 @@ public class HttpTextSender implements ITextSender{
             con.disconnect();
 
         }catch (java.net.SocketTimeoutException | ConnectException e){
-            //TODO ajouter un log ici
+            //TODO Issue #6 : ajouter un log ici
             listener.onTimeOutEvent();
         }catch (IOException e) {
             e.printStackTrace();

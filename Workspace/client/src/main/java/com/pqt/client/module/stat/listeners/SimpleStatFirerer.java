@@ -2,7 +2,6 @@ package com.pqt.client.module.stat.listeners;
 
 import javax.swing.event.EventListenerList;
 
-//TODO écrire javadoc
 public class SimpleStatFirerer implements IStatFirerer {
 
 	private EventListenerList listeners;
