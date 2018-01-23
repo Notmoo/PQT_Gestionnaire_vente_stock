@@ -1,5 +1,7 @@
 package com.pqt.client.gui.ressources.strings;
 
+import com.pqt.client.gui.modules.stat_screen.StatisticFieldRenderer;
+import com.pqt.core.common_resources.statistics.StatisticFields;
 import com.pqt.core.entities.product.Category;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.SaleStatus;
@@ -359,6 +361,47 @@ public class GUIStringTool {
             else
                 return String.format("%s : %s", e.getClass().getName(), e.getMessage());
         };
+    }
+
+    private static IObjectStringRenderer<StatisticFields> statisticFieldsRenderer = null;
+
+    public static IObjectStringRenderer<StatisticFields> getStatisticFieldsRenderer(){
+        if(statisticFieldsRenderer==null)
+            statisticFieldsRenderer = new StatisticFieldRenderer();
+
+        return statisticFieldsRenderer;
+    }
+
+    public static String getTotalMoneyMadeStatFieldString() {
+        return "Recette totale brute";
+    }
+
+    public static String getTotalSaleWorthStatFieldString() {
+        return "Valeur marchande totale brute";
+    }
+
+    public static String getTotalSaleAmountStatFieldString() {
+        return "Nombre total de commandes";
+    }
+
+    public static String getTopPopularProductsStatFieldString() {
+        return "Produits les plus populaires";
+    }
+
+    public static String getStaffSaleAmountStatFieldString() {
+        return "Nombre de commandes pour le staff";
+    }
+
+    public static String getstaffSaleWorthStatFieldString() {
+        return "Valeur marchande brute des ventes pour le staff";
+    }
+
+    public static String getGuestSaleAmountStatFieldString() {
+        return "Nombre de commandes pour les invités";
+    }
+
+    public static String getGuestSaleWorthStatFieldString() {
+        return "Valeur marchande brute des ventes pour les invités";
     }
 }
 
