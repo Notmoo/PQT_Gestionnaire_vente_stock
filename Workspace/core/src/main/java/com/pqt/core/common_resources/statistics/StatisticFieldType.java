@@ -1,6 +1,8 @@
 package com.pqt.core.common_resources.statistics;
 
 public enum StatisticFieldType {
-    SIMPLE,
-    LIST
+    SIMPLE_NUMBER,
+    SIMPLE_CURRENCY,
+    LIST,
+    OTHER
 }
