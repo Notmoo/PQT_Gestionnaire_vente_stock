@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -41,7 +42,8 @@ public class HttpTextSender implements ITextSender{
 
             con.disconnect();
 
-        }catch (java.net.SocketTimeoutException e){
+        }catch (java.net.SocketTimeoutException | ConnectException e){
+            //TODO ajouter un log ici
             listener.onTimeOutEvent();
         }catch (IOException e) {
             e.printStackTrace();
