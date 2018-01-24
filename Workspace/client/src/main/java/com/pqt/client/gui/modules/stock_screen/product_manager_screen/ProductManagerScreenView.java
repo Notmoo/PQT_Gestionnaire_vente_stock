@@ -32,6 +32,7 @@ class ProductManagerScreenView implements IFXComponent {
     private ComboBox<Category> productCategoryComboBox;
     private CheckBox productSellableCheckBox;
     private ListView<Product> productComponentsListView;
+    private SimpleValidator validator;
 
     ProductManagerScreenView(ProductManagerScreenController ctrl) {
         this.ctrl = ctrl;
@@ -52,54 +53,69 @@ class ProductManagerScreenView implements IFXComponent {
 
         Label productNameLabel = new Label(GUIStringTool.getProductNameLabel());
         productNameTextField = new TextField();
-        productNameTextField.textProperty().addListener((obs, oldVal, newVal)->ctrl.onNameChanged(oldVal,newVal));
+        productNameTextField.focusedProperty().addListener((obs, oldVal, newVal)->{
+            if(!newVal)
+                ctrl.onNameChanged(productNameTextField.getText());
+        });
         addLineToGrid(mainPaneCenterContent, productNameLabel, productNameTextField);
 
         Label productCategoryLabel = new Label(GUIStringTool.getProductCategoryLabel());
         productCategoryComboBox = new ComboBox<>();
         productCategoryComboBox.setEditable(true);
         productCategoryComboBox.setConverter(GUIStringTool.getCategoryStringConverter());
-        productCategoryComboBox.valueProperty().addListener((obs, oldVal, newVal)->ctrl.onCategoryChanged(oldVal, newVal));
+        productCategoryComboBox.valueProperty().addListener((obs, oldVal, newVal)->{
+                ctrl.onCategoryChanged(newVal);
+        });
         addLineToGrid(mainPaneCenterContent, productCategoryLabel, productCategoryComboBox);
 
         Label productAmountRemainingLabel = new Label(GUIStringTool.getProductAmountRemainingLabel());
         productAmountRemainingTextField = getNumberOnlyTextField(intFormat);
-        productAmountRemainingTextField.textProperty().addListener((obs, oldVal, newVal)->{
-            try{
-                int oldInt = oldVal.isEmpty()?0:Integer.parseInt(oldVal);
-                int newInt = newVal.isEmpty()?0:Integer.parseInt(newVal);
-                ctrl.onAmountRemainingChanged(oldInt, newInt);
-            }catch(NumberFormatException e){
-                e.printStackTrace();
+        productAmountRemainingTextField.focusedProperty().addListener((obs, oldVal, newVal)->{
+            if(!newVal) {
+                try {
+                    int newInt = productAmountRemainingTextField.getText().isEmpty() ?
+                            0 :
+                            Integer.parseInt(productAmountRemainingTextField.getText());
+                    ctrl.onAmountRemainingChanged(newInt);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         });
         addLineToGrid(mainPaneCenterContent, productAmountRemainingLabel, productAmountRemainingTextField);
 
         Label productAmountSoldLabel = new Label(GUIStringTool.getProductAmountSoldLabel());
         productAmountSoldTextField = getNumberOnlyTextField(intFormat);
-        productAmountSoldTextField.textProperty().addListener((obs, oldVal, newVal)->{
-            try{
-                int oldInt = oldVal.isEmpty()?0:Integer.parseInt(oldVal);
-                int newInt = newVal.isEmpty()?0:Integer.parseInt(newVal);
-                ctrl.onAmountSoldChanged(oldInt, newInt);
-            }catch(NumberFormatException e){
-                e.printStackTrace();
+        productAmountSoldTextField.focusedProperty().addListener((obs, oldVal, newVal)->{
+            if(!newVal) {
+                try {
+                    int newInt = productAmountSoldTextField.getText().isEmpty() ?
+                            0 :
+                            Integer.parseInt(productAmountSoldTextField.getText());
+                    ctrl.onAmountSoldChanged(newInt);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         });
         addLineToGrid(mainPaneCenterContent, productAmountSoldLabel, productAmountSoldTextField);
 
         Label productSellableLabel = new Label(GUIStringTool.getProductSellableLabel());
         productSellableCheckBox = new CheckBox();
-        productSellableCheckBox.selectedProperty().addListener((obs, oldVal, newVal)->ctrl.onSellableStateChanged(oldVal,newVal));
+        productSellableCheckBox.selectedProperty().addListener((obs, oldVal, newVal)->ctrl.onSellableStateChanged(newVal));
         addLineToGrid(mainPaneCenterContent, productSellableLabel, productSellableCheckBox);
 
         Label productPriceLabel = new Label(GUIStringTool.getProductPriceLabel());
         productPriceTextField = getNumberOnlyTextField(priceFormat);
-        productPriceTextField.textProperty().addListener((obs, oldVal, newVal)->{
-            try{
-                ctrl.onPriceChanged((oldVal.isEmpty()?-1:Double.parseDouble(oldVal)), (newVal.isEmpty()?-1:Double.parseDouble(newVal)));
-            }catch(NumberFormatException e){
-                e.printStackTrace();
+        productPriceTextField.focusedProperty().addListener((obs, oldVal, newVal)->{
+            if(!newVal) {
+                try {
+                    ctrl.onPriceChanged((productPriceTextField.getText().isEmpty() ?
+                            -1 :
+                            Double.parseDouble(productPriceTextField.getText())));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         });
         addLineToGrid(mainPaneCenterContent, productPriceLabel, productPriceTextField);
@@ -147,7 +163,7 @@ class ProductManagerScreenView implements IFXComponent {
 
         HBox mainPaneBottomContent = new HBox();
         HBox separator = new HBox();
-        SimpleValidator validator = new SimpleValidator();
+        validator = new SimpleValidator();
         validator.addListener(ctrl.getValidatorListener());
         mainPaneBottomContent.getChildren().addAll(separator, validator.getPane());
         HBox.setHgrow(separator, Priority.ALWAYS);
@@ -209,6 +225,14 @@ class ProductManagerScreenView implements IFXComponent {
             productComponentsListView.getItems().addAll(productCollection);
         });
     }
+
+    void updateGuiLocks(){
+        Platform.runLater(()->{
+            productAmountRemainingTextField.setDisable(ctrl.lockAmountRemainingfield());
+            validator.setValidationButtonEnable(!ctrl.lockValidationButton());
+        });
+    }
+
     public void delete() {
         ctrl = null;
     }
