@@ -24,8 +24,8 @@ public class UpdateBuilder {
 	}
 
 	public UpdateBuilder removeProduct(Product product) {
-        if(toRemove.contains(product)){
-            toRemove.remove(product);
+        if(!toRemove.contains(product)){
+            toRemove.add(product);
         }
         return this;
 	}
