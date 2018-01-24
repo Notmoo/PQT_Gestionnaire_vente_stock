@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 //TODO Issue #6 : ajouter logs
 @WebServlet(name = "QueryServlet", urlPatterns = "/")
@@ -52,6 +54,12 @@ public class QueryServlet extends HttpServlet {
                 }
                 if (request.getQueryString() != null && !request.getQueryString().isEmpty() && request.getParameter("message") != null) {
                     try {
+                        String messageToHandle;
+                        if(request.getParameter("encode")!=null)
+                            messageToHandle = URLDecoder.decode(request.getParameter("message"), request.getParameter("encode"));
+                        else
+                            messageToHandle = request.getParameter("message");
+
                         Message resp = msgHandler.handleMessage(messageToolFactory.getObjectParser(Message.class).parse(request.getParameter("message")));
 
                         response.getWriter().write(messageToolFactory.getObjectFormatter(Message.class).format(resp));
