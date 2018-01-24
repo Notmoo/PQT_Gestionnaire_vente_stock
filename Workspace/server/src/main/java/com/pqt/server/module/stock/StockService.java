@@ -52,7 +52,7 @@ public class StockService {
 			}else if(upd.getOldVersion()!=null && upd.getNewVersion()!=null){
 				modifyProduct(upd.getOldVersion().getId(), upd.getNewVersion());
 			}else{
-				throw new ServerQueryException("Object ProductUpdate invalide : old et new vallent tous les deux null");
+				throw new ServerQueryException("Object ProductUpdate invalide : old et new valent tous les deux null");
             }
 		}
 	}
