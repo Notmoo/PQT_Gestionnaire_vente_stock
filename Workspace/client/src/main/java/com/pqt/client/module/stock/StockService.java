@@ -90,12 +90,12 @@ public class StockService {
      * Renvoie un nouveau builder d'update de stock.
      *  <p/>
      *  Un update de stock correspond à un ticket de demande de modification du stock, composé d'ajouts, de suppressions et de modifications de produits.
-     *  Un objet {@link UpdateBuilder} permet de générer facilement une update. Pour valider l'update, voir {@link #commitUpdate(UpdateBuilder)}.
+     *  Un objet {@link StockUpdateBuilder} permet de générer facilement une update. Pour valider l'update, voir {@link #commitUpdate(StockUpdateBuilder)}.
      *
-     * @return nouvelle instance de la classe {@link UpdateBuilder}.
+     * @return nouvelle instance de la classe {@link StockUpdateBuilder}.
      */
-	public UpdateBuilder getNewUpdateBuilder() {
-		return new UpdateBuilder();
+	public StockUpdateBuilder getNewUpdateBuilder() {
+		return new StockUpdateBuilder();
 	}
 
     /**
@@ -105,11 +105,11 @@ public class StockService {
      *  Les événements liées à la valiation des updates du stock peuvent être écoutés via la classe de listener {@link IStockListener}.
 	 *  <p/>
 	 *  Une procédure de mise à jour du stock sera automatiquement lancée si la modification est validée (comme si la méthode {@link #refreshProductList()} avait été appelée).
-     * @param updateBuilder
+     * @param stockUpdateBuilder
      * @return l'identifiant de l'update soumise.
      */
-	public long commitUpdate(UpdateBuilder updateBuilder) {
-		return dao.commitUpdate(updateBuilder.build());
+	public long commitUpdate(StockUpdateBuilder stockUpdateBuilder) {
+		return dao.commitUpdate(stockUpdateBuilder.build());
 	}
 
     /**

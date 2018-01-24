@@ -42,10 +42,10 @@ class QueryMessageFactory {
         return newSimpleMessage(MessageType.QUERY_STAT);
 	}
 
-	Message newUpdateMessage(List<ProductUpdate> updates) {
+	Message newStockUpdateMessage(List<ProductUpdate> updates) {
         Map<String, String> fields = new HashMap<>();
         fields.put("updates", messageToolFactory.getListFormatter(ProductUpdate.class).format(updates));
-        return newSimpleMessage(MessageType.QUERY_UPDATE, fields);
+        return newSimpleMessage(MessageType.QUERY_STOCK_UPDATE, fields);
 	}
 
 	Message newAccountListMessage(){

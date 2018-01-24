@@ -5,32 +5,32 @@ import com.pqt.core.entities.product.ProductUpdate;
 
 import java.util.*;
 
-public class UpdateBuilder {
+public class StockUpdateBuilder {
 
     private Set<Product> toAdd, toRemove;
     private Map<Product, Product> toModify;
 
-    public UpdateBuilder() {
+    public StockUpdateBuilder() {
         toAdd = new HashSet<>();
         toRemove = new HashSet<>();
         toModify = new HashMap<>();
     }
 
-    public UpdateBuilder addProduct(Product product) {
+    public StockUpdateBuilder addProduct(Product product) {
         if(!toAdd.contains(product)){
             toAdd.add(product);
         }
         return this;
 	}
 
-	public UpdateBuilder removeProduct(Product product) {
+	public StockUpdateBuilder removeProduct(Product product) {
         if(!toRemove.contains(product)){
             toRemove.add(product);
         }
         return this;
 	}
 
-	public UpdateBuilder modifyProduct(Product oldVersion, Product newVersion) {
+	public StockUpdateBuilder modifyProduct(Product oldVersion, Product newVersion) {
         toModify.put(oldVersion, newVersion);
         return this;
 	}
@@ -49,5 +49,4 @@ public class UpdateBuilder {
 
         return reply;
 	}
-
 }

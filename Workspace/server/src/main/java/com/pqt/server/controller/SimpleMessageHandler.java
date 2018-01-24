@@ -119,11 +119,11 @@ public class SimpleMessageHandler implements IMessageHandler {
         /*
         MASTER-restricted queries
          */
-        manager.supportForConnectedAccounts(MessageType.QUERY_UPDATE, (message)->{
+        manager.supportForConnectedAccounts(MessageType.QUERY_STOCK_UPDATE, (message)->{
             try{
                 List<ProductUpdate> updates = messageToolFactory.getListParser(ProductUpdate.class).parse(message.getField("updates"));
                 stockService.applyUpdateList(updates);
-                return new Message(MessageType.ACK_UPDATE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
+                return new Message(MessageType.ACK_STOCK_UPDATE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
             }catch (ServerQueryException | NullPointerException e){
                 Map<String, String> fields = new HashMap<>();
                 fields.put(header_err_query, e.toString());

@@ -43,8 +43,8 @@ public class QueryExecutor {
         sendMessage(messageFactory.newPingMessage(), callback, MessageType.ACK_PING);
     }
 
-    public void executeUpdateQuery(List<ProductUpdate> updates, INoItemMessageCallback callback) {
-        sendMessage(messageFactory.newUpdateMessage(updates), callback, MessageType.ACK_UPDATE);
+    public void executeStockUpdateQuery(List<ProductUpdate> updates, INoItemMessageCallback callback) {
+        sendMessage(messageFactory.newStockUpdateMessage(updates), callback, MessageType.ACK_STOCK_UPDATE);
     }
 
     public void executeConnectAccountQuery(Account account, boolean desiredState, INoItemMessageCallback callback){

@@ -79,7 +79,7 @@ public class StockDao {
             updateId++;
         else
             updateId = 0;
-        executor.executeUpdateQuery(updates, new INoItemMessageCallback() {
+        executor.executeStockUpdateQuery(updates, new INoItemMessageCallback() {
 			@Override
 			public void ack() {
 				//TODO Issue #6 : add log line
