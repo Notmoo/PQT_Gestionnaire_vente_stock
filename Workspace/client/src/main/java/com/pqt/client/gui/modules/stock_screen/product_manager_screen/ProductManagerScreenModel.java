@@ -39,7 +39,6 @@ class ProductManagerScreenModel {
 
     boolean isProductCreationPossible() {
         return (initialData==null || !areProductsEqual(initialData, currentData))
-                && currentData.getName() != null
                 && !currentData.getName().isEmpty()
                 && currentData.getCategory()!=null
                 && currentData.getPrice()>=0;

@@ -21,7 +21,6 @@ class ProductManagerScreenController {
 
     void setView(ProductManagerScreenView view){
         this.view = view;
-        view.setCategoryCollection(model.getCategoryCollection());
     }
 
     ChangeListener<? super Product> getProductComponentSelectionListener() {
@@ -37,10 +36,9 @@ class ProductManagerScreenController {
     }
 
     void updateView() {
-        //view.setCategoryCollection(model.getCategoryCollection());
         view.setProduct(model.getActualProductState());
+        view.setCategoryCollection(model.getCategoryCollection());
         view.setProductCollection(model.getEligibleComponentList());
-        view.updateGuiLocks();
     }
 
     IValidatorComponentListener getValidatorListener() {
@@ -65,46 +63,32 @@ class ProductManagerScreenController {
         listenerList.remove(IValidatorComponentListener.class, l);
     }
 
-    boolean lockAmountRemainingfield(){
-        return !model.getActualProductState().getComponents().isEmpty();
-    }
-
-    boolean lockValidationButton(){
-        return !model.isProductCreationPossible();
-    }
-
     boolean isProductHighlighted(Product product) {
         return model.getActualProductState().getComponents().contains(product);
     }
 
-    void onNameChanged(String newVal) {
+    void onNameChanged(String oldVal, String newVal) {
         model.changeName(newVal);
-        updateView();
     }
 
-    void onPriceChanged(double newVal) {
+    void onPriceChanged(double oldVal, double newVal) {
         model.changePrice(newVal);
-        updateView();
     }
 
-    void onCategoryChanged(Category newVal) {
+    void onCategoryChanged(Category oldVal, Category newVal) {
         model.changeCategory(newVal);
-        view.updateGuiLocks();
     }
 
-    void onAmountRemainingChanged(int newVal) {
+    void onAmountRemainingChanged(int oldVal, int newVal) {
         model.changeAmountRemaining(newVal);
-        updateView();
     }
 
-    void onAmountSoldChanged(int newVal) {
+    void onAmountSoldChanged(int oldVal, int newVal) {
         model.changeAmountSold(newVal);
-        updateView();
     }
 
-    void onSellableStateChanged(boolean newVal) {
+    void onSellableStateChanged(boolean oldVal, boolean newVal) {
         model.setSellable(newVal);
-        updateView();
     }
 
     public void delete() {
