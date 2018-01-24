@@ -9,7 +9,6 @@ import java.util.Objects;
 
 public class ProductUpdate implements ILoggable, Serializable {
 
-	private Date createdAt;
 	private Product oldVersion;
 	private Product newVersion;
 
@@ -17,23 +16,13 @@ public class ProductUpdate implements ILoggable, Serializable {
     }
 
     public ProductUpdate(Product oldVersion, Product newVersion) {
-        this.createdAt = new Date();
         this.oldVersion = oldVersion;
         this.newVersion = newVersion;
     }
 
     public ProductUpdate(Date createdAt, Product oldVersion, Product newVersion) {
-        this.createdAt = createdAt;
         this.oldVersion = oldVersion;
         this.newVersion = newVersion;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Product getOldVersion() {
