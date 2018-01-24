@@ -2,6 +2,7 @@ package com.pqt.client.gui.modules.account_screen;
 
 import com.pqt.client.gui.modules.account_screen.listeners.IAccountScreenModelListener;
 import com.pqt.client.module.account.AccountService;
+import com.pqt.client.module.account.listeners.AccountUpdateBuilder;
 import com.pqt.client.module.account.listeners.IAccountListener;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
@@ -40,15 +41,15 @@ class AccountScreenModel {
     }
 
     void modifyAccount(Account oldVal, Account newVal) {
-        //accountService.submitAccountUpdate(oldVal, newVal);
+        accountService.submitAccountUpdate(new AccountUpdateBuilder().modifyAccount(oldVal,newVal));
     }
 
     void addAccount(Account newVal) {
-        //accountService.submitAccountUpdate(null, newVal);
+        accountService.submitAccountUpdate(new AccountUpdateBuilder().addAccount(newVal));
     }
 
     void removeAccount(Account oldVal) {
-        //accountService.submitAccountUpdate(oldVal, null);
+        accountService.submitAccountUpdate(new AccountUpdateBuilder().removeAccount(oldVal));
     }
 
     Collection<Account> getAccountCollection() {

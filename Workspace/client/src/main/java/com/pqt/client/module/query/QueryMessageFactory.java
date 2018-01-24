@@ -8,6 +8,7 @@ import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.user_account.Account;
+import com.pqt.core.entities.user_account.AccountUpdate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,12 @@ class QueryMessageFactory {
         fields.put("updates", messageToolFactory.getListFormatter(ProductUpdate.class).format(updates));
         return newSimpleMessage(MessageType.QUERY_STOCK_UPDATE, fields);
 	}
+
+    Message newAccountUpdateMessage(List<AccountUpdate> updates) {
+        Map<String, String> fields = new HashMap<>();
+        fields.put("updates", messageToolFactory.getListFormatter(AccountUpdate.class).format(updates));
+        return newSimpleMessage(MessageType.QUERY_ACCOUNT_UPDATE, fields);
+    }
 
 	Message newAccountListMessage(){
         return newSimpleMessage(MessageType.QUERY_ACCOUNT_LIST);

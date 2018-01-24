@@ -13,8 +13,8 @@ import com.pqt.core.entities.messages.MessageType;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.LightweightSale;
-import com.pqt.core.entities.sale.Sale;
 import com.pqt.core.entities.user_account.Account;
+import com.pqt.core.entities.user_account.AccountUpdate;
 
 import java.util.List;
 
@@ -45,6 +45,10 @@ public class QueryExecutor {
 
     public void executeStockUpdateQuery(List<ProductUpdate> updates, INoItemMessageCallback callback) {
         sendMessage(messageFactory.newStockUpdateMessage(updates), callback, MessageType.ACK_STOCK_UPDATE);
+    }
+
+    public void executeAccountUpdateQuery(List<AccountUpdate> updates, INoItemMessageCallback callback) {
+        sendMessage(messageFactory.newAccountUpdateMessage(updates), callback, MessageType.ACK_ACCOUNT_UPDATE);
     }
 
     public void executeConnectAccountQuery(Account account, boolean desiredState, INoItemMessageCallback callback){

@@ -1,10 +1,10 @@
 package com.pqt.client.module.account;
 
 import com.pqt.client.module.account.listeners.AccountListenerAdapter;
+import com.pqt.client.module.account.listeners.AccountUpdateBuilder;
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.query.query_callback.ICollectionItemMessageCallback;
 import com.pqt.client.module.query.query_callback.INoItemMessageCallback;
-import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.client.module.account.listeners.IAccountListener;
 
@@ -12,7 +12,6 @@ import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 //TODO écrire javadoc
@@ -154,5 +153,25 @@ public class AccountService {
         }else{
             //Nothing to do
         }
+    }
+
+    public void submitAccountUpdate(AccountUpdateBuilder builder) {
+        executor.executeAccountUpdateQuery(builder.build(), new INoItemMessageCallback() {
+            @Override
+            public void ack() {
+                //TODO Issue #6 : add log line
+                refreshAccounts();
+            }
+
+            @Override
+            public void err(Throwable cause) {
+                //TODO Issue #6 : add log line
+            }
+
+            @Override
+            public void ref(Throwable cause) {
+                //TODO Issue #6 : add log line
+            }
+        });
     }
 }
