@@ -1,12 +1,8 @@
 package com.pqt.client.module.connection.senders;
 
 import com.pqt.client.module.connection.listeners.IConnectionListener;
-import com.sun.javafx.binding.StringFormatter;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -16,7 +12,7 @@ public class HttpTextSender implements ITextSender{
     @Override
     public void send(String host, String text, IConnectionListener listener) {
         try {
-            String trueURL = String.format("http://%s?%s", host, encode(text));
+            String trueURL = String.format("http://%s?%s", host, format(text));
 
             HttpURLConnection con = (HttpURLConnection) new URL(trueURL).openConnection();
             con.setRequestMethod("GET");
@@ -53,7 +49,14 @@ public class HttpTextSender implements ITextSender{
     }
 
     // Méthode à modifier pour encoder le message suivant un algorithme spécifique
-    private String encode(String toEncode){
-        return toEncode;
+    private String format(String toFormat){
+        try {
+            String encodeTo = "UTF-8";
+            return String.format("format=%s&message=%s", encodeTo, URLEncoder.encode(toFormat, encodeTo));
+        }catch(UnsupportedEncodingException e){
+            //TODO Issue #6 : ajouter un log ici
+            e.printStackTrace();
+        }
+        return String.format("message=%s", toFormat);
     }
 }

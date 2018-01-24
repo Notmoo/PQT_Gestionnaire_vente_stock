@@ -61,7 +61,7 @@ public class ConnectionService {
 	        throw new IllegalStateException("No url specified for data server");
 	    if(executor.isShutdown() || executor.isTerminated())
 	        throw new IllegalStateException("Service was shut down : unable to send text");
-        executor.submit(()->textSender.send(serverUrl, "message="+text, listener));
+        executor.submit(()->textSender.send(serverUrl, text, listener));
     }
 
     public void shutdown() {
