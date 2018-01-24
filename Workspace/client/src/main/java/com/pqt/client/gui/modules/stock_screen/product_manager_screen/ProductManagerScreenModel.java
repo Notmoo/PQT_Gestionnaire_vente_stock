@@ -121,4 +121,8 @@ class ProductManagerScreenModel {
     Product getInitialData(){
         return initialData;
     }
+
+    public void delete() {
+
+    }
 }

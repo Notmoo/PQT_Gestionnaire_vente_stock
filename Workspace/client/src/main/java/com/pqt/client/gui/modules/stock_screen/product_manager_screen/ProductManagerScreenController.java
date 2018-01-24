@@ -90,4 +90,10 @@ class ProductManagerScreenController {
     void onSellableStateChanged(boolean oldVal, boolean newVal) {
         model.setSellable(newVal);
     }
+
+    public void delete() {
+        view = null;
+        model = null;
+        listenerList = null;
+    }
 }

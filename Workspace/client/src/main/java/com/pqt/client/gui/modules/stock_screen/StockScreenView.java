@@ -200,13 +200,13 @@ class StockScreenView implements IFXComponent {
                                                 .collect(Collectors.toList());
             Platform.runLater(()->{
                 mainPane.getChildren().removeAll(toRemove);
+                currentDetailScreen.delete();
                 currentDetailScreen = null;
             });
         }
     }
 
     boolean isDetailScreenCreationPossible() {
-        System.out.println("test creation possible : ");
         return currentDetailScreen!=null && currentDetailScreen.isCreationPossible();
     }
 

@@ -53,4 +53,13 @@ public class ProductManagerScreen implements IFXCreatorComponent<Product>, IFXVa
     public Product getInitialValueSnapshot(){
         return new Product(model.getInitialData());
     }
+
+    public void delete(){
+        model.delete();
+        view.delete();
+        ctrl.delete();
+        view = null;
+        ctrl = null;
+        model = null;
+    }
 }

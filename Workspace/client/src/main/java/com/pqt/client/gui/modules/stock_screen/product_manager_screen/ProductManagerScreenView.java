@@ -209,4 +209,7 @@ class ProductManagerScreenView implements IFXComponent {
             productComponentsListView.getItems().addAll(productCollection);
         });
     }
+    public void delete() {
+        ctrl = null;
+    }
 }
