@@ -99,7 +99,7 @@ public class NoRevertFileSaleDao implements ISaleDao {
     private long readLastSaleIdFromFile(){
         long id  = DEFAULT_SALE_ID;
         if(FileUtil.exist(getLogFilePath())){
-            try(ReversedLinesFileReader rlfr = new ReversedLinesFileReader(new File("SALE_LOG_FILE_NAME"))){
+            try(ReversedLinesFileReader rlfr = new ReversedLinesFileReader(new File(getLogFilePath()))){
                 boolean stop = false;
                 do{
                     try {
@@ -108,7 +108,7 @@ public class NoRevertFileSaleDao implements ISaleDao {
                             id = Long.parseLong(line.substring(1));
                             stop = true;
                         }
-                    }catch (EOFException e){
+                    }catch (NullPointerException | EOFException e){
                         stop = true;
                     }
                 }while(!stop);
