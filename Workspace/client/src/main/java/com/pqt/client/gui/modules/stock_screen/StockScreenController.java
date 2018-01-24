@@ -69,7 +69,7 @@ class StockScreenController implements IStockScreenModelListener{
     }
 
     private void deleteProduct(Product product){
-        model.commitProductDeletion(product);;
+        model.commitProductDeletion(product);
     }
 
     void onRefreshProductsRequest() {
