@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 
-//TODO MAJ les méthds modif, add et remove une fois que l'accountService prend en compte les modifs
 class AccountScreenModel {
 
     private AccountService accountService;
