@@ -2,6 +2,7 @@ package com.pqt.server.module.account;
 
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
+import com.pqt.core.entities.user_account.AccountUpdate;
 
 import java.util.List;
 
@@ -117,4 +118,21 @@ public class AccountService {
     public List<Account> getAccountList(){
 	    return dao.getAccountList();
     }
+
+	public void applyUpdateList(List<AccountUpdate> updates) {
+		updates.stream()
+				.filter(update->
+						(update.getOldVersion()!=null && dao.isAccountRegistered(update.getOldVersion()))
+								|| update.getNewVersion()!=null)
+				.forEach(update->{
+					if(update.getNewVersion()==null){
+						if(!dao.isAccountConnected(update.getOldVersion()))
+							dao.removeAccount(update.getOldVersion());
+					}else if(update.getOldVersion()==null){
+						dao.addAccount(update.getNewVersion());
+					}else{
+						dao.modifyAccount(update.getOldVersion(), update.getNewVersion());
+					}
+				});
+	}
 }

@@ -12,6 +12,7 @@ import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.server_config.ServerConfig;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
+import com.pqt.core.entities.user_account.AccountUpdate;
 import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.module.account.AccountService;
 import com.pqt.server.module.sale.SaleService;
@@ -124,13 +125,24 @@ public class SimpleMessageHandler implements IMessageHandler {
                 List<ProductUpdate> updates = messageToolFactory.getListParser(ProductUpdate.class).parse(message.getField("updates"));
                 stockService.applyUpdateList(updates);
                 return new Message(MessageType.ACK_STOCK_UPDATE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
-            }catch (ServerQueryException | NullPointerException e){
+            }catch (Exception e){
                 Map<String, String> fields = new HashMap<>();
                 fields.put(header_err_query, e.toString());
                 return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
             }
         }, AccountLevel.MASTER);
 
+        manager.supportForConnectedAccounts(MessageType.QUERY_ACCOUNT_UPDATE, (message)->{
+            try{
+                List<AccountUpdate> updates = messageToolFactory.getListParser(AccountUpdate.class).parse(message.getField("updates"));
+                accountService.applyUpdateList(updates);
+                return new Message(MessageType.ACK_ACCOUNT_UPDATE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, null);
+            }catch (Exception e){
+                Map<String, String> fields = new HashMap<>();
+                fields.put(header_err_query, e.toString());
+                return new Message(MessageType.ERROR_QUERY, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
+            }
+        }, AccountLevel.MASTER);
         /*
         Queries without account connection requirements
          */

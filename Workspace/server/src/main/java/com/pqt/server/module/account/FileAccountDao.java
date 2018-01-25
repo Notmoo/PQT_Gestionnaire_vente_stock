@@ -103,7 +103,8 @@ public class FileAccountDao implements IAccountDao {
             String expectedPasswordHash = entry.getPasswordHash();
             String salt = entry.getSalt();
 
-            if(expectedUsername.equals(account.getUsername()) && hashTool.hashAndSalt(account.getPassword(), salt).equals(expectedPasswordHash)){
+            if(expectedUsername.equals(account.getUsername())
+                    && hashTool.hashAndSalt(account.getPassword(), salt).equals(expectedPasswordHash)){
                 connectedAccount.add(entry);
                 return true;
             }else
@@ -140,7 +141,9 @@ public class FileAccountDao implements IAccountDao {
 
     @Override
     public synchronized List<Account> getAccountList() {
-        return accountEntries.stream().map(accountEntry -> new Account(accountEntry.getUsername(), null, accountEntry.getLevel())).collect(Collectors.toList());
+        return accountEntries.stream()
+                .map(accountEntry -> new Account(accountEntry.getUsername(), null, accountEntry.getLevel()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -150,15 +153,45 @@ public class FileAccountDao implements IAccountDao {
         fileManager.saveSetToFile(accountEntries);
     }
 
-    public boolean addAccount(Account account){
-        if(accountEntries.stream().filter(accountEntry -> accountEntry.getUsername().equals(account.getUsername())).count()==0) {
+    @Override
+    public synchronized boolean addAccount(Account account){
+        if(accountEntries.stream().noneMatch(accountEntry -> accountEntry.getUsername().equals(account.getUsername()))){
             String salt = randomString.nextString();
             String passwordHash = hashTool.hashAndSalt(account.getPassword(), salt);
-            accountEntries.add(new AccountEntry(account.getUsername(), passwordHash, salt, account.getPermissionLevel()));
+            accountEntries.add(
+                    new AccountEntry(account.getUsername(), passwordHash, salt, account.getPermissionLevel())
+            );
             saveToFile();
             return true;
         }else{
             return false;
+        }
+    }
+
+    @Override
+    public synchronized void removeAccount(Account oldVersion) {
+        AccountEntry match = lookupMatchingEntry(oldVersion, accountEntries);
+        if(match!=null && !connectedAccount.contains(match)){
+            accountEntries.remove(match);
+            saveToFile();
+        }
+    }
+
+    @Override
+    public synchronized void modifyAccount(Account oldVersion, Account newVersion) {
+        AccountEntry match = lookupMatchingEntry(oldVersion, accountEntries);
+        if(match!=null && oldVersion.getUsername().equals(newVersion.getUsername())){
+            boolean toReconnect = connectedAccount.remove(match);
+            accountEntries.remove(match);
+
+            String salt = randomString.nextString();
+            String passwordHash = hashTool.hashAndSalt(newVersion.getPassword(), salt);
+            AccountEntry newEntry =
+                    new AccountEntry(oldVersion.getUsername(), passwordHash, salt, newVersion.getPermissionLevel());
+            accountEntries.add(newEntry);
+            if(toReconnect)
+                connectedAccount.add(newEntry);
+            saveToFile();
         }
     }
 

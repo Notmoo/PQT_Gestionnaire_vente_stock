@@ -63,10 +63,31 @@ public interface IAccountDao {
     /**
      * Ajoute un objet {@link Account} dans la collection de comptes utilisateurs.
      * <p/>
-     * Les implémentations doivent en outre effectuer une vérification pour s'assurer que le compte à rajouter ne pas
-     * un nom d'utilisateur qui existe déjà. Dans ce cas de figure, l'ajout du nouveau compte doit échouer.
+     * Les implémentations doivent en outre effectuer une vérification pour s'assurer que le compte à rajouter ne soit
+     * pas un nom d'utilisateur qui existe déjà. Dans ce cas de figure, l'ajout du nouveau compte doit échouer.
      * @param account
      * @return
      */
     boolean addAccount(Account account);
+
+    /**
+     * Retire un objet {@link Account} dans la collection de comptes utilisateurs.
+     * <p/>
+     * Les implémentations doivent en outre effectuer une vérification pour s'assurer que le compte à retirer ne soit
+     * pas un compte utilisateur actuellement connecté. Dans ce cas de figure, l'ajout du nouveau compte doit échouer.
+     *
+     * @param oldVersion
+     */
+    void removeAccount(Account oldVersion);
+
+    /**
+     * Modifie un objet {@link Account} {@code oldVersion} en remplaçant ses attributs par ceux de {@code newVersion}.
+     * <p/>
+     * Les implémentations doivent s'assurer que le nouveau nom ne soit pas un nom déjà existant dans la base de données.
+     * Dans un tel cas de figure, la modification doit échouer et doit laisser {@code oldVersion} inchangé.
+     *
+     * @param oldVersion
+     * @param newVersion
+     */
+    void modifyAccount(Account oldVersion, Account newVersion);
 }
