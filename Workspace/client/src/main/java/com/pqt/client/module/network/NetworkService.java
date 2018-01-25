@@ -7,6 +7,8 @@ import com.pqt.client.module.query.query_callback.IMapItemMessageCallback;
 import com.pqt.client.module.query.query_callback.INoItemMessageCallback;
 import com.pqt.core.entities.server_config.ConfigFields;
 import com.pqt.core.entities.server_config.ServerConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.event.EventListenerList;
 import java.util.*;
@@ -18,16 +20,20 @@ import java.util.*;
  */
 public class NetworkService {
 
+    private static Logger LOGGER = LogManager.getLogger(NetworkService.class);
+
     private final QueryExecutor queryExecutor;
     private final ConnectionService connectionService;
     private final EventListenerList listenerList;
     private final ServerConfigCache configCache;
 
     public NetworkService(QueryExecutor queryExecutor, ConnectionService connectionService) {
+        LOGGER.info("Initialisation du service 'Network'");
         this.queryExecutor = queryExecutor;
         this.connectionService = connectionService;
         listenerList = new EventListenerList();
         configCache = new ServerConfigCache();
+        LOGGER.info("Service 'Network' initialisé");
     }
 
     public void addListener(INetworkServiceListener l){
@@ -40,9 +46,11 @@ public class NetworkService {
 
     public void sendPQTPing(String host, Integer port){
         checkData(host, port);
+        LOGGER.trace("Envoi d'un ping");
         queryExecutor.executePingQuery(new INoItemMessageCallback() {
             @Override
             public void ack() {
+                LOGGER.trace("Réponse au ping -> ACK");
                 Arrays.stream(listenerList.getListeners(INetworkServiceListener.class))
                         .forEach(l->l.onPQTPingSuccessEvent(host, port));
                 sendConfigRequest(host, port);
@@ -50,12 +58,14 @@ public class NetworkService {
 
             @Override
             public void err(Throwable cause) {
+                LOGGER.trace("Réponse au ping -> ERR");
                 Arrays.stream(listenerList.getListeners(INetworkServiceListener.class))
                         .forEach(l->l.onPQTPingFailureEvent(host, port, cause));
             }
 
             @Override
             public void ref(Throwable cause) {
+                LOGGER.trace("Réponse au ping -> REF");
                 Arrays.stream(listenerList.getListeners(INetworkServiceListener.class))
                         .forEach(l->l.onPQTPingFailureEvent(host, port, cause));
             }
@@ -79,20 +89,22 @@ public class NetworkService {
     }
 
     private void sendConfigRequest(String host, Integer port){
+        LOGGER.trace("Envoi d'une demande de configuration serveur");
         queryExecutor.executeConfigListQuery(new IMapItemMessageCallback<String, String>(){
 
             @Override
             public void err(Throwable cause) {
-                //TODO Issue #6 : ajouter log erreur
+                LOGGER.error("Erreur lors de la demande de configurations serveur : {}", cause);
             }
 
             @Override
             public void ref(Throwable cause) {
-                //TODO Issue #6 : ajouter log erreur
+                LOGGER.error("Demande de configurations serveur refusée : {}", cause);
             }
 
             @Override
             public void ack(Map<String, String> obj) {
+                LOGGER.trace("Demande de configuration serveur acceptée");
                 configCache.addServerConfig(host, port, convertToServerConfig(obj));
                 Arrays.stream(listenerList.getListeners(INetworkServiceListener.class))
                         .forEach(INetworkServiceListener::onNewServerConfigData);
@@ -141,6 +153,7 @@ public class NetworkService {
     }
 
     public void shutdown() {
+        LOGGER.info("Fermeture du service 'Network'");
         //Nothing to do
     }
 }

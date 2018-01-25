@@ -5,60 +5,65 @@ import com.pqt.client.module.query.query_callback.IMapItemMessageCallback;
 import com.pqt.client.module.stat.listeners.IStatFirerer;
 import com.pqt.client.module.stat.listeners.IStatListener;
 import com.pqt.client.module.stat.listeners.SimpleStatFirerer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 //TODO Issue #5 : écrire javadoc
 public class StatDao {
 
-        private Date lastRefreshTimestamp;
-        private Map<String, String> stats;
-        private IStatFirerer eventFirerer;
-        private QueryExecutor executor;
+    private static Logger LOGGER = LogManager.getLogger(StatDao.class);
 
-        public StatDao(QueryExecutor executor) {
-            eventFirerer = new SimpleStatFirerer();
-            stats = new HashMap<>();
-            lastRefreshTimestamp = null;
-            this.executor = executor;
-        }
+    private Date lastRefreshTimestamp;
+    private Map<String, String> stats;
+    private IStatFirerer eventFirerer;
+    private QueryExecutor executor;
 
-        public synchronized Map<String, String> getStats() {
-            return new HashMap<>(stats);
-        }
+    public StatDao(QueryExecutor executor) {
+        eventFirerer = new SimpleStatFirerer();
+        stats = new HashMap<>();
+        lastRefreshTimestamp = null;
+        this.executor = executor;
+    }
 
-        public void refreshStats() {
-            executor.executeStatQuery(new IMapItemMessageCallback<String, String>() {
-                @Override
-                public void err(Throwable cause) {
-                    eventFirerer.fireGetStatError(cause);
-                    //TODO Issue #6 : add log line
-                }
+    public synchronized Map<String, String> getStats() {
+        return new HashMap<>(stats);
+    }
 
-                @Override
-                public void ref(Throwable cause) {
-                    eventFirerer.fireGetStatRefused(cause);
-                    //TODO Issue #6 : add log line
-                }
+    public void refreshStats() {
+        LOGGER.trace("Mise à jour des statistiques");
+        executor.executeStatQuery(new IMapItemMessageCallback<String, String>() {
+            @Override
+            public void err(Throwable cause) {
+                eventFirerer.fireGetStatError(cause);
+                LOGGER.trace("Erreur de mise à jour des statistiques : {}", cause);
+            }
 
-                @Override
-                public void ack(Map<String, String> stats) {
-                    replaceStats(stats);
-                    eventFirerer.fireGetStatSuccess();
-                    //TODO Issue #6 : add log line
-                }
-            });
-        }
+            @Override
+            public void ref(Throwable cause) {
+                eventFirerer.fireGetStatRefused(cause);
+                LOGGER.trace("Mise à jour des statistiques refusée : {}", cause);
+            }
 
-        public Date getLastRefreshTimestamp(){
-            return lastRefreshTimestamp;
-        }
+            @Override
+            public void ack(Map<String, String> stats) {
+                replaceStats(stats);
+                eventFirerer.fireGetStatSuccess();
+                LOGGER.trace("Mise à jour des statistiques finie");
+            }
+        });
+    }
 
-        private synchronized void replaceStats(Map<String, String> stats) {
-            this.stats = new HashMap<>(stats);
-            this.lastRefreshTimestamp = new Date();
-            eventFirerer.fireStatChangedEvent();
-        }
+    public Date getLastRefreshTimestamp(){
+        return lastRefreshTimestamp;
+    }
+
+    private synchronized void replaceStats(Map<String, String> stats) {
+        this.stats = new HashMap<>(stats);
+        this.lastRefreshTimestamp = new Date();
+        eventFirerer.fireStatChangedEvent();
+    }
 
     public void removeListener(IStatListener listener) {
         eventFirerer.removeListener(listener);

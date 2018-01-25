@@ -2,17 +2,22 @@ package com.pqt.client.module.stat;
 
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.client.module.stat.listeners.IStatListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
 //TODO Issue #5 : écrire javadoc
-//TODO Issue #6 : add log lines
 public class StatService {
+
+    private static Logger LOGGER = LogManager.getLogger(StatService.class);
 
 	private StatDao dao;
 
     public StatService(QueryExecutor executor) {
+        LOGGER.info("Initialisation du service 'Stat'");
         dao = new StatDao(executor);
+        LOGGER.info("Service 'Stat' initialisé");
     }
 
     public Map<String,String> getStats() {
@@ -32,6 +37,7 @@ public class StatService {
 	}
 
     public void shutdown() {
+        LOGGER.info("Fermeture du service 'Stat'");
         //Nothing to do
     }
 }

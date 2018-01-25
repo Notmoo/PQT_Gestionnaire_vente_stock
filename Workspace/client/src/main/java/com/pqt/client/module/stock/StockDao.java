@@ -8,6 +8,8 @@ import com.pqt.client.module.stock.Listeners.IStockListener;
 import com.pqt.client.module.stock.Listeners.SimpleStockFirerer;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +18,8 @@ import java.util.List;
 
 //TODO Issue #5 : écrire javadoc
 public class StockDao {
+
+	private static Logger LOGGER = LogManager.getLogger(StockDao.class);
 
     private long updateId;
 	private IStockFirerer eventFirerer;
@@ -40,23 +44,24 @@ public class StockDao {
     }
 
 	public void refreshProductList() {
+		LOGGER.trace("Demande de mise à jour du stock");
         executor.executeStockQuery(new ICollectionItemMessageCallback<Product>() {
 			@Override
 			public void ack(Collection<Product> obj) {
 				replaceProductList(obj);
 				eventFirerer.fireGetProductListSuccessEvent();
-				//TODO Issue #6 : add log line
+				LOGGER.trace("Mise à jour du stock");
 			}
 
 			@Override
 			public void err(Throwable cause) {
-				//TODO Issue #6 : add log line
+				LOGGER.trace("Demande de mise à jour du stock");
 				eventFirerer.fireGetProductListErrorEvent(cause);
 			}
 
 			@Override
 			public void ref(Throwable cause) {
-				//TODO Issue #6 : add log line
+				LOGGER.trace("Demande de mise à jour du stock refusée : {}", cause);
 				eventFirerer.fireGetProductListRefusedEvent(cause);
 			}
 		});
@@ -79,23 +84,24 @@ public class StockDao {
             updateId++;
         else
             updateId = 0;
+		LOGGER.trace("Demande de modification du stock : modification numéro {}", updateId);
         executor.executeStockUpdateQuery(updates, new INoItemMessageCallback() {
 			@Override
 			public void ack() {
-				//TODO Issue #6 : add log line
+				LOGGER.trace("Modification du stock numéro {} acceptée", updateId);
 				refreshProductList();
 				eventFirerer.fireProductListUpdateSuccessEvent(currentUpdateId);
 			}
 
 			@Override
 			public void err(Throwable cause) {
-                //TODO Issue #6 : add log line
+				LOGGER.trace("Erreur durant la modification du stock numéro {} : {}", updateId, cause.getMessage());
                 eventFirerer.fireProductListUpdateErrorEvent(currentUpdateId, cause);
 			}
 
 			@Override
 			public void ref(Throwable cause) {
-                //TODO Issue #6 : add log line
+				LOGGER.trace("Modification du stock numéro {} refusée : {}", updateId, cause.getMessage());
                 eventFirerer.fireProductListUpdateRefusedEvent(currentUpdateId, cause);
 			}
 		});

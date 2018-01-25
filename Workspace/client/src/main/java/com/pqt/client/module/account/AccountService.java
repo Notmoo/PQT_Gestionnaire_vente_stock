@@ -7,6 +7,8 @@ import com.pqt.client.module.query.query_callback.ICollectionItemMessageCallback
 import com.pqt.client.module.query.query_callback.INoItemMessageCallback;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.client.module.account.listeners.IAccountListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
@@ -15,9 +17,9 @@ import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
 //TODO écrire javadoc
-//TODO Issue #6 : add log lines
-//TODO Issue #17 : supporter la modif de comptes
 public class AccountService {
+
+    private static Logger LOGGER = LogManager.getLogger(AccountService.class);
 
 	private QueryExecutor executor;
 	private Account currentAccount;
@@ -26,9 +28,11 @@ public class AccountService {
 	private EventListenerList listenerList;
 
 	public AccountService(QueryExecutor executor){
+        LOGGER.info("Initialisation du service 'Account'");
 		this.executor = executor;
 		listenerList = new EventListenerList();
 		accounts = new ArrayList<>();
+        LOGGER.info("Service 'Account' initialisé");
 	}
 
 	public Account getCurrentAccount() {
@@ -65,28 +69,42 @@ public class AccountService {
                             && currentAccount.getUsername().equals(acc.getUsername())
                             && currentAccount.getPermissionLevel().equals(acc.getPermissionLevel())) {
                         connected = state;
-                        Arrays.stream(listenerList.getListeners(IAccountListener.class))
-                                .forEach(l->l.onAccountStatusChangedEvent(connected));
+                        fireAccountStatusChangedEvent(connected);
                     }else
-                        Arrays.stream(listenerList.getListeners(IAccountListener.class))
-                                .forEach(l->l.onAccountStatusNotChangedEvent(
-                                        new IllegalStateException("Account service not in the right state")
-                                ));
+                        fireAccountStatusNotChangedEvent(
+                                new IllegalStateException("Account service not in the right state")
+                        );
                 }
 
                 @Override
                 public void err(Throwable cause) {
-                    Arrays.stream(listenerList.getListeners(IAccountListener.class))
-                            .forEach(l->l.onAccountStatusNotChangedEvent(cause));
+                    fireAccountStatusNotChangedEvent(cause);
                 }
 
                 @Override
                 public void ref(Throwable cause) {
-                    Arrays.stream(listenerList.getListeners(IAccountListener.class))
-                            .forEach(l->l.onAccountStatusNotChangedEvent(cause));
+                    fireAccountStatusNotChangedEvent(cause);
                 }
             });
         }
+    }
+
+    private void fireAccountStatusChangedEvent(boolean connected){
+	    LOGGER.info("Etat du compte courant changé à {}", connected);
+        Arrays.stream(listenerList.getListeners(IAccountListener.class))
+                .forEach(l->l.onAccountStatusChangedEvent(connected));
+    }
+
+    private void fireAccountStatusNotChangedEvent(Throwable cause){
+        LOGGER.info("Etat du compte courant inchangé : {}", cause);
+        Arrays.stream(listenerList.getListeners(IAccountListener.class))
+                .forEach(l->l.onAccountStatusNotChangedEvent(cause));
+    }
+
+    private void fireAccountListChangedEvent(){
+	    LOGGER.info("Liste des comptes utilisateurs changée");
+        Arrays.stream(listenerList.getListeners(IAccountListener.class))
+                .forEach(IAccountListener::onAccountListChangedEvent);
     }
 
 	public void addListener(IAccountListener listener) {
@@ -116,13 +134,13 @@ public class AccountService {
             @Override
             public void ack(Collection<Account> obj) {
                 accounts = obj;
-                Arrays.stream(listenerList.getListeners(IAccountListener.class))
-                        .forEach(IAccountListener::onAccountListChangedEvent);
+                fireAccountListChangedEvent();
             }
         });
     }
 
     public void shutdown() {
+        LOGGER.info("Fermeture du service 'Account'");
         if(connected) {
             try {
                 CountDownLatch latch = new CountDownLatch(1);
@@ -130,13 +148,11 @@ public class AccountService {
                     this.addListener(new AccountListenerAdapter() {
                         @Override
                         public void onAccountStatusChangedEvent(boolean status) {
-                            //TODO Issue #6 : ajouter des logs
                             latch.countDown();
                         }
 
                         @Override
                         public void onAccountStatusNotChangedEvent(Throwable cause) {
-                            //TODO Issue #6 : ajouter des logs
                             cause.printStackTrace();
                             latch.countDown();
                         }
@@ -145,8 +161,7 @@ public class AccountService {
                 }).start();
                 latch.await(); // Wait for thread to call latch.countDown()
             } catch (InterruptedException e) {
-                //TODO Issue #6 : ajouter des logs
-                e.printStackTrace();
+                LOGGER.error("Interruption de la procédure de fermeture du service 'Account' : {}", e);
             }finally {
                 listenerList = null;
             }
@@ -159,18 +174,15 @@ public class AccountService {
         executor.executeAccountUpdateQuery(builder.build(), new INoItemMessageCallback() {
             @Override
             public void ack() {
-                //TODO Issue #6 : add log line
                 refreshAccounts();
             }
 
             @Override
             public void err(Throwable cause) {
-                //TODO Issue #6 : add log line
             }
 
             @Override
             public void ref(Throwable cause) {
-                //TODO Issue #6 : add log line
             }
         });
     }

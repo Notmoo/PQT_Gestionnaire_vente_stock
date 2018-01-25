@@ -3,17 +3,22 @@ package com.pqt.client.module.stock;
 import com.pqt.client.module.query.QueryExecutor;
 import com.pqt.core.entities.product.Product;
 import com.pqt.client.module.stock.Listeners.IStockListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 import java.util.List;
 
-//TODO Issue #6 : Add log lines
 public class StockService {
+
+	private static Logger LOGGER = LogManager.getLogger(StockService.class);
 
 	private StockDao dao;
 
 	public StockService(QueryExecutor executor) {
+		LOGGER.info("Initialisation du service 'Stock'");
 		dao = new StockDao(executor);
+		LOGGER.info("Service 'Stock' initialisé");
 	}
 
     /**
@@ -131,6 +136,7 @@ public class StockService {
 	}
 
     public void shutdown() {
+		LOGGER.info("Fermeture du service 'Stock'");
 		//Nothing to do
     }
 }

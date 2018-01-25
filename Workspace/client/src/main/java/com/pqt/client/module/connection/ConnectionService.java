@@ -3,21 +3,27 @@ package com.pqt.client.module.connection;
 import com.pqt.client.module.connection.listeners.IConnectionListener;
 import com.pqt.client.module.connection.senders.HttpTextSender;
 import com.pqt.client.module.connection.senders.ITextSender;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.*;
 
 //TODO Issue #5 : écrire javadoc
 public class ConnectionService {
 
+    private static Logger LOGGER = LogManager.getLogger(ConnectionService.class);
+
     private String serverUrl;
     private ExecutorService executor;
     private ITextSender textSender;
 
     public ConnectionService(String serverUrl) {
+        LOGGER.info("Initialisation du service 'Connection'");
         executor = new ThreadPoolExecutor(1, 1, 1000,
                 TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         this.serverUrl = serverUrl;
         this.textSender = new HttpTextSender();
+        LOGGER.info("Service 'Connection' initialisé");
     }
 
 	public String getServerUrl() {
@@ -25,6 +31,7 @@ public class ConnectionService {
 	}
 
 	public void setServerUrl(String url){
+        LOGGER.info("L'url du serveur est : {}", url);
         this.serverUrl = url;
     }
 
@@ -65,6 +72,7 @@ public class ConnectionService {
     }
 
     public void shutdown() {
+	    LOGGER.info("Fermeture du service 'Connection'");
         stop(false);
     }
 }

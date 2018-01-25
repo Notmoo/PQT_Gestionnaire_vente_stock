@@ -15,20 +15,26 @@ import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountUpdate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 //TODO Issue #5 : écrire javadoc
 public class QueryExecutor {
 
+    private static Logger LOGGER = LogManager.getLogger(QueryExecutor.class);
+
 	private IMessageToolFactory messageToolFactory;
 	private ConnectionService connectionService;
 	private QueryMessageFactory messageFactory;
 
 	public QueryExecutor(ConnectionService connectionService){
+	    LOGGER.info("Initialisation du QueryExecutor");
 	    messageToolFactory = new GSonMessageToolFactory();
 	    this.connectionService = connectionService;
 	    this.messageFactory = new QueryMessageFactory(messageToolFactory);
+        LOGGER.info("QueryExecutor initialisé");
 	}
 
 	public void setAccountService(AccountService accountService){
@@ -56,9 +62,11 @@ public class QueryExecutor {
     }
 
     private void sendMessage(Message message, INoItemMessageCallback callback, MessageType responseType){
+	    LOGGER.debug("Envoi d'un message de type '{}' en mode no-item", message.getType().name());
         connectionService.sendText(messageToolFactory.getObjectFormatter(Message.class).format(message), new IConnectionListener() {
             @Override
             public void onMessageReceivedEvent(String msg) {
+                LOGGER.trace("Réception d'une réponse : {}",msg);
                 Message response = messageToolFactory.getObjectParser(Message.class).parse(msg);
                 if(response.getType().equals(responseType))
                     callback.ack();
@@ -68,21 +76,23 @@ public class QueryExecutor {
 
             @Override
             public void onConnectedEvent() {
-
+                LOGGER.trace("Connexion au serveur");
             }
 
             @Override
             public void onDisconnectedEvent() {
-
+                LOGGER.trace("Déconnexion au serveur");
             }
 
             @Override
             public void onTimeOutEvent() {
+                LOGGER.trace("Timeout du server");
                 callback.err(new MessageTimeoutException());
             }
 
             @Override
             public void onConnexionError(Throwable e) {
+                LOGGER.warn("Erreur durant l'envoi d'un message : {}", e);
                 callback.err(e);
             }
         });
@@ -97,9 +107,11 @@ public class QueryExecutor {
     }
 
     private <T> void sendMessage(Message message, ICollectionItemMessageCallback<T> callback, Class<T> clazz, MessageType responseType, String itemHeader){
+        LOGGER.debug("Envoi d'un message de type '{}' en mode collection-item", message.getType().name());
         connectionService.sendText(messageToolFactory.getObjectFormatter(Message.class).format(message), new IConnectionListener() {
             @Override
             public void onMessageReceivedEvent(String msg) {
+                LOGGER.trace("Réception d'une réponse : {}",msg);
                 Message response = messageToolFactory.getObjectParser(Message.class).parse(msg);
                 if(response.getType().equals(responseType)) {
                     String item = response.getField(itemHeader);
@@ -114,21 +126,23 @@ public class QueryExecutor {
 
             @Override
             public void onConnectedEvent() {
-
+                LOGGER.trace("Connexion au serveur");
             }
 
             @Override
             public void onDisconnectedEvent() {
-
+                LOGGER.trace("Déconnexion au serveur");
             }
 
             @Override
             public void onTimeOutEvent() {
+                LOGGER.trace("Timeout du server");
                 callback.err(new MessageTimeoutException());
             }
 
             @Override
             public void onConnexionError(Throwable e) {
+                LOGGER.warn("Erreur durant l'envoi d'un message : {}", e);
                 callback.err(e);
             }
         });
@@ -144,9 +158,11 @@ public class QueryExecutor {
 
     //TODO à rendre générique pour toute Map<T, U> au lieu de Map<String, String>
     private void sendMessage(Message message, IMapItemMessageCallback<String, String> callback, MessageType responseType){
+        LOGGER.debug("Envoi d'un message de type '{}' en mode map-item", message.getType().name());
         connectionService.sendText(messageToolFactory.getObjectFormatter(Message.class).format(message), new IConnectionListener() {
             @Override
             public void onMessageReceivedEvent(String msg) {
+                LOGGER.trace("Réception d'une réponse : {}",msg);
                 Message response = messageToolFactory.getObjectParser(Message.class).parse(msg);
                 if(response.getType().equals(responseType)){
                     callback.ack(response.getFields());
@@ -156,21 +172,23 @@ public class QueryExecutor {
 
             @Override
             public void onConnectedEvent() {
-
+                LOGGER.trace("Connexion au serveur");
             }
 
             @Override
             public void onDisconnectedEvent() {
-
+                LOGGER.trace("Déconnexion au serveur");
             }
 
             @Override
             public void onTimeOutEvent() {
+                LOGGER.trace("Timeout du server");
                 callback.err(new MessageTimeoutException());
             }
 
             @Override
             public void onConnexionError(Throwable e) {
+                LOGGER.warn("Erreur durant l'envoi d'un message : {}", e);
                 callback.err(e);
             }
         });
@@ -204,6 +222,7 @@ public class QueryExecutor {
     }
 
     public void shutdown() {
+        LOGGER.info("Fermeture du QueryExecutor");
         //Nothing to do
     }
 }
