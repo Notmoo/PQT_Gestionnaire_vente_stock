@@ -28,6 +28,10 @@ class AccountManagerScreenModel {
         return initialValue;
     }
 
+    boolean hasInitialValue(){
+        return initialValue!=null;
+    }
+
     boolean isCurrentValueValid() {
         return !currentValue.equals(initialValue)
                 && currentValue.getUsername()!=null

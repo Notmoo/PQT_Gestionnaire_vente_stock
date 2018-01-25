@@ -104,4 +104,8 @@ class AccountManagerScreenView implements IFXComponent{
             }
         });
     }
+
+    void lockUserNameField(boolean lock) {
+        nameTextField.setDisable(lock);
+    }
 }

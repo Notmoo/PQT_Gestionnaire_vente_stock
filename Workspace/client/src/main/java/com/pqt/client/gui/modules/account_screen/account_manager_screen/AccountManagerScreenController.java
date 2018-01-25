@@ -19,6 +19,7 @@ class AccountManagerScreenController {
 
     void setView(AccountManagerScreenView view) {
         this.view = view;
+        this.view.lockUserNameField(model.hasInitialValue());
     }
 
     void updateView() {
