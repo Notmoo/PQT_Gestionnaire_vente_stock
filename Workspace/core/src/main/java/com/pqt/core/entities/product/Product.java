@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-//TODO Issue #21 : faire en sorte que les composés reprennent les qté dispo des composants
 /**
  * Created by Notmoo on 18/07/2017.
  */
