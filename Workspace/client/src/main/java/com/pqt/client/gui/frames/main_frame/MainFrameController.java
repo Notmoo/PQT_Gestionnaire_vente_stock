@@ -19,6 +19,7 @@ class MainFrameController implements IMainFrameModelListener {
 
     void updateView(){
         view.setCurrentAccount(model.getCurrentAccount());
+        view.clearModuleView();
         if(model.getCurrentAccount()!=null)
             view.updateModuleButtonLock(model.getCurrentAccount().getPermissionLevel());
         else

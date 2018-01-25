@@ -121,4 +121,8 @@ class MainFrameView implements IFXComponent{
     void updateModuleButtonLock(AccountLevel level) {
         currentAccountLevel.setValue(level);
     }
+
+    public void clearModuleView() {
+        mainPane.setCenter(null);
+    }
 }
