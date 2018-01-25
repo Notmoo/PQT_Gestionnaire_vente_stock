@@ -80,6 +80,11 @@ public class QueryExecutor {
             public void onTimeOutEvent() {
                 callback.err(new MessageTimeoutException());
             }
+
+            @Override
+            public void onConnexionError(Throwable e) {
+                callback.err(e);
+            }
         });
     }
 
@@ -121,6 +126,11 @@ public class QueryExecutor {
             public void onTimeOutEvent() {
                 callback.err(new MessageTimeoutException());
             }
+
+            @Override
+            public void onConnexionError(Throwable e) {
+                callback.err(e);
+            }
         });
     }
 
@@ -157,6 +167,11 @@ public class QueryExecutor {
             @Override
             public void onTimeOutEvent() {
                 callback.err(new MessageTimeoutException());
+            }
+
+            @Override
+            public void onConnexionError(Throwable e) {
+                callback.err(e);
             }
         });
     }

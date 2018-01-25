@@ -12,4 +12,5 @@ public interface IConnectionListener extends EventListener {
 
 	void onTimeOutEvent();
 
+	void onConnexionError(Throwable e);
 }

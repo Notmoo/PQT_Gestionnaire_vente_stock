@@ -46,4 +46,16 @@ public class ConnectionListenerAdapter implements IConnectionListener {
 
 	}
 
+
+
+	/**
+	 * @see com.pqt.client.module.connection.listeners.IConnectionListener#onConnexionError(Throwable)
+	 *
+	 *
+	 */
+	@Override
+	public void onConnexionError(Throwable e) {
+
+	}
+
 }
