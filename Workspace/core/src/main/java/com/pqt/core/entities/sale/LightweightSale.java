@@ -19,10 +19,8 @@ public class LightweightSale {
     private Account orderedFor;
     private SaleType type;
     private SaleStatus status;
+    private Double price;
     private Double worth;
-
-    public LightweightSale() {
-    }
 
     public LightweightSale(Sale sale) {
         this.id = sale.getId();
@@ -35,6 +33,8 @@ public class LightweightSale {
         for(Product product : sale.getProducts().keySet()){
             products.put(product.getId(), sale.getProducts().get(product));
         }
+        price = sale.getTotalPrice();
+        worth = sale.getTotalWorth();
     }
 
     public int getId() {
@@ -91,6 +91,22 @@ public class LightweightSale {
 
     public void setStatus(SaleStatus status) {
         this.status = status;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Double getWorth() {
+        return worth;
+    }
+
+    public void setWorth(Double worth) {
+        this.worth = worth;
     }
 
     @Override
