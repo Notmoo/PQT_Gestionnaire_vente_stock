@@ -78,7 +78,7 @@ public interface IAccountDao {
      *
      * @param oldVersion
      */
-    void removeAccount(Account oldVersion);
+    boolean removeAccount(Account oldVersion);
 
     /**
      * Modifie un objet {@link Account} {@code oldVersion} en remplaçant ses attributs par ceux de {@code newVersion}.
@@ -89,5 +89,5 @@ public interface IAccountDao {
      * @param oldVersion
      * @param newVersion
      */
-    void modifyAccount(Account oldVersion, Account newVersion);
+    boolean modifyAccount(Account oldVersion, Account newVersion);
 }

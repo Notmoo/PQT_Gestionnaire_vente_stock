@@ -6,18 +6,20 @@ import com.pqt.core.entities.sale.Sale;
 import com.pqt.server.module.sale.listeners.SaleListenerAdapter;
 import com.pqt.server.module.stock.StockService;
 import com.pqt.server.module.sale.SaleService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-//TODO Issue #6 : Ajouter logs
 
 /**
  * Cette classe correspond au sservices de statistiques du serveur, chargé de calculer et de mettre à disposition
  * diverses données concernant les ventes effectuées et les produits vendus.
  */
 public class StatisticsService {
+
+    private static Logger LOGGER = LogManager.getLogger(StatisticsService.class);
 
     private StockService stockService;
 
@@ -39,6 +41,7 @@ public class StatisticsService {
         saleService.addListener(new SaleListenerAdapter() {
             @Override
             public void onSaleValidatedEvent(Sale sale) {
+                LOGGER.info("Mise à jour des statistiques suite à une vente");
                 double price = sale.getTotalPrice(), worth = sale.getTotalWorth();
                 totalSaleWorth+=worth;
                 totalMoneyMade+=price;

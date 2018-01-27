@@ -169,16 +169,18 @@ public class FileAccountDao implements IAccountDao {
     }
 
     @Override
-    public synchronized void removeAccount(Account oldVersion) {
+    public synchronized boolean removeAccount(Account oldVersion) {
         AccountEntry match = lookupMatchingEntry(oldVersion, accountEntries);
         if(match!=null && !connectedAccount.contains(match)){
             accountEntries.remove(match);
             saveToFile();
+            return true;
         }
+        return false;
     }
 
     @Override
-    public synchronized void modifyAccount(Account oldVersion, Account newVersion) {
+    public synchronized boolean modifyAccount(Account oldVersion, Account newVersion) {
         AccountEntry match = lookupMatchingEntry(oldVersion, accountEntries);
         if(match!=null && oldVersion.getUsername().equals(newVersion.getUsername())){
             boolean toReconnect = connectedAccount.remove(match);
@@ -192,7 +194,9 @@ public class FileAccountDao implements IAccountDao {
             if(toReconnect)
                 connectedAccount.add(newEntry);
             saveToFile();
+            return true;
         }
+        return false;
     }
 
     /**

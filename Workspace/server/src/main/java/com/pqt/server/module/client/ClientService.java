@@ -1,14 +1,14 @@
 package com.pqt.server.module.client;
 
 import com.pqt.core.entities.members.Client;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-//TODO Issue #6 : ajouter logs
 
 /**
  * Cette classe correspond au service de gestion des clients.
@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
  * clients avec des horodateurs représentant la date et l'heure de la dernière requête reçue de chaque client.
  */
 public class ClientService {
+
+    private static Logger LOGGER = LogManager.getLogger(ClientService.class);
 
     private Set<ClientEntry> clientCache;
 
@@ -36,7 +38,7 @@ public class ClientService {
      * @return {@code true} si le client donné correspond à une entrée du cache, {@code false} sinon.
      */
 	public boolean isClientRegistered(Client client) {
-		return clientCache.contains(client);
+		return clientCache.contains(lookupClientEntry(client));
 	}
 
     /**
@@ -46,8 +48,10 @@ public class ClientService {
      */
 	public void registerClient(Client client) {
         if(lookupClientEntry(client)==null){
+            LOGGER.info("Ajout du client '{}' au cache", client.getAddress());
             clientCache.add(new ClientEntry(client));
         }else{
+            LOGGER.debug("Rafraichissement du timestamp du client '{}'", client.getAddress());
             refreshClientTimestamp(client);
         }
 	}
@@ -75,6 +79,7 @@ public class ClientService {
      * Vide le cache du service.
      */
     public void clear(){
+        LOGGER.info("Effaçage du cache client");
 	    clientCache.clear();
     }
 

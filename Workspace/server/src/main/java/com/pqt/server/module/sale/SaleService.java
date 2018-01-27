@@ -1,17 +1,13 @@
 package com.pqt.server.module.sale;
 
-import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
 import com.pqt.server.module.sale.listeners.ISaleFirerer;
 import com.pqt.server.module.sale.listeners.ISaleListener;
 import com.pqt.server.module.sale.listeners.SimpleSaleFirerer;
 import com.pqt.server.module.stock.StockService;
-
-import java.util.HashMap;
-import java.util.Map;
-
-//TODO Issue #6 : ajouter logs
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Cette classe correspond au service de validation des commandes de produits.
@@ -31,6 +27,8 @@ import java.util.Map;
  */
 public class SaleService {
 
+    private static Logger LOGGER = LogManager.getLogger(SaleService.class);
+
     private ISaleDao dao;
     private ISaleFirerer eventFirerer;
 
@@ -48,7 +46,21 @@ public class SaleService {
      */
     public long submitSale(Sale sale) {
         long id = dao.submitSale(sale);
-        if(id!=-1) eventFirerer.fireSaleValidatedEvent(sale);
+        if(id!=-1){
+            LOGGER.info("Nouvelle commande : #{}, faite par '{}'(permission {}), de type '{}' et valant {}€",
+                    id,
+                    sale.getOrderedBy().getUsername(),
+                    sale.getOrderedBy().getPermissionLevel().name(),
+                    sale.getType().name(),
+                    sale.getTotalPrice());
+            eventFirerer.fireSaleValidatedEvent(sale);
+        }else{
+            LOGGER.info("Refus d'une commande : faite par '{}'(permission {}), de type '{}' et valant {}€",
+                    sale.getOrderedBy().getUsername(),
+                    sale.getOrderedBy().getPermissionLevel().name(),
+                    sale.getType().name(),
+                    sale.getTotalPrice());
+        }
 		return id;
 	}
 
@@ -67,7 +79,13 @@ public class SaleService {
         Sale sale = dao.convert(lwSale);
         if(sale!=null)
             return submitSale(sale);
-
+        else
+            LOGGER.info("Refus d'une lightweight commande : impossible de convertir en commande détaillée\n" +
+                    "Faite par '{}'(premission {}), de type '{}' et valant {}€",
+                    lwSale.getOrderedBy().getUsername(),
+                    lwSale.getOrderedBy().getPermissionLevel().name(),
+                    lwSale.getType().name(),
+                    lwSale.getPrice());
         return -1;
     }
 
@@ -89,9 +107,14 @@ public class SaleService {
      * @return {@code true} si la commande a bel et bien été annulée, {@code false} si aucun changement n'a été fait.
      */
 	public boolean submitSaleRevert(long id) {
-	    if(isSaleRevertSupported())
-            return dao.submitSaleRevert(id);
-	    else
+	    if(isSaleRevertSupported()){
+	        boolean status = dao.submitSaleRevert(id);
+	        if(status)
+                LOGGER.info("Revert de la commande #{}", id);
+            else
+                LOGGER.info("Echec du revert de la commande #{}", id);
+            return status;
+        }else
 	        throw new UnsupportedOperationException("Cette opération ('sale revert') n'est pas supportée par la configuration actuelle du serveur");
 	}
 

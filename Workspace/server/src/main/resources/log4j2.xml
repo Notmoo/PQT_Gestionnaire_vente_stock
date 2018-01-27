@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="redux_log_filename">PQT/logs/serveur-redux.log</Property>
+        <Property name="full_log_filename">PQT/logs/serveur-full.log</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <File name="Redux-File" fileName="${redux_log_filename}">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </File>
+        <File name="Full-File" fileName="${full_log_filename}">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="com.pqt.server" level="all" additivity="true">
+            <AppenderRef ref="Full-File"/>
+        </Logger>
+        <Logger name="com.pqt.server" level="debug" additivity="true">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="com.pqt.server" level="info" additivity="true">
+            <AppenderRef ref="Redux-File"/>
+        </Logger>
+    </Loggers>
+</Configuration>

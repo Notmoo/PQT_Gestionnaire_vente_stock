@@ -1,11 +1,16 @@
 package com.pqt.server.tools;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileUtil {
+
+    private static Logger LOGGER = LogManager.getLogger(FileUtil.class);
 
     /**
      * @see #createFileIfNotExist(Path)
@@ -24,6 +29,7 @@ public class FileUtil {
      */
     public static boolean createFileIfNotExist(Path filePath) throws IOException {
         if(!FileUtil.exist(filePath)){
+            LOGGER.debug("Création du ficher '{}'", filePath.toAbsolutePath().toString());
             Files.createFile(filePath);
             return true;
         }

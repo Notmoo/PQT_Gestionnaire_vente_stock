@@ -21,6 +21,8 @@ import com.pqt.server.module.statistics.StatisticsService;
 import com.pqt.server.module.stock.StockService;
 import com.pqt.server.tools.io.ISerialFileManager;
 import com.pqt.server.tools.io.SimpleSerialFileManagerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -52,6 +54,8 @@ import java.util.*;
  */
 public class SimpleMessageHandler implements IMessageHandler {
 
+    private static Logger LOGGER = LogManager.getLogger(SimpleMessageHandler.class);
+
     private final String header_ref_query = "Detail_refus";
     private final String header_err_query = "Detail_erreur";
 
@@ -70,7 +74,8 @@ public class SimpleMessageHandler implements IMessageHandler {
     private MessageManager manager;
 
     public SimpleMessageHandler(String ressourceFolderPathStr) {
-
+        LOGGER.info("Initialisation du gestionnaire de messages entrant");
+        LOGGER.info("Emplacement des ressources du serveur : {}", ressourceFolderPathStr);
         serverStateService = new ServerStateService();
         accountService = new AccountService(ressourceFolderPathStr);
         //clientService = new ClientService();
@@ -303,7 +308,9 @@ public class SimpleMessageHandler implements IMessageHandler {
     }
 
     private class MessageManager{
+
         private Set<MessageTypeEntry> entries;
+
 
         MessageManager(){
             entries = new HashSet<>();
@@ -314,6 +321,7 @@ public class SimpleMessageHandler implements IMessageHandler {
         }
 
         void support(MessageType type, IMessageProcess process, AccountLevel permissionLevel, boolean accountConnectionRequired){
+            LOGGER.info("Ajout du support du type {} pour le niveau {} (connexion requise : {})", type.name(), permissionLevel.name(), accountConnectionRequired);
             entries.add(new MessageTypeEntry(type, process, permissionLevel, accountConnectionRequired));
         }
 

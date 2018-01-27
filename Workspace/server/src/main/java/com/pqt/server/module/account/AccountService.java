@@ -3,8 +3,11 @@ package com.pqt.server.module.account;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
 import com.pqt.core.entities.user_account.AccountUpdate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 //TODO Issue #6 : ajouter logs
 /**
@@ -16,6 +19,8 @@ import java.util.List;
  * @see Account
  */
 public class AccountService {
+
+	private static Logger LOGGER = LogManager.getLogger(AccountService.class);
 
 	private IAccountDao dao;
 
@@ -70,7 +75,9 @@ public class AccountService {
      * @return {@code true} si le changement d'état a eu lieu, {@code false} sinon.
      */
 	public boolean submitAccountCredentials(Account account, boolean desiredState) {
-		return dao.submitAccountCredentials(account, desiredState);
+		boolean status = dao.submitAccountCredentials(account, desiredState);
+		LOGGER.info("Changement d'état : compte '{}', état désiré '{}' --> résultat '{}'", account.getUsername(), desiredState, status);
+		return status;
 	}
 
     /**
@@ -120,18 +127,44 @@ public class AccountService {
     }
 
 	public void applyUpdateList(List<AccountUpdate> updates) {
+    	Predicate<AccountUpdate> predicate = update->
+				(update.getOldVersion()!=null && dao.isAccountRegistered(update.getOldVersion()))
+						|| update.getNewVersion()!=null;
 		updates.stream()
-				.filter(update->
-						(update.getOldVersion()!=null && dao.isAccountRegistered(update.getOldVersion()))
-								|| update.getNewVersion()!=null)
+				.filter(predicate)
 				.forEach(update->{
 					if(update.getNewVersion()==null){
-						if(!dao.isAccountConnected(update.getOldVersion()))
-							dao.removeAccount(update.getOldVersion());
+						if(!dao.isAccountConnected(update.getOldVersion())){
+							if(dao.removeAccount(update.getOldVersion()))
+								LOGGER.info("Suppression du compte '{}'", update.getOldVersion().getUsername());
+							else
+								LOGGER.info("Echec de la suppression du compte '{}'",
+										update.getOldVersion().getUsername());
+						}
 					}else if(update.getOldVersion()==null){
-						dao.addAccount(update.getNewVersion());
+						if(dao.addAccount(update.getNewVersion()))
+							LOGGER.info("Ajout du compte '{}'", update.getNewVersion().getUsername());
+						else
+							LOGGER.info("Echec de l'ajout du compte '{}'", update.getNewVersion().getUsername());
 					}else{
-						dao.modifyAccount(update.getOldVersion(), update.getNewVersion());
+						if(dao.modifyAccount(update.getOldVersion(), update.getNewVersion()))
+							LOGGER.info("Modification du compte '{}'", update.getOldVersion().getUsername());
+						else
+							LOGGER.info("Echec de la modification du compte '{}'",
+									update.getOldVersion().getUsername());
+					}
+				});
+		updates.stream()
+				.filter(predicate.negate())
+				.forEach(update->{
+					if(update.getOldVersion()!=null && update.getNewVersion()!=null){
+						LOGGER.info("Modification du compte '{}' refusée : préconditions non-remplies", update.getOldVersion().getUsername());
+					}else if(update.getOldVersion()!=null){
+						LOGGER.info("Suppression du compte '{}' refusée : préconditions non-remplies", update.getOldVersion().getUsername());
+					}else if(update.getNewVersion()!=null){
+						LOGGER.info("Ajout du compte '{}' refusé : préconditions non-remplies", update.getNewVersion().getUsername());
+					}else{
+						LOGGER.info("Modification de compte refusée : ancienne et nouvelle version nulles", update.getOldVersion().getUsername());
 					}
 				});
 	}

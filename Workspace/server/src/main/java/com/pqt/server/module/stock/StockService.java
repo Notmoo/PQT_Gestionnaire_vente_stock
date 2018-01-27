@@ -4,10 +4,10 @@ import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
 import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.tools.entities.SaleContent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-
-//TODO Issue #6 : ajouter logs
 
 /**
  *  Cette classe correspond au service de gestion du stock de produits. Il est en charge de la persistance des
@@ -24,6 +24,8 @@ import java.util.List;
  * @author Guillaume "Cess" Prost
  */
 public class StockService {
+
+	private static Logger LOGGER = LogManager.getLogger(StockService.class);
 
     private IStockDao dao;
 
@@ -48,9 +50,9 @@ public class StockService {
     		if(upd.getOldVersion()==null){
     			addProduct(upd.getNewVersion());
 			}else if(upd.getNewVersion()==null){
-    			removeProduct(upd.getOldVersion().getId());
+    			removeProduct(upd.getOldVersion());
 			}else if(upd.getOldVersion()!=null && upd.getNewVersion()!=null){
-				modifyProduct(upd.getOldVersion().getId(), upd.getNewVersion());
+				modifyProduct(upd.getOldVersion(), upd.getNewVersion());
 			}else{
 				throw new ServerQueryException("Object ProductUpdate invalide : old et new valent tous les deux null");
             }
@@ -58,14 +60,16 @@ public class StockService {
 	}
 
 	private void addProduct(Product product) {
-        dao.addProduct(product);
+        LOGGER.info("Ajout du produit '{}' --> id #{}", product.getName(), dao.addProduct(product));
 	}
 
-	private void removeProduct(long id) {
-        dao.removeProduct(id);
+	private void removeProduct(Product product) {
+		LOGGER.info("Suppression du produit #{} --> '{}'", product.getId(), product.getName());
+        dao.removeProduct(product.getId());
 	}
 
-	private void modifyProduct(long id, Product product) {
-        dao.modifyProduct(id, product);
+	private void modifyProduct(Product oldVersion, Product newVersion) {
+		LOGGER.info("Modification du produit #{} --> '{}'", oldVersion.getId());
+        dao.modifyProduct(oldVersion.getId(), newVersion);
 	}
 }
