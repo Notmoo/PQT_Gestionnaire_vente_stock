@@ -66,7 +66,10 @@ public class QueryServlet extends HttpServlet {
 
                         Message msg = messageToolFactory.getObjectParser(Message.class).parse(messageToHandle);
 
-                        LOGGER.debug("Traitement du message (type : '{}', auteur : '{}')", msg.getType(), msg.getUser().getUsername());
+                        if(msg.getUser()!=null)
+                            LOGGER.debug("Traitement du message (type : '{}', auteur : '{}')", msg.getType(), msg.getUser().getUsername());
+                        else
+                            LOGGER.debug("Traitement du message (type : '{}', auteur : 'null')", msg.getType());
 
                         Message resp = msgHandler.handleMessage(msg);
 
