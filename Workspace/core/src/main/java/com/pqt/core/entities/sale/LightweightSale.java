@@ -14,6 +14,7 @@ public class LightweightSale {
 
     private int id;
     private Map<Long, Integer> products;
+    private Map<Long, Boolean> serving;
     private Client orderedWith;
     private Account orderedBy;
     private Account orderedFor;
@@ -29,9 +30,11 @@ public class LightweightSale {
         this.orderedFor = sale.getOrderedFor();
         this.type = sale.getType();
         this.status = sale.getStatus();
+        serving = new HashMap<>();
         products = new HashMap<>();
         for(Product product : sale.getProducts().keySet()){
             products.put(product.getId(), sale.getProducts().get(product));
+            serving.put(product.getId(), sale.getServing().get(product));
         }
         price = sale.getTotalPrice();
         worth = sale.getTotalWorth();
@@ -107,6 +110,10 @@ public class LightweightSale {
 
     public void setWorth(Double worth) {
         this.worth = worth;
+    }
+
+    public Map<Long, Boolean> getServing() {
+        return serving;
     }
 
     @Override

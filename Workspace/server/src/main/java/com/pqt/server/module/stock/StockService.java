@@ -2,11 +2,13 @@ package com.pqt.server.module.stock;
 
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
+import com.pqt.core.entities.product.SimplifiedProduct;
 import com.pqt.server.exception.ServerQueryException;
 import com.pqt.server.tools.entities.SaleContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -35,6 +37,19 @@ public class StockService {
 
     public List<Product> getProductList() {
 		return dao.getProductList();
+	}
+
+	/**
+	 * Permet de pallier à un défaut du javascript
+	 * @return liste de produits simplifiés
+	 */
+	public List<SimplifiedProduct> getSimplifiedProductList() {
+    	List<Product> products = this.getProductList();
+    	List<SimplifiedProduct> simplifiedProducts = new LinkedList<>();
+    	for (Product product: products){
+    		simplifiedProducts.add(new SimplifiedProduct(product));
+		}
+		return simplifiedProducts;
 	}
 
 	public Product getProduct(long id) {

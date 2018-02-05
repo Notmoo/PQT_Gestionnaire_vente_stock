@@ -8,7 +8,10 @@ import com.pqt.core.entities.messages.MessageType;
 import com.pqt.core.entities.product.LightweightProduct;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.product.ProductUpdate;
+import com.pqt.core.entities.product.SimplifiedProduct;
 import com.pqt.core.entities.sale.LightweightSale;
+import com.pqt.core.entities.sale.Sale;
+import com.pqt.core.entities.sale.SaleEdit;
 import com.pqt.core.entities.server_config.ServerConfig;
 import com.pqt.core.entities.user_account.Account;
 import com.pqt.core.entities.user_account.AccountLevel;
@@ -186,6 +189,37 @@ public class SimpleMessageHandler implements IMessageHandler {
             fields.put("config", messageToolFactory.getObjectFormatter(ServerConfig.class).format(serverStateService.getConfig()));
             return new Message(MessageType.MSG_CONFIG_LIST, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
         }, AccountLevel.getLowest(), false);
+
+        manager.support(MessageType.QUERY_SERVING_LIST, (message)->{
+            Map<String, String> fields = new HashMap<>();
+            fields.put("sales", messageToolFactory.getListFormatter(LightweightSale.class).format(saleService.getServingSaleList()));
+            return new Message(MessageType.ACK_SERVING_LIST, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
+        }, AccountLevel.WAITER, true);
+
+        manager.support(MessageType.QUERY_SERVING_DONE, (message)->{
+            String key = "sale";
+            if (message.getFields().containsKey(key)) {
+                Map<String, String> fields = new HashMap<>();
+                SaleEdit commandEdit = messageToolFactory.getObjectParser(SaleEdit.class).parse(message.getField(key));
+                saleService.completeCommand(commandEdit);
+                fields.put("success", "true");
+                return new Message(MessageType.ACK_SERVING_DONE, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
+            } else {
+                return getMissingArgumentQueryReplyMessage(message, key);
+            }
+        }, AccountLevel.WAITER, true);
+
+        manager.support(MessageType.QUERY_SERVING_VERSION, (message)->{
+            Map<String, String> fields = new HashMap<>();
+            fields.put("version", saleService.getServingVersion());
+            return new Message(MessageType.ACK_SERVING_VERSION, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
+        }, AccountLevel.WAITER, true);
+
+        manager.supportForConnectedAccounts(MessageType.QUERY_SIMPLIFIED_PRODUCT_LIST, (message)->{
+            Map<String, String> fields = new HashMap<>();
+            fields.put("list", messageToolFactory.getListFormatter(SimplifiedProduct.class).format(stockService.getSimplifiedProductList()));
+            return new Message(MessageType.ACK_SIMPLIFIED_PRODUCT_LIST, serverStateService.getServer(), message.getEmitter(), message.getUser(), message, fields);
+        }, AccountLevel.WAITER);
     }
 
     private Message getUnsupportedQueryReplyMessage(Message message){

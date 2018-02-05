@@ -5,7 +5,7 @@ package com.pqt.core.entities.sale;
  */
 public enum SaleStatus {
 
-    PENDING(0), REFUSED(1), ACCEPTED(2), ABORTED(3);
+    PENDING(0), REFUSED(1), ACCEPTED(2), ABORTED(3), SERVICE_PENDING(4);
 
     private int id;
 

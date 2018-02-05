@@ -2,12 +2,17 @@ package com.pqt.server.module.sale;
 
 import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
+import com.pqt.core.entities.sale.SaleEdit;
 import com.pqt.server.module.sale.listeners.ISaleFirerer;
 import com.pqt.server.module.sale.listeners.ISaleListener;
 import com.pqt.server.module.sale.listeners.SimpleSaleFirerer;
+import com.pqt.server.module.serving.IServingDao;
+import com.pqt.server.module.serving.ServingDao;
 import com.pqt.server.module.stock.StockService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 /**
  * Cette classe correspond au service de validation des commandes de produits.
@@ -31,10 +36,29 @@ public class SaleService {
 
     private ISaleDao dao;
     private ISaleFirerer eventFirerer;
+    private IServingDao servingDao;
 
     public SaleService(StockService stockService, String ressourceFolderPathStr) {
         dao = new NoRevertFileSaleDao(stockService, ressourceFolderPathStr);
         eventFirerer = new SimpleSaleFirerer();
+        servingDao = new ServingDao();
+        dao.addServingDao(servingDao);
+    }
+
+    /**
+     * Récupère la liste de des commandes à servir
+     * @return liste de commandes
+     */
+    public List<LightweightSale> getServingSaleList(){
+        return servingDao.getSaleList();
+    }
+
+    /**
+     * Permet de compléter une commande
+     * @param saleEdit objet de communication
+     */
+    public void completeCommand(SaleEdit saleEdit){
+        servingDao.completeCommand(saleEdit);
     }
 
     /**
@@ -134,5 +158,9 @@ public class SaleService {
      */
     public void removeListener(ISaleListener l){
         eventFirerer.addListener(l);
+    }
+
+    public String getServingVersion() {
+        return String.valueOf(servingDao.getVersion());
     }
 }

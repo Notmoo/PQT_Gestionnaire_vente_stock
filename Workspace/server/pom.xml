@@ -12,6 +12,24 @@
 
     <artifactId>server</artifactId>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                    <webXml>src/main/WEB-INF/web.xml</webXml>
+                    <webResources>
+                        <resource>
+                            <directory>WebContent</directory>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
         <dependency>

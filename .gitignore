@@ -7,3 +7,6 @@
 #Ignoring target folders
 **/target/
 Workspace/.idea/codeStyles/codeStyleConfig.xml
+Workspace/pqt_logs/
+
+.DS_Store

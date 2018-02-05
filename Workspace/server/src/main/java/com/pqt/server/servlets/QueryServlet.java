@@ -34,7 +34,7 @@ public class QueryServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        executeServletProcess(request, response);
+            executeServletProcess(request, response);
     }
 
     private void executeServletProcess(HttpServletRequest request, HttpServletResponse response) throws IOException {

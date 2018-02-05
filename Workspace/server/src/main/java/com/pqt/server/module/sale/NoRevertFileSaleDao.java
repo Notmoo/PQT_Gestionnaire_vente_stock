@@ -3,6 +3,7 @@ package com.pqt.server.module.sale;
 import com.pqt.core.entities.product.Product;
 import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
+import com.pqt.server.module.serving.IServingDao;
 import com.pqt.server.module.stock.StockService;
 import com.pqt.server.tools.FileUtil;
 import com.pqt.server.tools.entities.SaleContent;
@@ -11,10 +12,7 @@ import org.apache.commons.io.input.ReversedLinesFileReader;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implémentation de l'interface {@link ISaleDao} utilisant un fichier comme moyen pour assurer la persistance des
@@ -35,6 +33,7 @@ public class NoRevertFileSaleDao implements ISaleDao {
     private StockService stockService;
     private long nextSaleId;
     private ISaleRenderer renderer;
+    private IServingDao servingDao;
 
     NoRevertFileSaleDao(StockService stockService, String ressourceFolderPathStr) {
         SALE_LOG_FILE_FOLDER_PATH = ressourceFolderPathStr;
@@ -62,23 +61,30 @@ public class NoRevertFileSaleDao implements ISaleDao {
         long saleId = nextSaleId;
         stockService.applySale(new SaleContent(sale));
         logSale(sale, new Date(), saleId);
+        // TODO: 30/01/2018 Régler ce cast de manière propre
+        sale.setId((int) saleId);
+        if (servingDao != null)
+            servingDao.addSale(sale);
         generateNextSaleId();
         return saleId;
     }
 
     public Sale convert(LightweightSale lwSale){
         Map<Product, Integer> products = new HashMap<>();
+        Map<Product, Boolean> serving = new HashMap<>();
 
         lwSale.getProducts().keySet()
                 .forEach(pId->{
                     Product p = stockService.getProduct(pId);
-                    if(p!=null)
+                    if(p!=null) {
                         products.put(p, lwSale.getProducts().get(pId));
+                        serving.put(p, lwSale.getServing().get(pId));
+                    }
                 });
         if(products.keySet().size()!=lwSale.getProducts().keySet().size())
             return null;
 
-        return new Sale(lwSale.getId(), products, lwSale.getOrderedWith(), lwSale.getOrderedBy(), lwSale.getOrderedFor(), lwSale.getType(), lwSale.getStatus());
+        return new Sale(lwSale.getId(), products, lwSale.getOrderedWith(), lwSale.getOrderedBy(), lwSale.getOrderedFor(), lwSale.getType(), lwSale.getStatus(), serving);
     }
 
     private void generateNextSaleId() {
@@ -130,6 +136,11 @@ public class NoRevertFileSaleDao implements ISaleDao {
     public boolean submitSaleRevert(long id) {
         //TODO Créer un nouveau dao qui supporte le revert
         throw new UnsupportedOperationException("Le revert de commandes n'est pas supporté");
+    }
+
+    @Override
+    public void addServingDao(IServingDao dao) {
+        servingDao = dao;
     }
 
     private void logSale(Sale sale, Date date, long saleId){

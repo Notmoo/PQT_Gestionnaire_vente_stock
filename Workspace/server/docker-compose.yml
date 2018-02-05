@@ -1,0 +1,9 @@
+version: '2'
+services:
+  web:
+    image: tomcat
+    ports: 
+      - "8080:8080"
+    volumes:
+      - ./target/server-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/pqt-server.war
+      - ./target/server-1.0-SNAPSHOT:/usr/local/tomcat/webapps/pqt-server
