@@ -7,6 +7,7 @@ import com.pqt.core.entities.user_account.Account;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -17,6 +18,7 @@ public class Sale implements ILoggable, Serializable{
 
     private int id;
     private Map<Product, Integer> products;
+    private Map<Product, Boolean> serving;
     private Client orderedWith;
     private Account orderedBy;
     private Account orderedFor;
@@ -28,12 +30,23 @@ public class Sale implements ILoggable, Serializable{
 
     public Sale(int id, Map<Product, Integer> products, Client orderedWith, Account orderedBy, Account orderedFor, SaleType type, SaleStatus status) {
         this.id = id;
-        this.products = products;
         this.orderedWith = orderedWith;
         this.orderedBy = orderedBy;
         this.orderedFor = orderedFor;
         this.type = type;
         this.status = status;
+        setProducts(products);
+    }
+
+    public Sale(int id, Map<Product, Integer> products, Client orderedWith, Account orderedBy, Account orderedFor, SaleType type, SaleStatus status, Map<Product, Boolean> serving) {
+        this.id = id;
+        this.orderedWith = orderedWith;
+        this.orderedBy = orderedBy;
+        this.orderedFor = orderedFor;
+        this.type = type;
+        this.status = status;
+        this.products = products;
+        this.serving = serving;
     }
 
     public int getId() {
@@ -49,7 +62,20 @@ public class Sale implements ILoggable, Serializable{
     }
 
     public void setProducts(Map<Product, Integer> products) {
+        serving = new HashMap<>();
         this.products = products;
+        for (Product prod: this.products.keySet()){
+            serving.put(prod, false);
+        }
+    }
+
+    public boolean isAllServed(){
+        for (Product prod: serving.keySet()){
+            if (!serving.get(prod)){
+                return false;
+            }
+        }
+        return true;
     }
 
     public Client getOrderedWith() {
@@ -126,5 +152,9 @@ public class Sale implements ILoggable, Serializable{
             totalWorth+=product.getPrice()*(double)this.products.get(product);
         }
         return totalWorth;
+    }
+
+    public Map<Product, Boolean> getServing() {
+        return serving;
     }
 }

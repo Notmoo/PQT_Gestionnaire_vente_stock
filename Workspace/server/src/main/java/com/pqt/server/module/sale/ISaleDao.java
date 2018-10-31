@@ -2,6 +2,7 @@ package com.pqt.server.module.sale;
 
 import com.pqt.core.entities.sale.LightweightSale;
 import com.pqt.core.entities.sale.Sale;
+import com.pqt.server.module.serving.IServingDao;
 
 /**
  * Interface définissant les méthodes requises pour tout DAO du service de gestion des commandes {@link SaleService}.
@@ -23,4 +24,5 @@ public interface ISaleDao {
 
 	boolean isSaleRevertSupported();
 	boolean submitSaleRevert(long id);
+	void addServingDao(IServingDao dao);
 }

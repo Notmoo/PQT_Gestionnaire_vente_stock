@@ -35,5 +35,22 @@ public enum MessageType {
     ACK_PING,
 
     QUERY_CONFIG_LIST,
-    MSG_CONFIG_LIST
+    MSG_CONFIG_LIST,
+
+    // no fields, permission at least Waiter
+    QUERY_SIMPLIFIED_PRODUCT_LIST,
+    ACK_SIMPLIFIED_PRODUCT_LIST,
+
+    // no fields, permission at least Waiter
+    QUERY_SERVING_LIST,
+    ACK_SERVING_LIST,
+
+    // fields (sale), permission at least Waiter
+    QUERY_SERVING_DONE,
+    ACK_SERVING_DONE,
+
+    // no fields, permission at least Waiter
+    QUERY_SERVING_VERSION,
+    ACK_SERVING_VERSION
+
 }
